@@ -244,7 +244,6 @@ Other tasks would use `config()` function to access tasks output data:
       code: |
         say "hello from Raku";
         my $ruby_task_message = config()<tasks><ruby_task><message>;
-
-```yaml
+```
 
 
