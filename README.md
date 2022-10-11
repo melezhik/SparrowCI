@@ -92,7 +92,7 @@ sparrow_ci register # register your git project, this will trigger a new build s
             name: foo.txt
             path: foo/bar/file.txt
     - name: parser
-      language: ruby
+      language: Ruby
       default: true
       before:
       -
@@ -176,7 +176,7 @@ To chose a language for underling task just use `language: $language` statement:
 
 ```yaml
   name: powershell_task
-  language: powershell
+  language: Powershell
   code: |
     Write-Host "Hello from Powershell"
 ```
@@ -186,8 +186,8 @@ To chose a language for underling task just use `language: $language` statement:
 Every task might have some default configuration:
 
 ```yaml
-  name: bash_task
-  language: powershell
+  name: pwsh_task
+  language: Powershell
   config:
     message: hello
   code: |
@@ -204,9 +204,9 @@ Default configuration parameters could be overridden by tasks parameters:
       default: true
       before: 
         - 
-          name: bash_task
+          name: pwsh_task
           config:
-            message: "how are you?"
+            message: "How are you?"
 ```
 
 ## Task output data
@@ -218,16 +218,15 @@ within other tasks:
   tasks:
     -
       name: parser
-      language: ruby
+      language: Ruby
       default: true
       name: ruby_task
       code: |
-        update_state(Hash["message", "I love Ruby"])
+        update_state(Hash["message", "I code in Ruby"])
 
 ```
 
 `update_state()` function accepts HashMap as parameter and available for all programming languages, excepts Bash.
-
 
 Other tasks would use `config()` function to access tasks output data:
 
@@ -249,7 +248,3 @@ Other tasks would use `config()` function to access tasks output data:
 ## Plugins parameters and output data
 
 Plugins have default and input parameters, as well as states (output data).
-
-
-
-
