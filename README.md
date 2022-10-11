@@ -33,7 +33,7 @@ Create build scenario `sparrow.yaml`:
           make test
         fi
         sudo make install --prefix=$prefix
-        echo "hello from Bash"
+        echo "Hello from Bash"
     -
       name: raku_task
       language: Raku
@@ -48,8 +48,8 @@ Create build scenario `sparrow.yaml`:
             config:
               foo: baz
       code: |
-        say "hello from Raku";
-        update_state %( message => "OK" )
+        say "Hello from Raku";
+        update_state %( message => "OK" );
     -
       name: python_task
       language: Python
@@ -58,7 +58,7 @@ Create build scenario `sparrow.yaml`:
       code: |
         from sparrow6lib import *
         state = config()['tasks']['raku_task']
-        print("hello from Python")
+        print("Hello from Python")
         print(f"I can read output data from other tasks: {state['message']}")
         print(f"named parameter: {config()['foo']}")
 ```
@@ -246,7 +246,7 @@ Other tasks would use `config()` function to access tasks output data:
         - 
           name: ruby_task
       code: |
-        say "hello from Raku";
+        say "Hello from Raku";
         my $ruby_task_message = config()<tasks><ruby_task><message>;
 ```
 
