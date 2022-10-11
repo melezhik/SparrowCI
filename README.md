@@ -253,3 +253,34 @@ Other tasks would use `config()` function to access tasks output data:
 ## Plugins parameters and output data
 
 Plugins have default and input parameters, as well as states (output data).
+
+# Examples
+
+Here is just short list of some possible scenarios.
+
+
+## Build rakudo 
+
+```yaml
+  tasks:
+    -
+      name: checkout
+      language: Bash
+      code: |
+        git clone $(config url) scm
+    -  
+      name: build
+      language: Bash
+      default: true
+      depends:
+      -
+        name: checkout
+        config:
+          url: https://github.com/rakudo/rakudo.git
+      code: |
+        set -e
+        cd scm
+        perl Configure.pl --gen-moar --gen-nqp --backends=moar
+        make
+        make install
+```
