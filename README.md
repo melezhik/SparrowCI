@@ -8,7 +8,12 @@ many programming languages support.
 Install SparrowCI
 
 ```
+# choose any convenient package manager: 
+
 apk add sparrowci
+apt-get install sparrowci
+yum install sparrowci
+
 ```
 
 Create build scenario `sparrow.yaml`:
