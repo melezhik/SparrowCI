@@ -14,43 +14,50 @@ apk add sparrowci
 Create build scenario:
 
 ```yaml
-  app:
+  tasks:
     -
-      name: make
+      name: make_task
       language: bash
       config:
         prefix: ~/
+        with_test: false
       code: |
         prefix=$(config prefix)
         make
-        make test
+        if test $(config with_test) = "true"; then
+          make test
+        fi
         sudo make install --prefix=$prefix
         echo "hello from Bash"
     -
-      name: raku
+      name: raku_task
       language: raku
       before: 
         - 
-          name: make
+          name: make_task
+          config:
+            with_test: true
+        - 
+            name: python_task
+            config:
+              foo: baz
       code: |
         say "hello from Raku"
-        update_state %( status => "OK" )
+        update_state %( message => "OK" )
     -
-      name: python
+      name: python_task
       language: python
       config:
-        foo: bar
-      before: 
-        - 
-          name: raku
+        foo: bar # default value
       code: |
         from sparrow6lib import *
         state = config()['state']['raku']
         print("hello from Python")
+        print(f"I can read output data from other tasks: {state['message']}")
         print(f"named parameter: {config()['foo']}")
 ```
 
-This example scenario would execute Bash task, then Raku task
-and then finally Python task. Task dependencies are ensured by `before`
-section.
+This example scenario would execute Bash task and Python task and then 
+execute Raku task. Task dependencies are just DAG and ensured by `before`
+sections.
 
