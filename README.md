@@ -94,7 +94,7 @@ sparrow_ci register # register your git project, this will trigger a new build s
       artifacts:
         out:
           -
-            name: foo.txt
+            name: file.txt
             path: foo/bar/file.txt
     - name: parser
       language: Ruby
@@ -103,7 +103,7 @@ sparrow_ci register # register your git project, this will trigger a new build s
       -
         name: make_file
       code:
-        File.readlines('.artifacts/foo.txt').each do |line|
+        File.readlines('.artifacts/file.txt').each do |line|
           puts(line)
         end
       artifacts:
