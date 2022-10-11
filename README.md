@@ -7,7 +7,7 @@ many programming languages support.
 
 Install SparrowCI
 
-```
+```bash
 # choose any convenient package manager: 
 
 apk add sparrowci
