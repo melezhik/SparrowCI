@@ -38,7 +38,7 @@ Create build scenario `sparrow.yaml`:
       name: raku_task
       language: Raku
       default: true # start scenario with that task
-      before: 
+      depends: 
         - 
           name: make_task
           config:
@@ -64,7 +64,7 @@ Create build scenario `sparrow.yaml`:
 ```
 
 This example scenario would execute Bash task and Python task and then 
-execute Raku task. Task dependencies are just DAG and ensured by `before`
+execute Raku task. Task dependencies are just DAG and ensured by `depends`
 sections. Task is marked as `default: true` is executed by default when
 scenario gets triggered.
 
@@ -99,7 +99,7 @@ sparrow_ci register # register your git project, this will trigger a new build s
     - name: parser
       language: Ruby
       default: true
-      before:
+      depends:
       -
         name: make_file
       code:
@@ -207,7 +207,7 @@ Default configuration parameters could be overridden by tasks parameters:
       name: main_task
       language: Bash
       default: true
-      before: 
+      depends: 
         - 
           name: pwsh_task
           config:
@@ -242,7 +242,7 @@ Other tasks would use `config()` function to access tasks output data:
       name: raku_task
       language: Raku
       default: true # start scenario with that task
-      before: 
+      depends: 
         - 
           name: ruby_task
       code: |
