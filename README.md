@@ -246,4 +246,10 @@ Other tasks would use `config()` function to access tasks output data:
         my $ruby_task_message = config()<tasks><ruby_task><message>;
 ```
 
+## Plugins parameters and output data
+
+Plugins have default and input parameters, as well as states (output data).
+
+
+
 
