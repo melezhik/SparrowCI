@@ -32,6 +32,7 @@ Create build scenario:
     -
       name: raku_task
       language: raku
+      main: true # start scenario with that task
       before: 
         - 
           name: make_task
