@@ -17,7 +17,7 @@ Create build scenario `sparrow.yaml`:
   tasks:
     -
       name: make_task
-      language: bash
+      language: Bash
       config:
         prefix: ~/
         with_test: false
@@ -31,7 +31,7 @@ Create build scenario `sparrow.yaml`:
         echo "hello from Bash"
     -
       name: raku_task
-      language: raku
+      language: Raku
       main: true # start scenario with that task
       before: 
         - 
@@ -43,16 +43,16 @@ Create build scenario `sparrow.yaml`:
             config:
               foo: baz
       code: |
-        say "hello from Raku"
+        say "hello from Raku";
         update_state %( message => "OK" )
     -
       name: python_task
-      language: python
+      language: Python
       config:
         foo: bar # default value
       code: |
         from sparrow6lib import *
-        state = config()['state']['raku']
+        state = config()['tasks']['raku_task']
         print("hello from Python")
         print(f"I can read output data from other tasks: {state['message']}")
         print(f"named parameter: {config()['foo']}")
@@ -82,7 +82,7 @@ sparrow_ci register # register your git project, this will trigger a new build s
   tasks:
     -
       name: make_file
-      language: bash
+      language: Bash
       code: |
         mkdir -p foo/bar
         touch foo/bar/file.txt
@@ -92,7 +92,7 @@ sparrow_ci register # register your git project, this will trigger a new build s
             name: foo.txt
             path: foo/bar/file.txt
     - name: parser
-      language: Ruby
+      language: ruby
       main: true
       before:
       -
@@ -160,3 +160,91 @@ Tasks could be executed on parallel workers simultaneously for efficiency.
 
 Documentation - TDB
  
+
+## Languages
+
+Currently SparrowCI supports following list of programming languages:
+
+- Raku
+- Bash
+- Python
+- Perl
+- Ruby
+- Powershell
+
+To chose a language for underling task just use `language: $language` statement:
+
+```yaml
+  name: powershell_task
+  language: powershell
+  code: |
+    Write-Host "Hello from Powershell"
+```
+
+## Tasks parameters and configuration
+
+Every task might have some default configuration:
+
+```yaml
+  name: bash_task
+  language: powershell
+  config:
+    message: hello
+  code: |
+    echo "you've said:" $(config hello)
+```
+
+Default configuration parameters could be overridden by tasks parameters:
+
+```yaml
+  tasks:
+    -
+      name: main_task
+      language: Bash
+      main: true
+      before: 
+        - 
+          name: bash_task
+          config:
+            message: "how are you?"
+```
+
+## Task output data
+
+Task might have output data that is later becomes available
+within other tasks:
+
+```yaml
+  tasks:
+    -
+      name: parser
+      language: ruby
+      main: true
+      name: ruby_task
+      code: |
+        update_state(Hash["message", "I love Ruby"])
+
+```
+
+`update_state()` function accepts HashMap as parameter and available for all programming languages, excepts Bash.
+
+
+Other tasks would use `config()` function to access tasks output data:
+
+
+```yaml
+  tasks:
+    -
+      name: raku_task
+      language: Raku
+      main: true # start scenario with that task
+      before: 
+        - 
+          name: ruby_task
+      code: |
+        say "hello from Raku";
+        my $ruby_task_message = config()<tasks><ruby_task><message>;
+
+```yaml
+
+
