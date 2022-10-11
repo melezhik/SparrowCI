@@ -194,9 +194,9 @@ Every task might have some default configuration:
   name: pwsh_task
   language: Powershell
   config:
-    message: hello
+    message: Hello
   code: |
-    echo "you've said:" $(config hello)
+    echo "you've said:" $(config message)
 ```
 
 Default configuration parameters could be overridden by tasks parameters:
