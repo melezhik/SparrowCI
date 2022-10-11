@@ -32,7 +32,7 @@ Create build scenario `sparrow.yaml`:
     -
       name: raku_task
       language: Raku
-      main: true # start scenario with that task
+      default: true # start scenario with that task
       before: 
         - 
           name: make_task
@@ -93,7 +93,7 @@ sparrow_ci register # register your git project, this will trigger a new build s
             path: foo/bar/file.txt
     - name: parser
       language: ruby
-      main: true
+      default: true
       before:
       -
         name: make_file
@@ -201,7 +201,7 @@ Default configuration parameters could be overridden by tasks parameters:
     -
       name: main_task
       language: Bash
-      main: true
+      default: true
       before: 
         - 
           name: bash_task
@@ -219,7 +219,7 @@ within other tasks:
     -
       name: parser
       language: ruby
-      main: true
+      default: true
       name: ruby_task
       code: |
         update_state(Hash["message", "I love Ruby"])
@@ -237,7 +237,7 @@ Other tasks would use `config()` function to access tasks output data:
     -
       name: raku_task
       language: Raku
-      main: true # start scenario with that task
+      default: true # start scenario with that task
       before: 
         - 
           name: ruby_task
