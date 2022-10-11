@@ -60,7 +60,8 @@ Create build scenario `sparrow.yaml`:
 
 This example scenario would execute Bash task and Python task and then 
 execute Raku task. Task dependencies are just DAG and ensured by `before`
-sections.
+sections. Task is marked as `default: true` is executed by default when
+scenario gets triggered.
 
 To execute scenario add it to your git repo and assign tasks to SparrowCI service:
 
@@ -147,11 +148,15 @@ Available plugins are listed on SparrowHub repository - https://sparrowhub.io
 Tasks might produce artifacts that become visible within other tasks:
 
 
-
 ## Workers
 
 SparrowCI workers are ephemeral docker alpine instances, that are created
 for every build and then destroyed. If you need more OS support please
 let me know.
 
+## Parallel tasks execution
 
+Tasks could be executed on parallel workers simultaneously for efficiency.
+
+Documentation - TDB
+ 
