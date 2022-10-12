@@ -12,7 +12,7 @@ class Pipeline does Sparky::JobApi::Role {
   
   method stage-main {
 
-      say "config: {config().perl}";
+      #say "config: {config().perl}";
 
       my $data = config()<tasks>.grep({.<default>});
 
