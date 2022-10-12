@@ -148,7 +148,7 @@ Sparrow plugins are reusable tasks one can run from within their scenarios:
 
 ```
 
-In this example plugin "k8s-deployment-check" to check k8s deployment resource.
+In this example plugin "k8s-deployment-check" checks k8s deployment resource.
 
 Available plugins are listed on SparrowHub repository - https://sparrowhub.io
 
@@ -157,12 +157,15 @@ Available plugins are listed on SparrowHub repository - https://sparrowhub.io
 
 Tasks might produce artifacts that become visible within other tasks:
 
-
 ## Workers
 
 SparrowCI workers are ephemeral docker alpine instances, that are created
 for every build and then destroyed. If you need more OS support please
 let me know.
+
+Every task is executed in separated environments and does not see other tasks.
+
+Artifacts and tasks output data are mechanism how tasks communicate to each other.
 
 ## Parallel tasks execution
 
@@ -181,15 +184,35 @@ Tasks dependencies are implemented via `depends`/`cleanup` tasks lists.
 if any of  `depends` tasks fail the main, dependent task is not executed and the whole
 scenario terminated.
 
-`depends`/`cleanup` tasks are executed in no particular order and possible on separated hosts.
+`depends`/`cleanup` tasks are executed in no particular order and 
+_potentially_ on separated hosts.
 
 
 ## Subtasks
 
-Documentation - TBD.
+Subtasks allows to split a big task on small pieces (sub tasks) and
+call them as functions:
 
-Subtasks allows to split one huge task by small pieces (sub tasks) and
-call those pieces before a main task is executed
+```yaml
+- tasks:
+  -
+    name: app_test
+    language: Raku
+    main: |
+      for ('http://raku.org', 'https://raku.org') -> $url {
+        run_task http_check, %(
+          url => $url
+        )
+      }
+    subtasks:
+      -
+        name http_check
+        language: Bash
+        code: |
+          curl -f $url
+    code: |
+      say "finshed"
+```
 
 ## Using Programming Languages 
 
