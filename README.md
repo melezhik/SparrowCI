@@ -43,6 +43,7 @@ Create build scenario `sparrow.yaml`:
           name: make_task
           config:
             with_test: true
+      cleanup:
         - 
             name: python_task
             config:
@@ -64,8 +65,8 @@ Create build scenario `sparrow.yaml`:
 ```
 
 This example scenario would execute Bash task and Python task and then 
-execute Raku task. Task dependencies are just DAG and ensured by `depends`
-sections. Task is marked as `default: true` is executed by default when
+execute Raku task. Task dependencies are just DAG and ensured by `depends`/`cleanup`
+sections. Task is marked as `default: true` is executed by first when a 
 scenario gets triggered.
 
 To execute scenario add it to your git repo and assign tasks to SparrowCI service:
@@ -82,6 +83,8 @@ sparrow_ci register # register your git project, this will trigger a new build s
 ```
 
 # Advanced topics
+
+Consider more sophisticated example:
 
 ```yaml
   tasks:
@@ -110,6 +113,8 @@ sparrow_ci register # register your git project, this will trigger a new build s
         in:
           - file.txt 
 ```
+
+## Artifacts
 
 In this example, `parser` task would wait till `make_file` is executed and produce artifact
 for file located at `foo/bar/file.txt`, the artifact will be registered and copied into 
@@ -164,7 +169,19 @@ let me know.
 Tasks could be executed on parallel workers simultaneously for efficiency.
 
 Documentation - TDB
- 
+
+## Dependencies
+
+Tasks dependencies are implemented via `depends`/`cleanup` tasks lists.
+
+`depends`/`cleanup` sections allows to execute tasks before/after a given one.
+
+`cleanup` tasks executed unconditional on main tasks status (success/failure).
+
+if any of  `depends` tasks fail the main, dependent task is not executed and the whole
+scenario terminated.
+
+`depends`/`cleanup` tasks are executed in no particular order and possible on separated hosts.
 
 ## Languages
 
