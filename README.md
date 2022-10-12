@@ -63,8 +63,10 @@ Create build scenario `sparrow.yaml`:
 
 This example scenario would execute Bash task and Python task and then 
 execute Raku task. Task dependencies are just DAG and ensured by `depends`/`cleanup`
-sections. Task is marked as `default: true` is executed by first when a 
-scenario gets triggered.
+sections. 
+
+Task that is marked as `default: true` is executed first when a 
+scenario is triggered.
 
 To execute scenario add it to your git repo and assign tasks to SparrowCI service:
 
