@@ -124,7 +124,7 @@ the central SparrowCI system with  unique name `file.txt`.
 The artifact then will be ready to be consumed for other tasks. The local file
 representing consumed artifact will be located at `.artifacts` folder.
 
-## Sparrow Plugins
+## Sparrow plugins
 
 Sparrow plugins are reusable tasks one can run from within their scenarios:
 
@@ -265,7 +265,7 @@ Default configuration parameters could be overridden by tasks parameters:
             message: "How are you?"
 ```
 
-## Task output data
+## Tasks output data
 
 Task might have output data that is later becomes available
 within _dependent_ task that run this task as a dependency:
@@ -331,7 +331,7 @@ different runs:
 
 Plugins have default and input parameters, as well as states (output data).
 
-## Task checks
+## Tasks checks
 
 Task checks allow to create rules to verify scripts output, it useful when creating
 Bash scripts in quick and dirty way, where there is no convenient way to validate scripts logic:
