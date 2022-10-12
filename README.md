@@ -305,7 +305,7 @@ Other tasks would use `config()` function to access tasks output data:
 
 Plugins have default and input parameters, as well as states (output data).
 
-# Task checks 
+## Task checks 
 
 TBD
 
