@@ -305,6 +305,10 @@ Other tasks would use `config()` function to access tasks output data:
 
 Plugins have default and input parameters, as well as states (output data).
 
+# Task checks 
+
+TBD
+
 # Examples
 
 Here is just short list of some possible scenarios.
@@ -313,9 +317,6 @@ Here is just short list of some possible scenarios.
 
 ```yaml
   tasks:
-    -
-      name: checkout
-      language: Bash
     -  
       name: build
       language: Bash
