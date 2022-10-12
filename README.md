@@ -186,7 +186,10 @@ scenario terminated.
 
 ## Subtasks
 
-Documentation - TBD
+Documentation - TBD.
+
+Subtasks allows to split one huge task by small pieces (sub tasks) and
+call those pieces before a main task is executed
 
 ## Using Programming Languages 
 
