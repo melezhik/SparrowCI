@@ -268,7 +268,7 @@ Default configuration parameters could be overridden by tasks parameters:
 ## Task output data
 
 Task might have output data that is later becomes available
-within other tasks:
+within _dependent_ task that run this task as dependency:
 
 ```yaml
   tasks:
@@ -279,26 +279,50 @@ within other tasks:
       name: ruby_task
       code: |
         update_state(Hash["message", "I code in Ruby"])
-
-```
-
-`update_state()` function accepts HashMap as parameter and available for all programming languages, excepts Bash.
-
-Other tasks would use `config()` function to access tasks output data:
-
-
-```yaml
-  tasks:
     -
       name: raku_task
       language: Raku
-      default: true # start scenario with that task
+      default: true
       depends: 
         - 
           name: ruby_task
       code: |
         say "Hello from Raku";
         my $ruby_task_message = config()<tasks><ruby_task><message>;
+```
+
+`update_state()` function accepts HashMap as parameter and available for all programming languages, excepts Bash.
+
+`config()` function is used to access a task output data.
+
+If the same task executed as a dependency, use task local name to tell output data from
+different runs of the same task:
+
+```yaml
+  tasks:
+    -
+      name: parser
+      language: Ruby
+      default: true
+      name: ruby_task
+      code: |
+        rand_string = (0...8).map { (65 + rand(26)).chr }.join
+        update_state(Hash["random_message", rand_string])
+    -
+      name: raku_task
+      language: Python
+      default: true
+      depends: 
+        - 
+          name: python_task
+          localname: ruby_task1
+        - 
+          name: ruby_task
+          localname: ruby_task2
+      code: |
+        print("Hello from Python")
+        ruby_task1_message = config()['tasks']['ruby_task1']['random_message'];
+        ruby_task2_message = config()['tasks']['ruby_task2']['random_message'];
 ```
 
 ## Plugins parameters and output data
