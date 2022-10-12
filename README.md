@@ -54,9 +54,9 @@ Create build scenario `sparrow.yaml`:
       config:
         foo: bar # default value
       code: |
-        from sparrow6lib import *
         state = config()['tasks']['raku_task']
         print("Hello from Python")
+        
         print(f"I can read output data from other tasks: {state['message']}")
         print(f"named parameter: {config()['foo']}")
 ```
