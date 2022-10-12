@@ -305,9 +305,24 @@ Other tasks would use `config()` function to access tasks output data:
 
 Plugins have default and input parameters, as well as states (output data).
 
-## Task checks 
+## Task checks
 
-TBD
+Task checks allow to create rules to verify scripts output, it useful when creating
+Bash scripts in quick and dirty way, where there is no convebient way to validate scripts logic:
+
+```yaml
+tasks:
+  -
+    name: create-database
+    language: Bash
+    code: |
+      mysql -c "create database foo" -h 127.0.0.1 2>&1
+    check: |
+      database .* exists | created   
+```
+
+Check rules are based on Raku regular expression, follow this link - https://github.com/melezhik/Sparrow6/blob/master/documentation/taskchecks.md
+to know more
 
 # Examples
 
