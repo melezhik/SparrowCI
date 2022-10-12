@@ -308,7 +308,7 @@ Plugins have default and input parameters, as well as states (output data).
 ## Task checks
 
 Task checks allow to create rules to verify scripts output, it useful when creating
-Bash scripts in quick and dirty way, where there is no convebient way to validate scripts logic:
+Bash scripts in quick and dirty way, where there is no convenient way to validate scripts logic:
 
 ```yaml
 tasks:
