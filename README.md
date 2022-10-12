@@ -268,7 +268,7 @@ Default configuration parameters could be overridden by tasks parameters:
 ## Task output data
 
 Task might have output data that is later becomes available
-within _dependent_ task that run this task as dependency:
+within _dependent_ task that run this task as a dependency:
 
 ```yaml
   tasks:
