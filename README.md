@@ -113,11 +113,13 @@ Consider more sophisticated example:
 
 ## Artifacts
 
+Tasks might produce artifacts that become visible within other tasks.
+
 In this example, `parser` task would wait till `make_file` is executed and produce artifact
 for file located at `foo/bar/file.txt`, the artifact will be registered and copied into 
 the central SparrowCI system with  unique name `file.txt`.
 
-The artifact then  will be ready to be consumed for other tasks. The local file
+The artifact then will be ready to be consumed for other tasks. The local file
 representing consumed artifact will be located at `.artifacts` folder.
 
 ## Sparrow Plugins
@@ -149,17 +151,18 @@ In this example plugin "k8s-deployment-check" checks k8s deployment resource.
 
 Available plugins are listed on SparrowHub repository - https://sparrowhub.io
 
-## Artifacts
+## Tasks
 
-Tasks might produce artifacts that become visible within other tasks:
+Tasks are elementry build units. They could be written on various languages
+or executed as external Sparrow plugins.
+
+Every task is executed in separated environments and does not see other tasks.
 
 ## Workers
 
 SparrowCI workers are ephemeral docker alpine instances, that are created
 for every build and then destroyed. If you need more OS support please
 let me know.
-
-Every task is executed in separated environments and does not see other tasks.
 
 Artifacts and tasks output data is mechanism how tasks communicate with each other.
 
