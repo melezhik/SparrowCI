@@ -391,6 +391,7 @@ tasks:
   - 
     name: unit tests
     language: Bash
+    default: true
     depends:
       -
         name: install_python
@@ -403,7 +404,24 @@ tasks:
 
 ## Raku build
 
-TBD
+```yaml
+tasks:
+  -
+    name: unit_tests
+    language: Bash
+    default: true 
+    code: |
+      set -e
+      cd source/
+      zef test .
+    depends: install_deps
+- 
+    name: install_deps
+    plugin: zef
+      config:
+        list: source/
+        options: --deps-only 
+```
 
 ## Golang build
 
