@@ -153,18 +153,20 @@ Available plugins are listed on SparrowHub repository - https://sparrowhub.io
 
 ## Tasks
 
-Tasks are elementry build units. They could be written on various languages
+Tasks are elementary build units. They could be written on various languages
 or executed as external Sparrow plugins.
 
-Every task is executed in separated environments and does not see other tasks.
+Every task is executed in separated environment and does not see other tasks.
+
+Artifacts and tasks output data is mechanism how tasks communicate with each other.
 
 ## Workers
+
+Workers execute tasks.
 
 SparrowCI workers are ephemeral docker alpine instances, that are created
 for every build and then destroyed. If you need more OS support please
 let me know.
-
-Artifacts and tasks output data is mechanism how tasks communicate with each other.
 
 ## Parallel tasks execution
 
