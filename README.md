@@ -324,6 +324,13 @@ tasks:
 Check rules are based on Raku regular expression, follow this link - https://github.com/melezhik/Sparrow6/blob/master/documentation/taskchecks.md
 to know more
 
+# Source code and triggering
+
+Build triggering happens automatically upon any changes in a source code.
+
+The source code is checked out into `./source` local folder.
+
+
 # Examples
 
 Here is just short list of some possible scenarios.
@@ -349,7 +356,24 @@ Here is just short list of some possible scenarios.
 
 ## Python build
 
-TDB
+```yaml
+tasks:
+  -
+    name: install_python
+    # install Python dependencies
+    plugin: sparkyci-package-python
+  - 
+    name: unit tests
+    language: Bash
+    depends:
+      -
+        name: install_python
+    code: |
+      set -e
+      cd source/
+      sudo pip3 install -r requirements.txt
+      pytest
+```
 
 ## Raku build
 
