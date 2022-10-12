@@ -291,12 +291,14 @@ within _dependent_ task that run this task as a dependency:
         my $ruby_task_message = config()<tasks><ruby_task><message>;
 ```
 
-`update_state()` function accepts HashMap as parameter and available for all programming languages, excepts Bash.
+Use `update_state()` function to register task output data.
 
-`config()` function is used to access a task output data.
+The function accepts HashMap as a parameter and available for all programming languages, excepts Bash.
 
-If the same task executed as a dependency, use task local name to tell output data from
-different runs of the same task:
+Use `config()` function to access task's output data within calling task.
+
+If the same dependency  task is more than one time, use task local name to distinguish output data from
+different runs:
 
 ```yaml
   tasks:
