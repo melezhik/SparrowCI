@@ -1,7 +1,6 @@
 # SparrowCI
 
-SparrowCI - superfun and flexible CI system with
-many programming languages support.
+SparrowCI - super fun and flexible CI system with many programming languages support.
 
 # Quick Start
 
@@ -9,11 +8,9 @@ Install SparrowCI
 
 ```bash
 # choose any convenient package manager: 
-
-apk add sparrowci
-apt-get install sparrowci
-yum install sparrowci
-
+sudo apk add sparrowci
+sudo apt-get install sparrowci
+sudo yum install sparrowci
 ```
 
 Create build scenario `sparrow.yaml`:
@@ -152,7 +149,6 @@ In this example plugin "k8s-deployment-check" checks k8s deployment resource.
 
 Available plugins are listed on SparrowHub repository - https://sparrowhub.io
 
-
 ## Artifacts
 
 Tasks might produce artifacts that become visible within other tasks:
@@ -165,7 +161,7 @@ let me know.
 
 Every task is executed in separated environments and does not see other tasks.
 
-Artifacts and tasks output data are mechanism how tasks communicate to each other.
+Artifacts and tasks output data is mechanism how tasks communicate with each other.
 
 ## Parallel tasks execution
 
@@ -306,29 +302,38 @@ Plugins have default and input parameters, as well as states (output data).
 
 Here is just short list of some possible scenarios.
 
-
-## Build rakudo 
+## Make build
 
 ```yaml
   tasks:
     -
       name: checkout
       language: Bash
-      code: |
-        git clone $(config url) scm
     -  
       name: build
       language: Bash
       default: true
-      depends:
-      -
-        name: checkout
-        config:
-          url: https://github.com/rakudo/rakudo.git
+      config:
+        url: https://github.com/rakudo/rakudo.git
       code: |
         set -e
+        git clone $(config url) scm
         cd scm
         perl Configure.pl --gen-moar --gen-nqp --backends=moar
         make
         make install
 ```
+
+## Python build
+
+TDB
+
+## Raku build
+
+TBD
+
+## Golang build
+
+TBD
+
+
