@@ -414,7 +414,9 @@ tasks:
       set -e
       cd source/
       zef test .
-    depends: install_deps
+    depends: 
+      -
+        name: install_deps
 - 
     name: install_deps
     plugin: zef
