@@ -324,7 +324,7 @@ tasks:
 Check rules are based on Raku regular expression, follow this link - https://github.com/melezhik/Sparrow6/blob/master/documentation/taskchecks.md
 to know more
 
-# Source code and triggering
+## Source code and triggering
 
 Build triggering happens automatically upon any changes in a source code.
 
