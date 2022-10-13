@@ -218,7 +218,7 @@ call them as functions:
       say "finshed"
 ```
 
-Subtasks could be nested, when subtask calls another substask, etc. :
+Subtasks could be nested, when one subtask calls another substask, etc. :
 
 ```yaml
 - tasks:
