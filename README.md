@@ -275,7 +275,6 @@ within _dependent_ task that run this task as a dependency:
     -
       name: parser
       language: Ruby
-      default: true
       name: ruby_task
       code: |
         update_state(Hash["message", "I code in Ruby"])
