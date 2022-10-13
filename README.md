@@ -209,7 +209,7 @@ call them as functions:
       }
     subtasks:
       -
-        name http_check
+        name: http_check
         language: Bash
         code: |
           curl -f $url
