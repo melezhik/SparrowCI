@@ -150,7 +150,7 @@ class Pipeline does Sparky::JobApi::Role {
 
         my $task-dir = self!build-task: :$task;
 
-        say "run task [{$task<name>}] | params: {$params.perl}";
+        say "run task [{$task<name>}] | params: {$params.perl} | dir: {$*CWD}/{$task-dir}";
 
         my $state = task-run $task-dir, $params; 
 
@@ -161,7 +161,9 @@ class Pipeline does Sparky::JobApi::Role {
         say "build task [{$task<name>}]";
 
         my $lang = $task<language> || die "task language is not set";
+
         my $task-dir = $base-dir || "tasks/{{$task<name>}}";
+
         directory $task-dir;
 
         # build subtasks recursively
@@ -180,9 +182,9 @@ class Pipeline does Sparky::JobApi::Role {
           ruby => "rb",
         );
 
-        die "unkonwn language $lang" unless %lang-to-ext{$lang}:exists;
+        die "unkonwn language $lang" unless %lang-to-ext{lc($lang)}:exists;
 
-        my $ext = %lang-to-ext{$lang};
+        my $ext = %lang-to-ext{lc($lang)};
 
         "{$task-dir}/task.{$ext}".IO.spurt($task<code>) if $task<code>;
 
