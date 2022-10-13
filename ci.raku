@@ -88,7 +88,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       }
 
-      my $params = $stash<config> || {};
+      my $params = $stash<config> || $task<config> || {};
 
       self!task-run: :$task, :$params;
  
