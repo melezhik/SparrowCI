@@ -88,7 +88,9 @@ class Pipeline does Sparky::JobApi::Role {
 
       }
 
-      self!task-run: :$task;
+      my $params = $stash<config> || {};
+
+      self!task-run: :$task, :$params;
  
       if $task<cleanup> {
 
@@ -144,9 +146,53 @@ class Pipeline does Sparky::JobApi::Role {
 
     }
 
-    method !task-run (:$task) {
+    method !task-run (:$task,:$params = {}) {
 
-        say "run task - to be implemented";
+        my $task-dir = self!build-task: :$task;
+
+        say "run task [{$task<name>}] | params: {$params.perl}";
+
+        my $state = task-run $task-dir, $params; 
+
+    }
+
+    method !build-task (:$task,:$base-dir?) {
+
+        say "build task [{$task<name>}]";
+
+        my $lang = $task<language> || die "task language is not set";
+        my $task-dir = $base-dir || "tasks/{{$task<name>}}";
+        directory $task-dir;
+
+        # build subtasks recursively
+        if $task<subtasks> {
+          for $task<subtasks> -> $st {
+            self!build-task: task => $st, base-dir => "$task-dir/tasks";
+          }
+        }
+
+        my %lang-to-ext = %(
+          raku => "raku",
+          bash => "bash",
+          perl => "pl",
+          powershell => "ps1",
+          python => "py",
+          ruby => "rb",
+        );
+
+        die "unkonwn language $lang" unless %lang-to-ext{$lang}:exists;
+
+        my $ext = %lang-to-ext{$lang};
+
+        "{$task-dir}/task.{$ext}".IO.spurt($task<code>) if $task<code>;
+
+        "{$task-dir}/config.yaml".IO.spurt($task<config>) if $task<config>;
+
+        if $task<init> {
+            "{$task-dir}/hook.{$ext}".IO.spurt($task<init>);
+        }
+
+        return $task-dir;
 
     }
 
