@@ -255,10 +255,10 @@ finished
 
 ## Init blocks
 
-Init blocks allow to write some task initialization code that would be executed 
-before main task code (defined at `code` section ) is executed.
+Init blocks allow to write some task initialization code that will be executed
+before main task code (defined at `code` section).
 
-Main purpose of init blocks is to run subtasks, however one run any code within init block:
+The main purpose of init blocks is to run subtasks, however any code could be used within init block:
 
 ```yaml
 - tasks:
@@ -271,7 +271,7 @@ Main purpose of init blocks is to run subtasks, however one run any code within 
     code: |
       print("main code")
 ```
-Special functions `set_stdout` and `ignore_error` could be used within init blocks to alter
+Special functions - `set_stdout` and `ignore_error` could be used within init blocks to alter
 a task logic:
 
 ```yaml
