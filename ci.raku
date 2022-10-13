@@ -171,7 +171,7 @@ class Pipeline does Sparky::JobApi::Role {
 
         # build subtasks recursively
         if $task<subtasks> {
-          for $task<subtasks> -> $st {
+          for $task<subtasks><> -> $st {
             self!build-task: task => $st, base-dir => "$task-dir/tasks";
           }
         }
