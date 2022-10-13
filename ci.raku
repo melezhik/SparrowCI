@@ -147,13 +147,16 @@ class Pipeline does Sparky::JobApi::Role {
     }
 
     method !task-run (:$task,:$params = {}) {
-
-        my $task-dir = self!build-task: :$task;
-
-        say "run task [{$task<name>}] | params: {$params.perl} | dir: {$*CWD}/{$task-dir}";
-
-        my $state = task-run $task-dir, $params; 
-
+        my $state;
+        if $task<plugin> {
+          say "run task [{$task<name>}] | plugin: {$task<plugin>} | params: {$params.perl}";
+          $state = task-run $task<name>, $task<plugin>, $params; 
+        } else {
+          my $task-dir = self!build-task: :$task;
+          say "run task [{$task<name>}] | params: {$params.perl} | dir: {$*CWD}/{$task-dir}";
+          $state = task-run $task-dir, $params; 
+        }
+        return $state;
     }
 
     method !build-task (:$task,:$base-dir?) {

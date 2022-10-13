@@ -1,0 +1,9 @@
+tasks:
+  -
+    name: python-plugin
+    default: true
+    plugin: python-echo-script
+    config:
+      main:
+        foo: 100
+        bar: 200

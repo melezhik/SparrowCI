@@ -523,4 +523,10 @@ tasks:
 
 TBD
 
+## Another examples
 
+Other examples could be found at [files/examples](files/examples) folder
+
+# Thanks to
+
+God and Jesus Christ who inspires me

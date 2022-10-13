@@ -1,8 +1,10 @@
 use YAMLish;
 
-say "load config from files/example.raku ...";
+my $example-path = "files/examples/plugin.yaml";
 
-my $conf = load-yaml("files/example.raku".IO.slurp());
+say "load config from $example-path ...";
+
+my $conf = load-yaml($example-path.IO.slurp());
 
 say $conf.perl;
 
