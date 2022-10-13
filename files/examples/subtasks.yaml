@@ -1,0 +1,19 @@
+tasks:
+  -
+    name: app_test
+    language: Raku
+    default: true
+    init: |
+      for ('http://raku.org', 'https://raku.org') -> $url {
+        run_task http_check, %(
+          url => $url
+        )
+      }
+    subtasks:
+      -
+        name: http_check
+        language: Bash
+        code: |
+          curl -f $url
+    code: |
+      say "finshed"
