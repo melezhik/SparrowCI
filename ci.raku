@@ -189,12 +189,16 @@ class Pipeline does Sparky::JobApi::Role {
 
         my $ext = %lang-to-ext{lc($lang)};
 
-        "{$task-dir}/task.{$ext}".IO.spurt($task<code>) if $task<code>;
+        "{$task-dir}/task.{$ext}".IO.spurt(
+          ($ext eq "py") ?? "from sparrow6lib import *\n\n{$task<code>}" !! $task<code>
+        ) if $task<code>;
 
         "{$task-dir}/config.raku".IO.spurt($task<config>.perl) if $task<config>;
 
         if $task<init> {
-            "{$task-dir}/hook.{$ext}".IO.spurt($task<init>);
+            "{$task-dir}/hook.{$ext}".IO.spurt(
+              ($ext eq "py") ?? "from sparrow6lib import *\n\n{$task<init>}" !! $task<init>
+            );
         }
 
         return $task-dir;

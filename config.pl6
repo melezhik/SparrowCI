@@ -1,6 +1,6 @@
 use YAMLish;
 
-my $example-path = "files/examples/subtasks.yaml";
+my $example-path = "files/examples/python/subtasks-nested.yaml";
 
 say "load config from $example-path ...";
 

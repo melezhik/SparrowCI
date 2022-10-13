@@ -1,0 +1,10 @@
+tasks:
+  -
+    name: main
+    language: Python
+    default: true
+    init: |
+      ignore_error()
+    code: |
+      raise RuntimeError('something goes wrong') 
+

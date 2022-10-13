@@ -1,0 +1,10 @@
+tasks:
+  -
+    name: main
+    language: Python
+    default: true
+    init: |
+      print("some initialization code")
+    code: |
+      print("main code")
+
