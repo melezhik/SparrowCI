@@ -3,7 +3,7 @@ tasks:
     name: example_task
     language: Bash
     default: true
-    config: |
+    config:
       foo: bar
     code: |
       prefix=$(config prefix)

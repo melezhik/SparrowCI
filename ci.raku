@@ -188,7 +188,7 @@ class Pipeline does Sparky::JobApi::Role {
 
         "{$task-dir}/task.{$ext}".IO.spurt($task<code>) if $task<code>;
 
-        "{$task-dir}/config.yaml".IO.spurt($task<config>) if $task<config>;
+        "{$task-dir}/config.raku".IO.spurt($task<config>.perl) if $task<config>;
 
         if $task<init> {
             "{$task-dir}/hook.{$ext}".IO.spurt($task<init>);
