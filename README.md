@@ -224,6 +224,36 @@ tasks:
       say "finshed"
 ```
 
+The same example could be implemented by Python as well:
+
+```yaml
+tasks:
+  -
+    name: app_test
+    language: Python
+    default: true
+    config:
+      sites:
+        - https://www.python.org
+        - https://python-poetry.org
+        - https://pypi.org/project/pip/
+    init: |
+      for url in config()['sites']:
+        run_task(
+          "http_check",
+          { "url": url }
+        )
+    subtasks:
+      -
+        name: http_check
+        language: Bash
+        code: |
+          echo "check site:" $url
+          curl -fs $url -D - -o /dev/null | head
+    code: |
+      print("finshed")
+```
+
 Subtasks could be nested, when one subtask calls another substask, etc. :
 
 ```yaml

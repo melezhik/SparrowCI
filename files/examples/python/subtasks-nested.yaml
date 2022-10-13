@@ -10,7 +10,10 @@ tasks:
         - https://pypi.org/project/pip/
     init: |
       for url in config()['sites']:
-        run_task("http_check", url=url)
+        run_task(
+          "http_check", 
+          { "url": url }
+        )
     subtasks:
       -
         name: http_check
@@ -19,4 +22,4 @@ tasks:
           echo "check site:" $url
           curl -fs $url -D - -o /dev/null | head
     code: |
-      say "finshed"
+      print("finshed")
