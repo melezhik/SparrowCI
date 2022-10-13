@@ -201,7 +201,8 @@ call them as functions:
   -
     name: app_test
     language: Raku
-    main: |
+    default: true
+    init: |
       for ('http://raku.org', 'https://raku.org') -> $url {
         run_task http_check, %(
           url => $url
@@ -216,6 +217,100 @@ call them as functions:
     code: |
       say "finshed"
 ```
+
+Subtasks could be nested, when subtask calls another substask, etc. :
+
+```yaml
+- tasks:
+  -
+    name: main
+    language: Bash
+    default: true
+    init: |
+      task_run "task1"
+    subtasks:
+      -
+        name: task1
+        language: Bash
+        init: |
+          task_run "task2"
+        code: |
+          echo "task1"
+      -
+        name: task2
+        language: Bash
+        code: |
+          echo "task2"
+    code: |
+      echo "finshed"
+```
+In this example task "main" would call task "task1" first which in turn call task "task2", and 
+resulted output would be:
+
+```
+task2
+task1
+finished
+```
+
+## Init blocks
+
+Init blocks allow to write some task initialization code that would be executed 
+before main task code (defined at `code` section ) is executed.
+
+Main purpose of init blocks is to run subtasks, however one run any code within init block:
+
+```yaml
+- tasks:
+  -
+    name: main
+    language: Python
+    default: true
+    init: |
+      print("some initialization code")
+    code: |
+      print("main code")
+```
+Special functions `set_stdout` and `ignore_error` could be used within init blocks to alter
+a task logic:
+
+```yaml
+- tasks:
+  -
+    name: main
+    language: Python
+    default: true
+    init: |
+      ignore_error()
+    code: |
+      raise RuntimeError('something goes wrong') 
+```
+
+`ignore_error()` function will ignore task failure and execution flow will continue
+
+Read more about `ignore_error()` function on https://github.com/melezhik/Sparrow6/blob/master/documentation/development.md#ignore-task-failures
+
+```yaml
+- tasks:
+  -
+    name: main
+    language: Python
+    default: true
+    init: |
+      set_stdout("hello from init")
+    code: |
+      print("hello from main code")
+```
+
+`set_stdout()` function will send some output to task STDOUT so it'll become visible together
+with main code output, the example above would give this result:
+
+```
+hello from init
+hello from output
+```
+
+Read more about `set_stdout` function on https://github.com/melezhik/Sparrow6/blob/master/documentation/development.md#set-hook-output
 
 ## Using Programming Languages 
 
