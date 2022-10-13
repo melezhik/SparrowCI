@@ -202,9 +202,14 @@ tasks:
     name: app_test
     language: Raku
     default: true
+    config:
+      sites:
+        - http://raku.org
+        - https://raku.org
+        - https://sparrowhub.io
     init: |
-      for ('http://raku.org', 'https://raku.org') -> $url {
-        run_task http_check, %(
+      for config()<sites><> -> $url {
+        run_task "http_check", %(
           url => $url
         )
       }
@@ -213,7 +218,8 @@ tasks:
         name: http_check
         language: Bash
         code: |
-          curl -f $url
+          echo "check site:" $url
+          curl -fs $url | head
     code: |
       say "finshed"
 ```
