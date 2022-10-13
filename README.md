@@ -474,11 +474,33 @@ tasks:
     code: |
       mysql -c "create database foo" -h 127.0.0.1 2>&1
     check: |
-      database .* exists | created   
+      regexp: database .* exists | created   
 ```
 
 Check rules are based on Raku regular expression, follow this link - https://github.com/melezhik/Sparrow6/blob/master/documentation/taskchecks.md
-to know more
+to know more.
+
+Here is another example with Python, which
+checks that strings ("hello from Python" and "you passed foo: bar")
+follow each other.
+
+```yaml
+tasks:
+  -
+    name: example_task
+    language: Python
+    default: true
+    config:
+      foo: bar
+    code: |
+      print("Hello from Python")
+      print(f"you passed foo: {config()['foo']}")
+    check: |
+      being:
+        Hello from Python
+        you passed foo: bar
+      end:
+```
 
 ## Source code and triggering
 

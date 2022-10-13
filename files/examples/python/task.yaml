@@ -1,0 +1,15 @@
+tasks:
+  -
+    name: example_task
+    language: Python
+    default: true
+    config:
+      foo: bar
+    code: |
+      print("Hello from Python")
+      print(f"foo: {config()['foo']}")
+    check: |
+      begin:
+        Hello from Python
+        foo: bar
+      end:

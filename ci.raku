@@ -193,6 +193,8 @@ class Pipeline does Sparky::JobApi::Role {
           ($ext eq "py") ?? "from sparrow6lib import *\n\n{$task<code>}" !! $task<code>
         ) if $task<code>;
 
+        "{$task-dir}/task.check".IO.spurt($task<check>) if $task<check>;
+        
         "{$task-dir}/config.raku".IO.spurt($task<config>.perl) if $task<config>;
 
         if $task<init> {

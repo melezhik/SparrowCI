@@ -4,7 +4,11 @@ tasks:
     language: Python
     default: true
     init: |
-      print("some initialization code")
+      set_stdout("some initialization code")
     code: |
       print("main code")
-
+    check: |
+      begin:
+        some initialization code
+        main code
+      end:
