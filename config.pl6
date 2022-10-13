@@ -1,6 +1,6 @@
 use YAMLish;
 
-my $example-path = "files/examples/plugin.yaml";
+my $example-path = "files/examples/subtasks.raku";
 
 say "load config from $example-path ...";
 

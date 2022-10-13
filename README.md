@@ -197,7 +197,7 @@ Subtasks allows to split a big task on small pieces (sub tasks) and
 call them as functions:
 
 ```yaml
-- tasks:
+tasks:
   -
     name: app_test
     language: Raku
@@ -221,7 +221,7 @@ call them as functions:
 Subtasks could be nested, when one subtask calls another substask, etc. :
 
 ```yaml
-- tasks:
+tasks:
   -
     name: main
     language: Bash
@@ -261,7 +261,7 @@ before main task code (defined at `code` section).
 The main purpose of init blocks is to run subtasks, however any code could be used within init block:
 
 ```yaml
-- tasks:
+tasks:
   -
     name: main
     language: Python
@@ -275,7 +275,7 @@ Special functions - `set_stdout` and `ignore_error` could be used within init bl
 a task logic:
 
 ```yaml
-- tasks:
+tasks:
   -
     name: main
     language: Python
@@ -291,7 +291,7 @@ a task logic:
 Read more about `ignore_error()` function on https://github.com/melezhik/Sparrow6/blob/master/documentation/development.md#ignore-task-failures
 
 ```yaml
-- tasks:
+tasks:
   -
     name: main
     language: Python
