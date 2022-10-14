@@ -472,8 +472,7 @@ you've said: How are you?
 
 ## Tasks output data
 
-Task might have output data that is later becomes available
-within _dependent_ tasks:
+Dependency task might produce output data that is available within _dependent_ tasks:
 
 ```yaml
   tasks:
@@ -498,9 +497,9 @@ Use `update_state()` function to register task output data.
 
 The function accepts HashMap as a parameter and available for all programming languages, excepts Bash.
 
-Use `config()` function to access task's output data:
+Use `config()` function to access dependency task data from dependent task.
 
-If the same task is executed more than once, use local name parameter
+If the same dependency task is executed more than once, use local name parameter
 to distinguish output data from different runs:
 
 ```yaml
@@ -530,7 +529,8 @@ to distinguish output data from different runs:
         ruby_task2_message = config()['tasks']['state']['ruby_task2']['random_message'];
 ```
 
-Output data works the same way for `followup` tasks:
+Output data works the same way for `followup` tasks, to access _parent_ task data
+from followup task use `parent` (instead of `tasks`) key:
 
 ```yaml
 tasks:
@@ -547,7 +547,7 @@ tasks:
     name: followup_task
     language: Python
     code: |
-      print(f"task_main says: {config()['tasks']['state']['task_main']}")
+      print(f"task_main says: {config()['parent']['state']}")
 ```
 
 ## Plugins parameters and output data
