@@ -78,7 +78,9 @@ class Pipeline does Sparky::JobApi::Role {
 
         say ">>> enter depends block: ", $task<depends>.perl;
 
-        my @jobs = self!run-task-dependency($task<depends>);
+        my $tasks = $task<depends>;
+
+        my @jobs = self!run-task-dependency: :$tasks;
 
         say "waiting for dependency tasks have finsihed ...";
 
@@ -108,11 +110,15 @@ class Pipeline does Sparky::JobApi::Role {
 
       $j.put-stash(%( state => $state, task => $task<name> ));
 
+      my $parent-data = $state;
+
       if $task<followup> {
 
         say ">>> enter followup block: ", $task<followup>.perl;
 
-        my @jobs = self!run-task-dependency($task<followup>);
+        my $tasks = $task<followup>;
+
+        my @jobs = self!run-task-dependency: :$tasks, :$tasks-data, :$parent-data;
 
         say "waiting for followup tasks have finsihed ...";
 
@@ -125,7 +131,7 @@ class Pipeline does Sparky::JobApi::Role {
 
     }
 
-    method !run-task-dependency ($tasks) {
+    method !run-task-dependency (:$tasks,:$tasks-data = {},:$parent-data = {}) {
 
       my @jobs;
 
@@ -135,12 +141,22 @@ class Pipeline does Sparky::JobApi::Role {
 
         my $job = self.new-job: :$project;
 
+        my $stash-data = %(
+          config => { }
+        );
+
         say "trigger task [$project] | {$t.perl}";
 
         if $t<config> {
-          say "save job vars ...";    
-          $job.put-stash({ config => $t<config> });
+          say "save job vars ...";
+          $stash-data<config> =  $t<config>   
         }
+
+        $stash-data<parent> = $parent-data;
+
+        $stash-data<tasks> = $tasks-data;
+
+        $job.put-stash: $stash-data;
 
         my $description = "run [d] [{$t<name>}]";;
 
