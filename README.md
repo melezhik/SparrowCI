@@ -373,8 +373,8 @@ To chose a language for underling task just use `language: $language` statement:
 Every task might have some default configuration:
 
 ```yaml
-  name: pwsh_task
-  language: Powershell
+  name: bash_task
+  language: Bash
   config:
     message: Hello
   code: |
@@ -391,9 +391,15 @@ Default configuration parameters could be overridden by tasks parameters:
       default: true
       depends: 
         - 
-          name: pwsh_task
+          name: bash_task
           config:
             message: "How are you?"
+```
+
+This example will produce:
+
+```
+you've said: How are you?
 ```
 
 ## Tasks output data
@@ -404,7 +410,6 @@ within _dependent_ task that run this task as a dependency:
 ```yaml
   tasks:
     -
-      name: parser
       language: Ruby
       name: ruby_task
       code: |
@@ -569,7 +574,7 @@ tasks:
     depends: 
       -
         name: install_deps
-- 
+  - 
     name: install_deps
     plugin: zef
       config:
