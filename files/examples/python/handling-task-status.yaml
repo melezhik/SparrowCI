@@ -1,0 +1,19 @@
+tasks:
+  -
+    name: main_task
+    default: true
+    language: Raku
+    init: |
+      ignore_error()
+    code: |
+      die "I don't feel well";
+      update_state %( status => "OK" )
+    followup:
+      -
+        name: error_handler
+  -
+    name: error_handler
+    language: Python
+    code: |
+      if 'status' not in config()['parent'] or config()['parent']['status'] != "OK":
+        print("handling main task errors ...")

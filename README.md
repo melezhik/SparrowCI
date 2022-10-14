@@ -236,7 +236,12 @@ tasks:
       name: task_A
 ```
 
-Parent task status could be handled within followup tasks: (TBD)
+# Handling tasks statuses
+
+If any task fail the entire scenario will terminate at that point.
+
+It's possible to handle task statuses using `ignore_error()` function and task
+output data:
 
 ```yaml
 tasks:
@@ -248,6 +253,7 @@ tasks:
       ignore_error()
     code: |
       die "I don't feel well";
+      update_state %( status => "OK" )
     followup:
       -
         name: error_handler
@@ -255,8 +261,7 @@ tasks:
     name: error_handler
     language: Python
     code: |
-      main_task_status = config()['parent']['status']
-      if main_task_status != "OK":
+      if 'status' not in config()['parent'] or config()['parent']['status'] != "OK":
         print("handling main task errors ...")
     
 ```
