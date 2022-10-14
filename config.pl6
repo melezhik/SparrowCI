@@ -1,6 +1,6 @@
 use YAMLish;
 
-my $example-path = "files/examples/python/followup-output-data.yaml";
+my $example-path = "files/examples/raku/zef.yaml";
 
 say "load config from $example-path ...";
 

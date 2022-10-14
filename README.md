@@ -681,6 +681,32 @@ TBD
 
 Other examples could be found at [files/examples](files/examples) folder
 
+# Development
+
+1. Install Sparky
+
+2. Setup config.pl6 
+
+Edit config.pl6 file changing `$example-path` variables:
+
+```raku
+my $example-path = "files/examples/raku/zef.yaml";
+```
+
+3. Run
+
+Then run from command line:
+
+```bash
+sparrowdo \
+--color \
+--localhost \
+--no_sudo \
+--with_sparky \
+--sparrowfile ci.raku \
+--desc "sparrowci zef build"
+```
+
 # Thanks to
 
 God and Jesus Christ who inspires me
