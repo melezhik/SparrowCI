@@ -102,7 +102,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $params = $stash<config> || $task<config> || {};
 
-      $params<tasks> = $tasks-data;
+      $params<tasks> = $tasks-data if $tasks-data;
 
       my $state = self!task-run: :$task, :$params;
  
@@ -150,9 +150,9 @@ class Pipeline does Sparky::JobApi::Role {
           $stash-data<config> =  $t<config>   
         }
 
-        $stash-data<config><parent><state> = $parent-data;
+        $stash-data<config><parent><state> = $parent-data if $parent-data;
 
-        $stash-data<config><tasks> = $tasks-data;
+        $stash-data<config><tasks> = $tasks-data if $tasks-data;
 
         $job.put-stash: $stash-data;
 
