@@ -90,15 +90,18 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $params = $stash<config> || $task<config> || {};
 
-      self!task-run: :$task, :$params;
+      my $state = self!task-run: :$task, :$params;
  
-      if $task<cleanup> {
+      # save task state to job's stash
+      $j.put-stash(%( state => $state ));
 
-        say ">>> enter cleanup block: ", $task<cleanup>.perl;
+      if $task<followup> {
 
-        my @jobs = self!run-task-dependency($task<cleanup>);
+        say ">>> enter followup block: ", $task<followup>.perl;
 
-        say "waiting for cleanup tasks have finsihed ...";
+        my @jobs = self!run-task-dependency($task<followup>);
+
+        say "waiting for followup tasks have finsihed ...";
 
         my $st = self.wait-jobs(@jobs,{ timeout => $timeout });
 
@@ -194,7 +197,7 @@ class Pipeline does Sparky::JobApi::Role {
         ) if $task<code>;
 
         "{$task-dir}/task.check".IO.spurt($task<check>) if $task<check>;
-        
+
         "{$task-dir}/config.raku".IO.spurt($task<config>.perl) if $task<config>;
 
         if $task<init> {
@@ -211,5 +214,3 @@ class Pipeline does Sparky::JobApi::Role {
 
 
 Pipeline.new.run;
-
-

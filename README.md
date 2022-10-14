@@ -40,7 +40,7 @@ Create build scenario `sparrow.yaml`:
           name: make_task
           config:
             with_test: true
-      cleanup:
+      followup:
         - 
             name: python_task
             config:
@@ -54,7 +54,7 @@ Create build scenario `sparrow.yaml`:
       config:
         foo: bar # default value
       code: |
-        state = config()['tasks']['raku_task']
+        state = config()['tasks']['state']['raku_task']
         print("Hello from Python")
         
         print(f"I can read output data from other tasks: {state['message']}")
@@ -62,7 +62,7 @@ Create build scenario `sparrow.yaml`:
 ```
 
 This example scenario would execute Bash task and Raku task and then 
-execute Python task. Task dependencies are just DAG and ensured by `depends`/`cleanup`
+execute Python task. Task dependencies are just DAG and ensured by `depends`/`followup`
 sections. 
 
 Task that is marked as `default: true` is executed first when a 
@@ -178,18 +178,11 @@ Documentation - TDB
 
 ## Dependencies
 
-Tasks dependencies are implemented via `depends`/`cleanup` tasks lists.
+Tasks dependencies are implemented via `depends`/`followup` tasks lists.
 
-`depends`/`cleanup` sections allows to execute tasks before/after a given one.
+`depends`/`followup` sections allows to execute tasks before/after a given one.
 
-`cleanup` tasks executed unconditional on main tasks status (success/failure).
-
-if any of  `depends` tasks fail the main, dependent task is not executed and the whole
-scenario terminated.
-
-`depends`/`cleanup` tasks are executed in no particular order and 
-_potentially_ on separated hosts.
-
+`depends`/`followup` tasks are executed in no particular order and _potentially_ on separated hosts.
 
 ## Subtasks
 
@@ -405,7 +398,7 @@ you've said: How are you?
 ## Tasks output data
 
 Task might have output data that is later becomes available
-within _dependent_ task that run this task as a dependency:
+within _dependent_ tasks:
 
 ```yaml
   tasks:
@@ -423,17 +416,17 @@ within _dependent_ task that run this task as a dependency:
           name: ruby_task
       code: |
         say "Hello from Raku";
-        my $ruby_task_message = config()<tasks><ruby_task><message>;
+        my $ruby_task_message = config()<tasks><ruby_task><state><message>;
 ```
 
 Use `update_state()` function to register task output data.
 
 The function accepts HashMap as a parameter and available for all programming languages, excepts Bash.
 
-Use `config()` function to access task's output data within calling task.
+Use `config()` function to access task's output data:
 
-If the same dependency  task is more than one time, use task local name to distinguish output data from
-different runs:
+If the same task is executed more than once, use local name parameter
+to distinguish output data from different runs:
 
 ```yaml
   tasks:
@@ -458,8 +451,8 @@ different runs:
           localname: ruby_task2
       code: |
         print("Hello from Python")
-        ruby_task1_message = config()['tasks']['ruby_task1']['random_message'];
-        ruby_task2_message = config()['tasks']['ruby_task2']['random_message'];
+        ruby_task1_message = config()['tasks']['state']['ruby_task1']['random_message'];
+        ruby_task2_message = config()['tasks']['state']['ruby_task2']['random_message'];
 ```
 
 ## Plugins parameters and output data
