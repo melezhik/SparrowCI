@@ -601,6 +601,8 @@ tasks:
 
 ## Source code and triggering
 
+(TBD)
+
 Build triggering happens automatically upon any changes in a source code.
 
 The source code is checked out into `./source` local folder.
@@ -655,22 +657,18 @@ tasks:
 ```yaml
 tasks:
   -
-    name: unit_tests
+    name: zef-build
     language: Bash
-    default: true 
+    default: true
     code: |
       set -e
+      rm -rf source/
+      git clone $(config url) source
       cd source/
+      zef install --deps-only --/test .
       zef test .
-    depends: 
-      -
-        name: install_deps
-  - 
-    name: install_deps
-    plugin: zef
-      config:
-        list: source/
-        options: --deps-only 
+    config:
+      url: https://github.com/lizmat/App-Rak.git
 ```
 
 ## Golang build
