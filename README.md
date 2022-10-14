@@ -61,8 +61,8 @@ Create build scenario `sparrow.yaml`:
         print(f"named parameter: {config()['foo']}")
 ```
 
-This example scenario would execute Bash task and Python task and then 
-execute Raku task. Task dependencies are just DAG and ensured by `depends`/`cleanup`
+This example scenario would execute Bash task and Raku task and then 
+execute Python task. Task dependencies are just DAG and ensured by `depends`/`cleanup`
 sections. 
 
 Task that is marked as `default: true` is executed first when a 
