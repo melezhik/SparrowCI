@@ -1,6 +1,6 @@
 tasks:
   -
-    name: zef build
+    name: zef-build
     language: Bash
     default: true
     code: |
