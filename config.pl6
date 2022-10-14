@@ -1,6 +1,6 @@
 use YAMLish;
 
-my $example-path = "files/examples/python/task.yaml";
+my $example-path = "files/examples/ruby/output-data.yaml";
 
 say "load config from $example-path ...";
 

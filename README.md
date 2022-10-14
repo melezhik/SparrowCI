@@ -189,19 +189,21 @@ Here are some examples:
 ```yaml
 tasks:
   -
-    name: task_A
-    language: Bash
+    language: Ruby
+    name: ruby_task
     code: |
-      echo "task A" 
+      update_state(Hash["message", "I code in Ruby"])
   -
-    name: task_B
-    language: Bash
+    name: raku_task
+    language: Raku
     default: true
+    depends: 
+      - 
+        name: ruby_task
     code: |
-      echo "task B"
-    depends:
-    -
-      name: task_A
+      say "ruby_task says: {config()<tasks><ruby_task><state><message>}"
+    check: |
+      ruby_task says: I code in Ruby
 ```
 
 Dependencies could be nested, when a dependency has other dependency, so on:

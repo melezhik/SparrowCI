@@ -1,0 +1,17 @@
+tasks:
+  -
+    language: Ruby
+    name: ruby_task
+    code: |
+      update_state(Hash["message", "I code in Ruby"])
+  -
+    name: raku_task
+    language: Raku
+    default: true
+    depends: 
+      - 
+        name: ruby_task
+    code: |
+      say "ruby_task says: {config()<tasks><ruby_task><state><message>}"
+    check: |
+      ruby_task says: I code in Ruby      

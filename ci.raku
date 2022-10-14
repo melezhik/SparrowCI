@@ -72,6 +72,8 @@ class Pipeline does Sparky::JobApi::Role {
 
       say ">>> handle task: ", $task.perl;
 
+      my $tasks-data = %();
+
       if $task<depends> {
 
         say ">>> enter depends block: ", $task<depends>.perl;
@@ -86,14 +88,25 @@ class Pipeline does Sparky::JobApi::Role {
 
         say $st.perl;
 
+        for @jobs -> $dj {
+
+            my $d = $dj.get-stash();
+
+            if $d<task>:exists {
+              $tasks-data{$d<task>}<state> = $d<state>;
+            }
+        }
       }
 
       my $params = $stash<config> || $task<config> || {};
 
+      $params<tasks> = $tasks-data;
+
       my $state = self!task-run: :$task, :$params;
  
       # save task state to job's stash
-      $j.put-stash(%( state => $state ));
+
+      $j.put-stash(%( state => $state, task => $task<name> ));
 
       if $task<followup> {
 
