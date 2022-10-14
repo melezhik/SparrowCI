@@ -1,0 +1,29 @@
+tasks:
+  -
+    name: zef-build-many
+    language: Raku
+    default: true
+    init: |
+      for config()<list><> -> $url {
+        run_task "zef-build", %(
+          url => $url
+        );
+      }
+    config:
+      list: 
+        - https://github.com/lizmat/App-Rak.git
+        - https://github.com/tbrowder/LocalTime.git
+        - https://github.com/jnthn/test-mock.git
+    subtasks:
+      -
+        name: zef-build
+        language: Bash
+        code: |
+          set -e
+          echo "build for $url ..."
+          rm -rf source/
+          git clone $url source
+          cd source/
+          zef install --deps-only --/test .
+          zef test .
+
