@@ -252,8 +252,8 @@ tasks:
     language: Python
     code: |
       main_task_status = config()['tasks']['main_task']['status']
-      if main_task_status != "OK"
-        print("handle main task errors ...")
+      if main_task_status != "OK":
+        print("handling main task errors ...")
     
 ```
 
