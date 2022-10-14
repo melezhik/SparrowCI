@@ -180,9 +180,57 @@ Documentation - TDB
 
 Tasks dependencies are implemented via `depends`/`followup` tasks lists.
 
-`depends`/`followup` sections allows to execute tasks before/after a given one.
+`depends`/`followup` sections allows to execute tasks before/after a main task.
 
 `depends`/`followup` tasks are executed in no particular order and _potentially_ on separated hosts.
+
+Here are some examples:
+
+```yaml
+tasks:
+  -
+    name: task_A
+    language: Bash
+    code: |
+      echo "task A" 
+  -
+    name: task_B
+    language: Bash
+    default: true
+    code: |
+      echo "task B"
+    depends:
+    -
+      name: task_A
+```
+
+Dependencies could be nested, when a dependency has other dependency, so on:
+
+```yaml
+tasks:
+  -
+    name: task_0
+    language: Bash
+    code: |
+      echo "task 0" 
+  -
+    name: task_A
+    language: Bash
+    code: |
+      echo "task A" 
+    depends:
+    -
+      name: task_0
+  -
+    name: task_B
+    language: Bash
+    default: true
+    code: |
+      echo "task B"
+    depends:
+    -
+      name: task_A
+```
 
 ## Subtasks
 
@@ -455,6 +503,26 @@ to distinguish output data from different runs:
         ruby_task2_message = config()['tasks']['state']['ruby_task2']['random_message'];
 ```
 
+Output data works the same way for `followup` tasks:
+
+```yaml
+tasks:
+  -
+    name: task_main
+    default: true
+    language: Perl
+    code: |
+      update_state({ message => "hello from Perl"})
+    followup:
+    -
+      name: followup_task
+  -
+    name: followup_task
+    language: Python
+    code: |
+      print(f"task_main says: {config()['tasks']['state']['task_main']}")
+```
+
 ## Plugins parameters and output data
 
 Plugins have default and input parameters, as well as states (output data).
@@ -505,7 +573,6 @@ tasks:
 Build triggering happens automatically upon any changes in a source code.
 
 The source code is checked out into `./source` local folder.
-
 
 # Examples
 
