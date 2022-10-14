@@ -1,0 +1,17 @@
+tasks:
+  -
+    name: task_main
+    default: true
+    language: Perl
+    code: |
+      update_state({ message => "hello from Perl"})
+    followup:
+    -
+      name: followup_task
+  -
+    name: followup_task
+    language: Python
+    code: |
+      print(f"task_main says: {config()['parent']['state']['message']}")
+    check: |
+      task_main says: hello from Perl

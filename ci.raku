@@ -145,20 +145,20 @@ class Pipeline does Sparky::JobApi::Role {
           config => { }
         );
 
-        say "trigger task [$project] | {$t.perl}";
-
         if $t<config> {
           say "save job vars ...";
           $stash-data<config> =  $t<config>   
         }
 
-        $stash-data<parent> = $parent-data;
+        $stash-data<config><parent><state> = $parent-data;
 
-        $stash-data<tasks> = $tasks-data;
+        $stash-data<config><tasks> = $tasks-data;
 
         $job.put-stash: $stash-data;
 
         my $description = "run [d] [{$t<name>}]";;
+
+        say "trigger task [$project] | {$t.perl} | stash: {$stash-data.perl}";
 
         $job.queue: %(
           description => $description,

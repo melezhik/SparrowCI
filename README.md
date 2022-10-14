@@ -115,6 +115,8 @@ Consider more sophisticated example:
 
 ## Artifacts
 
+(TBD)
+
 Tasks might produce artifacts that become visible within other tasks.
 
 In this example, `parser` task would wait till `make_file` is executed and produce artifact
@@ -172,9 +174,9 @@ let me know.
 
 ## Parallel tasks execution
 
-Tasks could be executed on parallel workers simultaneously for efficiency.
+(TBD)
 
-Documentation - TDB
+Tasks could be executed on parallel workers simultaneously for efficiency.
 
 ## Dependencies
 
@@ -234,7 +236,7 @@ tasks:
       name: task_A
 ```
 
-Dependency task status could be handled within other tasks:
+Parent task status could be handled within followup tasks: (TBD)
 
 ```yaml
 tasks:
@@ -253,7 +255,7 @@ tasks:
     name: error_handler
     language: Python
     code: |
-      main_task_status = config()['tasks']['main_task']['status']
+      main_task_status = config()['parent']['status']
       if main_task_status != "OK":
         print("handling main task errors ...")
     
@@ -547,7 +549,9 @@ tasks:
     name: followup_task
     language: Python
     code: |
-      print(f"task_main says: {config()['parent']['state']}")
+      print(f"task_main says: {config()['parent']['state']['message']}")
+    check: |
+      task_main says: hello from Perl
 ```
 
 ## Plugins parameters and output data
