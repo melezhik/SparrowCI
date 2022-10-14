@@ -232,6 +232,31 @@ tasks:
       name: task_A
 ```
 
+Dependency task status could be handled within other tasks:
+
+```yaml
+tasks:
+  -
+    name: main_task
+    default: true
+    language: Raku
+    init: |
+      ignore_error()
+    code: |
+      die "I don't feel well";
+    followup:
+      -
+        name: error_handler
+  -
+    name: error_handler
+    language: Python
+    code: |
+      main_task_status = config()['tasks']['main_task']['status']
+      if main_task_status != "OK"
+        print("handle main task errors ...")
+    
+```
+
 ## Subtasks
 
 Subtasks allows to split a big task on small pieces (sub tasks) and
