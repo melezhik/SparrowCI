@@ -6,6 +6,8 @@ SparrowCI - super fun and flexible CI system with many programming languages sup
 
 ## Install SparrowCI
 
+(TBD)
+
 ```bash
 # choose any convenient package manager: 
 sudo apk add sparrowci
