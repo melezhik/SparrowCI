@@ -4,7 +4,7 @@ SparrowCI - super fun and flexible CI system with many programming languages sup
 
 # Quick Start
 
-Install SparrowCI
+## Install SparrowCI
 
 ```bash
 # choose any convenient package manager: 
@@ -12,6 +12,8 @@ sudo apk add sparrowci
 sudo apt-get install sparrowci
 sudo yum install sparrowci
 ```
+
+## Create Sparrow pipeline 
 
 Create build scenario `sparrow.yaml`:
 
@@ -62,7 +64,7 @@ Create build scenario `sparrow.yaml`:
 ```
 
 This example scenario would execute Bash task as a _dependency_ for Raku task, the Raku task and then 
-execute followup Python task.
+execute _followup_ Python task.
 
 Task that is marked as `default: true` is entry point for scenario,
 where flows starts.
