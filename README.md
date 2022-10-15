@@ -54,19 +54,18 @@ Create build scenario `sparrow.yaml`:
       config:
         foo: bar # default value
       code: |
-        state = config()['tasks']['state']['raku_task']
+        state = config()['tasks']['raku_task']['state']
         print("Hello from Python")
         
         print(f"I can read output data from other tasks: {state['message']}")
         print(f"named parameter: {config()['foo']}")
 ```
 
-This example scenario would execute Bash task and Raku task and then 
-execute Python task. Task dependencies are just DAG and ensured by `depends`/`followup`
-sections. 
+This example scenario would execute Bash task as a _ dependency_ for Raku task, the Raku task and then 
+execute followup Python task.
 
-Task that is marked as `default: true` is executed first when a 
-scenario is triggered.
+Task that is marked as `default: true` is entry point for scenario,
+where flows starts.
 
 To execute scenario add it to your git repo and assign tasks to SparrowCI service:
 
