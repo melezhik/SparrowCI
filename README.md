@@ -61,7 +61,7 @@ Create build scenario `sparrow.yaml`:
         print(f"named parameter: {config()['foo']}")
 ```
 
-This example scenario would execute Bash task as a _ dependency_ for Raku task, the Raku task and then 
+This example scenario would execute Bash task as a _dependency_ for Raku task, the Raku task and then 
 execute followup Python task.
 
 Task that is marked as `default: true` is entry point for scenario,
