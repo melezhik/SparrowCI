@@ -68,11 +68,10 @@ Create build scenario `sparrow.yaml`:
 This example scenario would execute Bash task as a _dependency_ for Raku task, the Raku task and then 
 execute _followup_ Python task.
 
-Task that is marked as `default: true` is entry point for scenario,
-where flows starts.
+Task that is marked as `default: true` is an entry point for scenario,
+where flow starts.
 
-To execute scenario add it to your git repo and assign tasks to SparrowCI service:
-
+To execute scenario, add it to your git repo and assign tasks to SparrowCI service:
 
 ```bash
 git add sparrow.yaml
