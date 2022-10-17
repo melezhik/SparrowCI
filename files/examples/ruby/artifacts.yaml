@@ -1,0 +1,28 @@
+tasks:
+  -
+    name: make_file
+    language: Bash
+    code: |
+      set -x
+      mkdir -p foo/bar
+      echo "we have" > foo/bar/file.txt
+      echo "some data here" >> foo/bar/file.txt
+    artifacts:
+      out:
+        -
+          name: file.txt
+          path: foo/bar/file.txt
+  - 
+    name: parser
+    language: Ruby
+    default: true
+    depends:
+      -
+        name: make_file
+    code: |
+      File.readlines('.artifacts/file.txt').each do |line|
+        puts(line)
+      end
+    artifacts:
+      in:
+        - file.txt 

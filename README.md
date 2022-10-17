@@ -71,7 +71,7 @@ execute _followup_ Python task.
 Task that is marked as `default: true` is an entry point for scenario,
 where flow starts.
 
-To execute scenario, add it to your git repo and assign tasks to SparrowCI service:
+To execute scenario, add the source to a git repo and trigger build in SparrowCI service:
 
 ```bash
 git add sparrow.yaml
@@ -80,7 +80,6 @@ git push
 
 sparrow_ci login # login into SparrowCI account 
 sparrow_ci register # register your git project, this will trigger a new build soon
-
 ```
 
 # Advanced topics
@@ -88,36 +87,37 @@ sparrow_ci register # register your git project, this will trigger a new build s
 Consider more sophisticated example:
 
 ```yaml
-  tasks:
-    -
-      name: make_file
-      language: Bash
-      code: |
-        mkdir -p foo/bar
-        touch foo/bar/file.txt
-      artifacts:
-        out:
-          -
-            name: file.txt
-            path: foo/bar/file.txt
-    - name: parser
-      language: Ruby
-      default: true
-      depends:
+tasks:
+  -
+    name: make_file
+    language: Bash
+    code: |
+      set -x
+      mkdir -p foo/bar
+      echo "we have" > foo/bar/file.txt
+      echo "some data here" >> foo/bar/file.txt
+    artifacts:
+      out:
+        -
+          name: file.txt
+          path: foo/bar/file.txt
+  - 
+    name: parser
+    language: Ruby
+    default: true
+    depends:
       -
         name: make_file
-      code:
-        File.readlines('.artifacts/file.txt').each do |line|
-          puts(line)
-        end
-      artifacts:
-        in:
-          - file.txt 
+    code: |
+      File.readlines('.artifacts/file.txt').each do |line|
+        puts(line)
+      end
+    artifacts:
+      in:
+        - file.txt 
 ```
 
 ## Artifacts
-
-(TBD)
 
 Tasks might produce artifacts that become visible within other tasks.
 

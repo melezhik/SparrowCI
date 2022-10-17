@@ -104,7 +104,11 @@ class Pipeline does Sparky::JobApi::Role {
 
       $params<tasks> = $tasks-data if $tasks-data;
 
-      my $state = self!task-run: :$task, :$params;
+      my $in-artifacts = $task<artifacts><in>;
+
+      my $out-artifacts = $task<artifacts><out>;
+
+      my $state = self!task-run: :$task, :$params, :$in-artifacts, :$out-artifacts;
  
       # save task state to job's stash
 
@@ -178,8 +182,23 @@ class Pipeline does Sparky::JobApi::Role {
 
     }
 
-    method !task-run (:$task,:$params = {}) {
+    method !task-run (:$task,:$params = {},:$in-artifacts = [],:$out-artifacts = []) {
         my $state;
+
+        if $in-artifacts {
+          my $job = self.new-job: 
+            job-id => $.storage_job_id, 
+            project => $.storage_project, 
+            api => $.storage_api;
+            
+          mkdir ".artifacts";
+
+          for $in-artifacts<> -> $f {
+            say "copy artifact [$f] from storage to .artifacts/";
+            ".artifacts/{$f}".IO.spurt($job.get-file($f),:bin);
+          } 
+        }
+
         if $task<plugin> {
           say "run task [{$task<name>}] | plugin: {$task<plugin>} | params: {$params.perl}";
           $state = task-run $task<name>, $task<plugin>, $params; 
@@ -187,6 +206,16 @@ class Pipeline does Sparky::JobApi::Role {
           my $task-dir = self!build-task: :$task;
           say "run task [{$task<name>}] | params: {$params.perl} | dir: {$*CWD}/{$task-dir}";
           $state = task-run $task-dir, $params; 
+        }
+        if $out-artifacts {
+          my $job = self.new-job: 
+            job-id => $.storage_job_id, 
+            project => $.storage_project, 
+            api => $.storage_api;
+          for $out-artifacts<> -> $f {
+            say "copy artifact [{$f<name>}] to storage";
+            $job.put-file("{$f<path>}",$f<name>);
+          }            
         }
         return $state;
     }
