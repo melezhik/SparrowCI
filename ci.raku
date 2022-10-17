@@ -1,4 +1,6 @@
 use Sparky::JobApi;
+use Sparky;
+use HTTP::Tiny;
 
 class Pipeline does Sparky::JobApi::Role {
 
@@ -10,9 +12,34 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.storage_api = config()<storage> || "http://127.0.0.1:4000";
   
+  method !get-last-build {
+
+    my $dbh = get-dbh();
+
+    my $sth = $dbh.prepare(q:to/STATEMENT/);
+      SELECT 
+        max(ID) AS build_id
+      FROM builds 
+    STATEMENT
+
+    $sth.execute();
+
+    my @rows = $sth.allrows();
+
+    my $build-id = @rows[0][0];
+
+    $sth.finish;
+
+    return $build-id;
+
+  }
   method stage-main {
 
       #say "config: {config().perl}";
+
+      my $dbh = get-dbh();
+
+      my $last-build = self!get-last-build();
 
       my $data = config()<tasks>.grep({.<default>});
 
@@ -47,6 +74,35 @@ class Pipeline does Sparky::JobApi::Role {
       );
 
       my $st = self.wait-job($j,{ timeout => $timeout.Int });
+      
+      my $sth = $dbh.prepare(q:to/STATEMENT/);
+          SELECT * from builds where ID  > ? order by id asc
+      STATEMENT
+
+      $sth.execute: $last-build;
+
+      my @builds = $sth.allrows(:array-of-hash);
+
+      $sth.finish;
+
+      my $st-to-human = %(
+        "-2" => "NA",
+        "-1" => "FAILED",
+        "0" => "RUNNING",
+        "1" => "OK",    
+      );
+
+      for @builds -> $b {
+
+        my $r = HTTP::Tiny.get: "http://127.0.0.1:4000/report/raw/{$b<project>}/{$b<job_id>}";
+
+        my $log = $r<content> ?? $r<content>.decode !! '';
+
+        say "\n[$b<description>] - [{$st-to-human{$b<state>}}] at [$b<dt>]", 
+            "\n================================================================\n",
+            $log;
+
+      }
 
       die $st.perl unless $st<OK> == 1;
 
