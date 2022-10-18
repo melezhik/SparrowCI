@@ -612,6 +612,21 @@ Build triggering happens automatically upon any changes in a source code.
 
 The source code is checked out into `./source` local folder.
 
+Here is an example of building Raku project from the source:
+
+```yaml
+tasks:
+  -
+    name: zef-build
+    language: Bash
+    default: true
+    code: |
+      set -e
+      cd source/
+      zef install --deps-only --/test .
+      zef test .
+```
+
 # Examples
 
 Here is just short list of some possible scenarios.
