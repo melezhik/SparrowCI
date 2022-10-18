@@ -53,7 +53,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $j = self.new-job: :$project;
 
-      say "trigger task: {$task.perl}";
+      say ">>> trigger task: {$task.perl}";
 
       my $storage = self.new-job: api => $.storage_api;  
 
@@ -98,15 +98,17 @@ class Pipeline does Sparky::JobApi::Role {
 
         my $log = $r<content> ?? $r<content>.decode !! '';
 
-        say "\n[$b<description>] - [{$st-to-human{$b<state>}}] at [$b<dt>]", 
-            "\n================================================================\n",
-            $log;
+        say "\n[$b<description>] - [{$st-to-human{$b<state>}}] at [$b<dt>]"; 
+        say "================================================================";
+        for $log.lines.grep({ $_ !~~ /^^ '>>>'/ }) -> $l {
+          say $l;
+        }
 
       }
 
       die $st.perl unless $st<OK> == 1;
 
-      say $st.perl;
+      #say $st.perl;
 
     }
 
@@ -138,13 +140,13 @@ class Pipeline does Sparky::JobApi::Role {
 
         my @jobs = self!run-task-dependency: :$tasks;
 
-        say "waiting for dependency tasks have finsihed ...";
+        say ">>> waiting for dependency tasks have finsihed ...";
 
         my $st = self.wait-jobs(@jobs,{ timeout => $timeout.Int });
 
         die $st.perl unless $st<OK> == @jobs.elems;
 
-        say $st.perl;
+        say ">>> ", $st.perl;
 
         for @jobs -> $dj {
 
@@ -186,7 +188,7 @@ class Pipeline does Sparky::JobApi::Role {
 
         die $st.perl unless $st<OK> == @jobs.elems;
 
-        say $st.perl;
+        say ">>> ", $st.perl;
       }
 
     }
@@ -206,7 +208,7 @@ class Pipeline does Sparky::JobApi::Role {
         );
 
         if $t<config> {
-          say "save job vars ...";
+          say ">>> save job vars ...";
           $stash-data<config> =  $t<config>   
         }
 
@@ -218,7 +220,7 @@ class Pipeline does Sparky::JobApi::Role {
 
         my $description = "run [d] [{$t<name>}]";;
 
-        say "trigger task [$project] | {$t.perl} | stash: {$stash-data.perl}";
+        say ">>> trigger task [$project] | {$t.perl} | stash: {$stash-data.perl}";
 
         $job.queue: %(
           description => $description,
@@ -250,17 +252,17 @@ class Pipeline does Sparky::JobApi::Role {
           mkdir ".artifacts";
 
           for $in-artifacts<> -> $f {
-            say "copy artifact [$f] from storage to .artifacts/";
+            say ">>> copy artifact [$f] from storage to .artifacts/";
             ".artifacts/{$f}".IO.spurt($job.get-file($f),:bin);
           } 
         }
 
         if $task<plugin> {
-          say "run task [{$task<name>}] | plugin: {$task<plugin>} | params: {$params.perl}";
+          say ">>> run task [{$task<name>}] | plugin: {$task<plugin>} | params: {$params.perl}";
           $state = task-run $task<name>, $task<plugin>, $params; 
         } else {
           my $task-dir = self!build-task: :$task;
-          say "run task [{$task<name>}] | params: {$params.perl} | dir: {$*CWD}/{$task-dir}";
+          say ">>> run task [{$task<name>}] | params: {$params.perl} | dir: {$*CWD}/{$task-dir}";
           $state = task-run $task-dir, $params; 
         }
         if $out-artifacts {
@@ -269,7 +271,7 @@ class Pipeline does Sparky::JobApi::Role {
             project => $.storage_project, 
             api => $.storage_api;
           for $out-artifacts<> -> $f {
-            say "copy artifact [{$f<name>}] to storage";
+            say ">>> copy artifact [{$f<name>}] to storage";
             $job.put-file("{$f<path>}",$f<name>);
           }            
         }
@@ -278,13 +280,13 @@ class Pipeline does Sparky::JobApi::Role {
 
     method !build-task (:$task,:$base-dir?) {
 
-        say "build task [{$task<name>}]";
+        say ">>> build task [{$task<name>}]";
 
         my $lang = $task<language> || die "task language is not set";
 
         my $task-dir = $base-dir || "tasks/{{$task<name>}}";
 
-        directory $task-dir;
+        mkdir $task-dir;
 
         # build subtasks recursively
         if $task<subtasks> {
