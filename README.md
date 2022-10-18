@@ -238,7 +238,7 @@ tasks:
       name: task_A
 ```
 
-# Handling tasks statuses
+## Handling tasks statuses
 
 If any task fail the entire scenario will terminate at that point.
 
