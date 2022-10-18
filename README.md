@@ -608,8 +608,6 @@ tasks:
 
 ## Source code and triggering
 
-(TBD)
-
 Build triggering happens automatically upon any changes in a source code.
 
 The source code is checked out into `./source` local folder.

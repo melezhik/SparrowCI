@@ -6,12 +6,26 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.task = tags()<task> || "";
 
+  has Str $.project = %*ENV<PROJECT> || "TeddyBear";
+
+  has Str $.worker = %*ENV<WORKER> || tags()<worker> || "";
+
+  has Str $.scm = %*ENV<SCM> || 'git@github.com:melezhik/rakudist-teddy-bear.git';
+
+  has Str $.source_dir = tags()<source_dir> || "";
+
   has Str $.storage_project = tags()<storage_project> || "";
 
   has Str $.storage_job_id = tags()<storage_job_id> || "";
 
   has Str $.storage_api = config()<storage> || "http://127.0.0.1:4000";
   
+  has Str $.notify-api = %*ENV<NOTIFY_API> || "http://127.0.0.1:4000";
+
+  has Str $.notify-project = %*ENV<NOTIFY_PROJECT> || "SparrowCINotify";
+
+  has Str $.notify-job = %*ENV<NOTIFY_JOB> || "foobarbaz";
+
   method !get-last-build {
 
     my $dbh = get-dbh();
@@ -36,6 +50,17 @@ class Pipeline does Sparky::JobApi::Role {
   method stage-main {
 
       #say "config: {config().perl}";
+
+      directory "source";
+      
+      git-scm $.scm, %(
+        to => "source",
+        branch => "HEAD",
+      );
+
+      my $git-data = task-run "git data", "git-commit-data", %(
+        dir => "{$*CWD}/source",
+      );
 
       my $dbh = get-dbh();
 
@@ -70,6 +95,7 @@ class Pipeline does Sparky::JobApi::Role {
           task => $task<name>,
           storage_project => %storage<project>,
           storage_job_id => %storage<job-id>,
+          source_dir => "{$*CWD}",
         ),
       );
 
@@ -92,6 +118,8 @@ class Pipeline does Sparky::JobApi::Role {
         "1" => "OK",    
       );
 
+      my @logs;
+
       for @builds -> $b {
 
         my $r = HTTP::Tiny.get: "http://127.0.0.1:4000/report/raw/{$b<project>}/{$b<job_id>}";
@@ -102,13 +130,54 @@ class Pipeline does Sparky::JobApi::Role {
         say "================================================================";
         for $log.lines.grep({ $_ !~~ /^^ '>>>'/ }) -> $l {
           say $l;
+          @logs.push: $l;
         }
 
       }
 
-      die $st.perl unless $st<OK> == 1;
+      # notify job
+      my $nj = self.new-job:
+        :api($.notify-api),
+        :project($.notify-project),
+        :job-id($.notify-job);
+
+      $nj.put-stash({ 
+        status => ( $st<OK> ?? "OK" !! ( $st<TIMEOUT> ?? "TIMEOUT" !! ($st<FAIL> ?? "FAIL" !! "NA") ) ), 
+        logs => @logs, 
+        git-data => $git-data,
+      });  
+
+      $nj.queue({
+        description => "{$.project} - build report",
+        tags => %(
+          stage => "notify",
+          worker => $.worker,
+        ),
+      });
+
+      #die $st.perl unless $st<OK> == 1;
 
       #say $st.perl;
+
+    }
+
+    method stage-notify {
+
+      my $nj = self.new-job: :mine(True);
+
+      my $report = $nj.get-stash();
+
+      say "=========================";
+
+      say "status: ", $report<status>;
+
+      say "log: ", (join "\n", $report<logs><>);
+
+      bash "az container delete -g sparky2 --name {$.worker} -y -o table || echo", %(
+        description => "delete container";
+      ) if $.worker;
+
+      die unless $report<status> eq "OK";
 
     }
 
@@ -227,6 +296,7 @@ class Pipeline does Sparky::JobApi::Role {
           tags => %(
             stage => "run",
             task => $t<name>,
+            source_dir => $.source_dir,
             storage_project => $.storage_project,
             storage_job_id => $.storage_job_id,
           ),
@@ -241,7 +311,12 @@ class Pipeline does Sparky::JobApi::Role {
     }
 
     method !task-run (:$task,:$params = {},:$in-artifacts = [],:$out-artifacts = []) {
+
         my $state;
+
+        say ">>> chdir to source_dir: {$.source_dir}";
+
+        chdir $.source_dir;
 
         if $in-artifacts {
           my $job = self.new-job: 
