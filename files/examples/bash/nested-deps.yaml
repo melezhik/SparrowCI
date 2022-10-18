@@ -1,0 +1,23 @@
+tasks:
+  -
+    name: task_0
+    language: Bash
+    code: |
+      echo "task 0" 
+  -
+    name: task_A
+    language: Bash
+    code: |
+      echo "task A" 
+    depends:
+    -
+      name: task_0
+  -
+    name: task_B
+    language: Bash
+    default: true
+    code: |
+      echo "task B"
+    depends:
+    -
+      name: task_A

@@ -1,6 +1,6 @@
 use YAMLish;
 
-my $example-path = "files/examples/raku/zef-scm.yaml";
+my $example-path = "files/examples/bash/nested-deps.yaml";
 
 say "load config from $example-path ...";
 
