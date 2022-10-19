@@ -17,9 +17,9 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.source_dir = tags()<source_dir> || "";
 
-  has Str $.storage_project = tags()<storage_project> || "";
+  has Str $.storage_project is default(tags()<storage_project> || "") is rw;
 
-  has Str $.storage_job_id = tags()<storage_job_id> || "";
+  has Str $.storage_job_id is default(tags()<storage_job_id> || "") is rw;
 
   has Str $.storage_api = "http://127.0.0.1:4000";
   
