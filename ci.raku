@@ -187,7 +187,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $description = "run [{$task<name>}]";
 
-      my $timeout = 600;
+      my $timeout = 1100;
 
       $j.queue: %(
         description => $description,
