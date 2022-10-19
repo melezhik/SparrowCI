@@ -65,6 +65,30 @@ class Pipeline does Sparky::JobApi::Role {
     load-yaml(self!get-storage-api.get-file("sparrow.yaml",:text));
   }
   
+  method !get-notify-job {
+
+    self.new-job:
+      :api($.notify-api),
+      :project($.notify-project),
+      :job-id($.notify-job);
+
+  }
+
+  method !queue-notify-job(:$stash) {
+
+    my $nj = self!get-notify-job();
+
+    $nj.put-stash: $stash;
+
+    $nj.queue({
+      description => "{$.project} - build report",
+      tags => %(
+        stage => "notify",
+        worker => $.worker,
+      ),
+    });
+
+  }
 
   method stage-main {
 
@@ -93,22 +117,12 @@ class Pipeline does Sparky::JobApi::Role {
       } else {
         say ">>> copy source/sparrow.yaml to remote storage";
         unless "source/sparrow.yaml".IO ~~ :e {
-          my $nj = self.new-job:
-              :api($.notify-api),
-              :project($.notify-project),
-              :job-id($.notify-job);
-          $nj.put-stash({ 
+          my $stash = %(
             status => "FAIL", 
             log => "sparrow.yaml not found", 
             git-data => $git-data,
-          }); 
-          $nj.queue({
-            description => "{$.project} - build report",
-            tags => %(
-              stage => "notify",
-              worker => $.worker,
-            ),
-          });
+          );
+          self!queue-notify-job: :$stash;
           die "sparrow.yaml file not found"; 
         }
         self!get-storage-api().put-file("source/sparrow.yaml","sparrow.yaml");
@@ -124,16 +138,13 @@ class Pipeline does Sparky::JobApi::Role {
         CATCH { 
           when X::AdHoc {
             my $err-message = .message;  
-            my $nj = self.new-job:
-              :api($.notify-api),
-              :project($.notify-project),
-              :job-id($.notify-job);
-            $nj.put-stash({ 
+            my $stash = %(
               status => "FAIL", 
               log => $err-message, 
               git-data => $git-data,
               sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
-            });
+            );
+            self!queue-notify-job: :$stash;
             die $err-message;  
           }  
         } 
@@ -144,10 +155,27 @@ class Pipeline does Sparky::JobApi::Role {
       my $last-build = self!get-last-build();
 
       my $data = $tasks-config<tasks>.grep({.<default>});
+      unless $data {
+        my $stash = %(
+          status => "FAIL", 
+          log => "default task is not found", 
+          git-data => $git-data,
+          sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
+        );
+        self!queue-notify-job: :$stash;
+        die "default task is not found";
+      }
 
-      die "default task is not found" unless $data;
-
-      die "default task - too many found" if $data.elems > 1;
+      if $data.elems > 1 {
+        my $stash = %(
+          status => "FAIL", 
+          log => "default task - too many found", 
+          git-data => $git-data,
+          sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
+        );
+        self!queue-notify-job: :$stash;
+        die "default task - too many found";
+      }
 
       my $task = $data[0];
 
