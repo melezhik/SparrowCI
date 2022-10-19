@@ -659,7 +659,7 @@ tasks:
     # install Python dependencies
     plugin: sparkyci-package-python
   - 
-    name: unit tests
+    name: unit_tests
     language: Bash
     default: true
     depends:
