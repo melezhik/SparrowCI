@@ -63,12 +63,10 @@ class Pipeline does Sparky::JobApi::Role {
   method !tasks-config {
     say ">>> load sparrow.yaml from storage";
     load-yaml(self!get-storage-api.get-file("sparrow.yaml",:text));
-  } 
+  }
   
-  
-  method stage-main {
 
-      #say "config: {self!tasks-config().perl}";
+  method stage-main {
 
       my $storage = self.new-job: api => $.storage_api;  
 
@@ -90,7 +88,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       if $.tasks_config {
         say ">>> copy {$.tasks_config} to remote storage";
-        die "$.tasks_config} file not found" unless $.tasks_config.IO ~~ :e;
+        die "{$.tasks_config} file not found" unless $.tasks_config.IO ~~ :e;
         self!get-storage-api().put-file($.tasks_config,"sparrow.yaml");
       } else {
         say ">>> copy source/sparrow.yaml to remote storage";
@@ -116,11 +114,36 @@ class Pipeline does Sparky::JobApi::Role {
         self!get-storage-api().put-file("source/sparrow.yaml","sparrow.yaml");
       }
 
+      my $tasks-config;
+
+      try {
+        # check is tasks-confg is a valid YAML
+
+        $tasks-config = self!tasks-config;
+
+        CATCH { 
+          when X::AdHoc {
+            my $err-message = .message;  
+            my $nj = self.new-job:
+              :api($.notify-api),
+              :project($.notify-project),
+              :job-id($.notify-job);
+            $nj.put-stash({ 
+              status => "FAIL", 
+              log => $err-message, 
+              git-data => $git-data,
+              sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
+            });
+            die $err-message;  
+          }  
+        } 
+      }
+
       my $dbh = get-dbh();
 
       my $last-build = self!get-last-build();
 
-      my $data = self!tasks-config()<tasks>.grep({.<default>});
+      my $data = $tasks-config<tasks>.grep({.<default>});
 
       die "default task is not found" unless $data;
 
@@ -195,6 +218,8 @@ class Pipeline does Sparky::JobApi::Role {
         status => ( $st<OK> ?? "OK" !! ( $st<TIMEOUT> ?? "TIMEOUT" !! ($st<FAIL> ?? "FAIL" !! "NA") ) ), 
         log => @logs.join("\n"), 
         git-data => $git-data,
+        sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
+
       });  
 
       $nj.queue({
