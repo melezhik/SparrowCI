@@ -101,7 +101,7 @@ class Pipeline does Sparky::JobApi::Role {
               :job-id($.notify-job);
           $nj.put-stash({ 
             status => "FAIL", 
-            logs => ["sparrow.yaml not found"], 
+            log => "sparrow.yaml not found", 
             git-data => $git-data,
           }); 
           $nj.queue({
@@ -193,7 +193,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       $nj.put-stash({ 
         status => ( $st<OK> ?? "OK" !! ( $st<TIMEOUT> ?? "TIMEOUT" !! ($st<FAIL> ?? "FAIL" !! "NA") ) ), 
-        logs => @logs, 
+        log => @logs.join("\n"), 
         git-data => $git-data,
       });  
 
@@ -221,7 +221,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       say "status: ", $report<status>;
 
-      say "log: ", (join "\n", $report<logs><>);
+      say "log: ", $report<log>;
 
       bash "az container delete -g sparky2 --name {$.worker} -y -o table || echo", %(
         description => "delete container";
