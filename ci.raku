@@ -1,10 +1,13 @@
 use Sparky::JobApi;
 use Sparky;
 use HTTP::Tiny;
+use YAMLish;
 
 class Pipeline does Sparky::JobApi::Role {
 
   has Str $.task = tags()<task> || "";
+
+  has Str $.tasks_config = tags()<tasks_config> || "";
 
   has Str $.project = %*ENV<PROJECT> || "TeddyBear";
 
@@ -18,7 +21,7 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.storage_job_id = tags()<storage_job_id> || "";
 
-  has Str $.storage_api = config()<storage> || "http://127.0.0.1:4000";
+  has Str $.storage_api = "http://127.0.0.1:4000";
   
   has Str $.notify-api = %*ENV<NOTIFY_API> || "http://127.0.0.1:4000";
 
@@ -47,9 +50,31 @@ class Pipeline does Sparky::JobApi::Role {
     return $build-id;
 
   }
+
+  method !get-storage-api {
+
+    return self.new-job: 
+      job-id => $.storage_job_id, 
+      project => $.storage_project, 
+      api => $.storage_api;
+
+  }
+
+  method !tasks-config {
+    say ">>> load sparrow.yaml from storage";
+    load-yaml(self!get-storage-api.get-file("sparrow.yaml",:text));
+  } 
+  
   method stage-main {
 
-      #say "config: {config().perl}";
+      #say "config: {self!tasks-config().perl}";
+
+      my $storage = self.new-job: api => $.storage_api;  
+
+      my %storage = $storage.info();
+
+      $.storage_project = %storage<project>;
+      $.storage_job_id = %storage<job-id>;
 
       directory "source";
       
@@ -62,11 +87,20 @@ class Pipeline does Sparky::JobApi::Role {
         dir => "{$*CWD}/source",
       );
 
+      if $.tasks_config {
+        say ">>> copy {$.tasks_config} to remote storage";
+        self!get-storage-api().put-file($.tasks_config,"sparrow.yaml");
+      } else {
+        die "sparrow.yaml not found" unless "source/sparrow.yaml".IO ~~ :e;
+        say ">>> copy source/sparrow.yaml to remote storage";
+        self!get-storage-api().put-file("source/sparrow.yaml","sparrow.yaml");
+      }
+
       my $dbh = get-dbh();
 
       my $last-build = self!get-last-build();
 
-      my $data = config()<tasks>.grep({.<default>});
+      my $data = self!tasks-config()<tasks>.grep({.<default>});
 
       die "default task is not found" unless $data;
 
@@ -80,10 +114,6 @@ class Pipeline does Sparky::JobApi::Role {
 
       say ">>> trigger task: {$task.perl}";
 
-      my $storage = self.new-job: api => $.storage_api;  
-
-      my %storage = $storage.info();
-
       my $description = "run [{$task<name>}]";
 
       my $timeout = 600;
@@ -93,8 +123,8 @@ class Pipeline does Sparky::JobApi::Role {
         tags => %(
           stage => "run",
           task => $task<name>,
-          storage_project => %storage<project>,
-          storage_job_id => %storage<job-id>,
+          storage_project => $.storage_project,
+          storage_job_id => $.storage_job_id,
           source_dir => "{$*CWD}",
         ),
       );
@@ -187,7 +217,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $stash = $j.get-stash();
 
-      my $data = config()<tasks>.grep({.<name> eq $.task});
+      my $data = self!tasks-config()<tasks>.grep({.<name> eq $.task});
 
       die "task {$.task} is not found" unless $data;
 
@@ -319,11 +349,9 @@ class Pipeline does Sparky::JobApi::Role {
         chdir $.source_dir;
 
         if $in-artifacts {
-          my $job = self.new-job: 
-            job-id => $.storage_job_id, 
-            project => $.storage_project, 
-            api => $.storage_api;
-            
+
+          my $job = self!get-storage-api();
+
           mkdir ".artifacts";
 
           for $in-artifacts<> -> $f {
@@ -341,10 +369,7 @@ class Pipeline does Sparky::JobApi::Role {
           $state = task-run $task-dir, $params; 
         }
         if $out-artifacts {
-          my $job = self.new-job: 
-            job-id => $.storage_job_id, 
-            project => $.storage_project, 
-            api => $.storage_api;
+          my $job = self!get-storage-api();
           for $out-artifacts<> -> $f {
             say ">>> copy artifact [{$f<name>}] to storage";
             $job.put-file("{$f<path>}",$f<name>);

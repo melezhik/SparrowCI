@@ -703,15 +703,7 @@ Other examples could be found at [files/examples](files/examples) folder
 
 1. Install Sparky
 
-2. Setup config.pl6 
-
-Edit config.pl6 file changing `$example-path` variables:
-
-```raku
-my $example-path = "files/examples/raku/zef.yaml";
-```
-
-3. Run
+2. Run example
 
 Then run from command line:
 
@@ -722,7 +714,8 @@ sparrowdo \
 --no_sudo \
 --with_sparky \
 --sparrowfile ci.raku \
---desc "sparrowci zef build"
+--tags tasks_config=$PWD/files/examples/python/task.yaml \
+--desc "sparrowci python example"
 ```
 
 # Thanks to
