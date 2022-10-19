@@ -65,6 +65,7 @@ class Pipeline does Sparky::JobApi::Role {
     load-yaml(self!get-storage-api.get-file("sparrow.yaml",:text));
   } 
   
+  
   method stage-main {
 
       #say "config: {self!tasks-config().perl}";
@@ -89,11 +90,29 @@ class Pipeline does Sparky::JobApi::Role {
 
       if $.tasks_config {
         say ">>> copy {$.tasks_config} to remote storage";
-        die "{$.tasks_config} file not found" unless $.tasks_config.IO ~~ :e;
-      self!get-storage-api().put-file($.tasks_config,"sparrow.yaml");
+        die "$.tasks_config} file not found" unless $.tasks_config.IO ~~ :e;
+        self!get-storage-api().put-file($.tasks_config,"sparrow.yaml");
       } else {
         say ">>> copy source/sparrow.yaml to remote storage";
-        die "sparrow.yaml file not found" unless "source/sparrow.yaml".IO ~~ :e;
+        unless "source/sparrow.yaml".IO ~~ :e {
+          my $nj = self.new-job:
+              :api($.notify-api),
+              :project($.notify-project),
+              :job-id($.notify-job);
+          $nj.put-stash({ 
+            status => "FAIL", 
+            logs => ["sparrowfile.yaml not found"], 
+            git-data => $git-data,
+          }); 
+          $nj.queue({
+            description => "{$.project} - build report",
+            tags => %(
+              stage => "notify",
+              worker => $.worker,
+            ),
+          });
+          die "sparrow.yaml file not found"; 
+        }
         self!get-storage-api().put-file("source/sparrow.yaml","sparrow.yaml");
       }
 
