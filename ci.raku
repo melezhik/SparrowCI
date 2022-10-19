@@ -101,7 +101,7 @@ class Pipeline does Sparky::JobApi::Role {
               :job-id($.notify-job);
           $nj.put-stash({ 
             status => "FAIL", 
-            logs => ["sparrowfile.yaml not found"], 
+            logs => ["sparrow.yaml not found"], 
             git-data => $git-data,
           }); 
           $nj.queue({
