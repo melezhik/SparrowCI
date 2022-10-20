@@ -723,7 +723,6 @@ tasks:
 
 ## Ruby build
 
-
 ```yaml
 tasks:
   -
