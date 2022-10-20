@@ -331,6 +331,25 @@ tasks:
       print("finshed")
 ```
 
+To access sub tasks parameters in none Bash languages use `task_var()` function:
+
+```yaml
+tasks:
+  -
+    name: task_main
+    language: Python
+    default: true
+    init: |
+      task_run("subtask_1",{ "param": "OK" } )
+    subtasks:
+      -
+        name: subtask_1
+        language: Python
+        code: |
+          print(f"param passed: {task_var('param')}")
+
+```
+
 Subtasks could be nested, when one subtask calls another substask, etc. :
 
 ```yaml
@@ -357,6 +376,7 @@ tasks:
     code: |
       echo "finshed"
 ```
+
 In this example task "main" would call task "task1" first which in turn call task "task2", and 
 resulted output would be:
 
@@ -365,6 +385,8 @@ task2
 task1
 finished
 ```
+
+Read more about tasks at https://github.com/melezhik/Sparrow6/blob/master/documentation/development.md#subtasks
 
 ## Init blocks
 
@@ -401,7 +423,7 @@ tasks:
 
 `ignore_error()` function will ignore task failure and execution flow will continue
 
-Read more about `ignore_error()` function on https://github.com/melezhik/Sparrow6/blob/master/documentation/development.md#ignore-task-failures
+Read more about `ignore_error()` function at https://github.com/melezhik/Sparrow6/blob/master/documentation/development.md#ignore-task-failures
 
 ```yaml
 tasks:
