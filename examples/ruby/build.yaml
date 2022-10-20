@@ -5,8 +5,8 @@ tasks:
     default: true
     code: |
       set -e
-      cd source 
-      bundle install
+      cd source
+      sudo bundle install
       bundle exec rake
     default: true
     depends:
@@ -16,4 +16,4 @@ tasks:
     name: install-ruby
     language: Bash
     code: |
-      sudo apk add ruby-bundler ruby-rake
+      sudo apk add ruby-dev ruby-bundler ruby-rake zlib

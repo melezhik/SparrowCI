@@ -708,7 +708,6 @@ tasks:
   language: Bash
   code: |
     set -e
-    export PATH=go/go/bin:$PATH
     go version
     cd source 
     make test COVERAGE_DIR=/tmp/coverage
@@ -719,15 +718,7 @@ tasks:
  -
     name: install-go
     language: Bash
-    code: |
-      set -e
-      wget -q https://golang.org/dl/go1.17.2.linux-amd64.tar.gz
-      mkdir -p go
-      tar -C go -xzf go1.17.2.linux-amd64.tar.gz
-      ls -l go/
-      export PATH=go/go/bin:$PATH
-      which go
-      go version
+    code: sudo apk add go
 ```
 
 ## Ruby build
@@ -742,22 +733,22 @@ tasks:
     code: |
       set -e
       cd source
-      bundle install
+      sudo bundle install
       bundle exec rake
     default: true
     depends:
       - 
-        name: install-ruby-deps
+        name: install-ruby
   -
-    name: install-ruby-deps
+    name: install-ruby
     language: Bash
     code: |
-      sudo apk add ruby-bundler ruby-rake
+      sudo apk add ruby-dev ruby-bundler ruby-rake zlib
 ```
 
 ## Another examples
 
-Other examples could be found at [files/examples](files/examples) folder
+Other examples could be found at [examples](examples) folder
 
 # Development
 
