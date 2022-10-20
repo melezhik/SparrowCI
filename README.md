@@ -87,6 +87,10 @@ tasks:
         - file.txt 
 ```
 
+## Default task
+
+SparrowCI pipeline should have one task, marked as default ( `default: true` flag ), scenario would start execution from the default task.
+
 ## Artifacts
 
 Tasks might produce artifacts that become visible within other tasks.
