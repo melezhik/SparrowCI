@@ -5,7 +5,8 @@ tasks:
     default: true
     code: |
       set -e
-      cd source
+      cd source 
+      bundle install
       bundle exec rake
     default: true
     depends:

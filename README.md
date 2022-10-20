@@ -708,7 +708,7 @@ tasks:
   language: Bash
   code: |
     set -e
-    export PATH=go/bin:$PATH
+    export PATH=go/go/bin:$PATH
     go version
     cd source 
     make test COVERAGE_DIR=/tmp/coverage
@@ -725,7 +725,7 @@ tasks:
       mkdir -p go
       tar -C go -xzf go1.17.2.linux-amd64.tar.gz
       ls -l go/
-      export PATH=go/bin:$PATH
+      export PATH=go/go/bin:$PATH
       which go
       go version
 ```
@@ -742,6 +742,7 @@ tasks:
     code: |
       set -e
       cd source
+      bundle install
       bundle exec rake
     default: true
     depends:
