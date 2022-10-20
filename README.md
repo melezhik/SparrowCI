@@ -9,58 +9,32 @@ SparrowCI - super fun and flexible CI system with many programming languages sup
 Create a build scenario `sparrow.yaml`:
 
 ```yaml
+- 
   tasks:
     -
-      name: make_task
-      language: Bash
-      config:
-        prefix: ~/
-        with_test: false
-      code: |
-        prefix=$(config prefix)
-        make
-        if test $(config with_test) = "true"; then
-          make test
-        fi
-        sudo make install --prefix=$prefix
-        echo "Hello from Bash"
-    -
-      name: raku_task
-      language: Raku
-      default: true # start scenario with that task
-      depends: 
-        - 
-          name: make_task
-          config:
-            with_test: true
-      followup:
-        - 
-            name: python_task
-            config:
-              foo: baz
-      code: |
-        say "Hello from Raku";
-        update_state %( message => "OK" );
-    -
-      name: python_task
+      name: main_task
       language: Python
-      config:
-        foo: bar # default value
+      default: true
       code: |
-        state = config()['tasks']['raku_task']['state']
-        print("Hello from Python")
-        
-        print(f"I can read output data from other tasks: {state['message']}")
-        print(f"named parameter: {config()['foo']}")
+        print("hello from Python")
+      depends:
+        - 
+          name: install-python
+    -
+      name: install-python
+      language: Bash
+      code: |
+       sudo apk apk add --no-cache python3 py3-pip    
 ```
 
-This example scenario would execute Bash task as a _dependency_ for Raku task, the Raku task and then 
-execute _followup_ Python task.
+In this simple example task "main" would execute some Python, to make it sure we have a Python in runtime, 
+dependency task "install-python" is executed. 
 
-Task that is marked as `default: true` is an entry point for scenario,
-where flow starts.
+That's simple!
 
-To execute scenario, add the source to a git repo and trigger build in SparrowCI service:
+This example illustrates the core idea bihind SparrowCI pipeline - to have a **collection of dependent tasks** (DAG) that executed in **particular order**.
+
+To automatically trigger builds add pipeline source to a git repo:
 
 ```bash
 git add sparrow.yaml
