@@ -722,8 +722,11 @@ tasks:
     code: |
       set -e
       wget -q https://golang.org/dl/go1.17.2.linux-amd64.tar.gz
-      tar -xzf go1.17.2.linux-amd64.tar.gz
+      mkdir -p go
+      tar -C go -xzf go1.17.2.linux-amd64.tar.gz
+      ls -l go/
       export PATH=go/bin:$PATH
+      which go
       go version
 ```
 
