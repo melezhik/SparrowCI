@@ -655,21 +655,24 @@ Here is just short list of some possible scenarios.
 ```yaml
 tasks:
   -
-    name: install_python
-    # install Python dependencies
-    plugin: sparkyci-package-python
+   name: install-python
+   plugin: sparkyci-package-python
+  -
+   name: install-deps
+   language: Bash
+   code: |
+      pip install -e .[develop]
+   depends:
+    -
+      name: install-python
   - 
-    name: unit_tests
-    language: Bash
-    default: true
-    depends:
-      -
-        name: install_python
-    code: |
-      set -e
-      cd source/
-      sudo pip3 install -r requirements.txt
-      pytest
+   name: unit-tests
+   default: true
+   language: Bash
+   code: pytest
+   depends:
+    -
+      name: install-deps
 ```
 
 ## Raku build
@@ -693,7 +696,31 @@ tasks:
 
 ## Golang build
 
-TBD
+```yaml
+tasks:
+ - 
+  name: unit_test
+  language: Bash
+  code: |
+    set -e
+    export PATH=go/bin:$PATH
+    go version
+    cd source 
+    make test COVERAGE_DIR=/tmp/coverage
+  default: true
+  depends:
+    -
+      name: install-go
+ -
+    name: install-go
+    language: Bash
+    code: |
+      set -e
+      wget -q https://golang.org/dl/go1.17.2.linux-amd64.tar.gz
+      tar -xzf go1.17.2.linux-amd64.tar.gz
+      export PATH=go/bin:$PATH
+      go version
+```
 
 ## Another examples
 
