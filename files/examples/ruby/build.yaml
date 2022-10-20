@@ -1,0 +1,18 @@
+tasks:
+  -
+    name: rake_task
+    language: Bash
+    default: true
+    code: |
+      set -e
+      cd source
+      bundle exec rake
+    default: true
+    depends:
+      - 
+        name: install-ruby
+  -
+    name: install-ruby
+    language: Bash
+    code: |
+      sudo apk add ruby-bundler ruby-rake

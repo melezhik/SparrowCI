@@ -727,6 +727,30 @@ tasks:
       go version
 ```
 
+## Ruby build
+
+
+```yaml
+tasks:
+  -
+    name: rake_task
+    language: Bash
+    default: true
+    code: |
+      set -e
+      cd source
+      bundle exec rake
+    default: true
+    depends:
+      - 
+        name: install-ruby-deps
+  -
+    name: install-ruby-deps
+    language: Bash
+    code: |
+      sudo apk add ruby-bundler ruby-rake
+```
+
 ## Another examples
 
 Other examples could be found at [files/examples](files/examples) folder
