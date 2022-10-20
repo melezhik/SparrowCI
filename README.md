@@ -732,7 +732,7 @@ tasks:
     code: |
       set -e
       cd source
-      sudo bundle install
+      bundle install
       bundle exec rake
     default: true
     depends:
