@@ -661,6 +661,8 @@ tasks:
    name: install-deps
    language: Bash
    code: |
+      set -e
+      cd source
       pip install -e .[develop]
    depends:
     -
@@ -669,7 +671,10 @@ tasks:
    name: unit-tests
    default: true
    language: Bash
-   code: pytest
+   code: |
+      set -e
+      cd source
+      pytest
    depends:
     -
       name: install-deps
