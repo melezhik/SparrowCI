@@ -4,20 +4,10 @@ SparrowCI - super fun and flexible CI system with many programming languages sup
 
 # Quick Start
 
-## Install SparrowCI
-
-(TBD)
-
-```bash
-# choose any convenient package manager: 
-sudo apk add sparrowci
-sudo apt-get install sparrowci
-sudo yum install sparrowci
 ```
+## Create SparrowCI pipeline 
 
-## Create Sparrow pipeline 
-
-Create build scenario `sparrow.yaml`:
+Create a build scenario `sparrow.yaml`:
 
 ```yaml
   tasks:
@@ -75,12 +65,19 @@ To execute scenario, add the source to a git repo and trigger build in SparrowCI
 
 ```bash
 git add sparrow.yaml
-git commit -a -m "my sparrowci scenario"
+git commit -a -m "SparrowCI pipeline"
 git push
-
-sparrow_ci login # login into SparrowCI account 
-sparrow_ci register # register your git project, this will trigger a new build soon
 ```
+
+## Add git repository to SparrowCI
+
+* Go to [https://ci.sparrowhub.io](https://ci.sparrowhub.io), sign in using your GitHub credentials
+
+* Go to "My Repos" page and add a repository to your repository list
+
+## Trigger a build
+
+That is it. A build will be triggered soon!
 
 # Advanced topics
 
