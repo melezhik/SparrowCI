@@ -4,7 +4,6 @@ SparrowCI - super fun and flexible CI system with many programming languages sup
 
 # Quick Start
 
-```
 ## Create SparrowCI pipeline 
 
 Create a build scenario `sparrow.yaml`:
