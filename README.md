@@ -32,7 +32,7 @@ dependency task "install-python" is executed.
 
 That's simple!
 
-This example illustrates the core idea bihind SparrowCI pipeline - to have a **collection of dependent tasks** (DAG) that executed in **particular order**.
+This example illustrates the core idea behind SparrowCI pipeline - to have a **collection of dependent tasks** (DAG) that executed in **particular order**.
 
 To automatically trigger builds add pipeline source to a git repo:
 
