@@ -765,7 +765,7 @@ sparrowdo \
 --no_sudo \
 --with_sparky \
 --sparrowfile ci.raku \
---tags tasks_config=$PWD/files/examples/python/task.yaml \
+--tags tasks_config=$PWD/examples/python/task.yaml \
 --desc "sparrowci python example"
 ```
 
