@@ -419,6 +419,8 @@ class Pipeline does Sparky::JobApi::Role {
 
         say ">>> chdir to source_dir: {$.source_dir}";
 
+        my $cur-dir = $*CWD;
+
         chdir $.source_dir;
 
         if $in-artifacts {
@@ -448,6 +450,9 @@ class Pipeline does Sparky::JobApi::Role {
             $job.put-file("{$f<path>}",$f<name>);
           }            
         }
+        # restore context
+        chdir $cur-dir;
+
         return $state;
     }
 

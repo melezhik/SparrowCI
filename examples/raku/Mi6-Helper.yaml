@@ -1,0 +1,27 @@
+tasks:
+  -
+    name: main
+    default: true
+    language: Bash
+    code: |
+      set -e
+      cd source 
+      zef install --deps-only --/test .
+      zef test .
+      zef install .
+    followup:
+      -
+        name: smoketest
+        config:
+          foo: bar
+  -
+    name: smoketest
+    language: Bash
+    code: |
+      set -e
+      mkdir tmp
+      cd  tmp
+      mi6-helper new=Foo::Bar provides=Bar-description.txt
+      cat lib/Foo/Bar.rakumod
+    check: |
+      unit class Foo::Bar;
