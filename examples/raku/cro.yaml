@@ -1,0 +1,43 @@
+--- 
+tasks: 
+  - 
+    code: |
+        set -e
+        raku -v
+        cd source
+        zef install --deps-only .
+        zef test .
+    default: true
+    depends: 
+      - 
+        name: install-deps
+    language: Bash
+    name: zef-test
+  - 
+    config: 
+      list: 
+        - "https://github.com/croservices/cro-core/archive/master.zip"
+        - "https://github.com/croservices/cro-tls/archive/master.zip"
+        - "https://github.com/croservices/cro-http/archive/master.zip"
+        - "https://github.com/croservices/cro-websocket/archive/master.zip"
+    init: |
+        for config()<list><> -> $m {
+          run_task "install", %(
+            m => $m
+          )
+        }
+    language: Raku
+    name: install-deps
+    subtasks: 
+      - 
+        code: "zef install --/test $m"
+        language: Bash
+        name: install
+    depends:
+      -
+        name: install-utils
+  -
+    name: install-utils
+    language: Bash
+    code: |
+      sudo apk add zip
