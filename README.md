@@ -314,7 +314,7 @@ tasks:
     language: Python
     default: true
     init: |
-      task_run("subtask_1",{ "param": "OK" } )
+      run_task("subtask_1",{ "param": "OK" } )
     subtasks:
       -
         name: subtask_1
