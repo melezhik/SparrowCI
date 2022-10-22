@@ -89,7 +89,7 @@ tasks:
 
 ## Default task
 
-SparrowCI pipeline should have one task, marked as default ( `default: true` flag ), scenario would start execution from the default task.
+SparrowCI pipeline should have one task, marked as default ( `default: true` flag ), scenario starts execution from the default task.
 
 ## Artifacts
 
@@ -136,7 +136,7 @@ Available plugins are listed on SparrowHub repository - https://sparrowhub.io
 Tasks are elementary build units. They could be written on various languages
 or executed as external Sparrow plugins.
 
-Every task is executed in separated environment and does not see other tasks.
+Every task is executed in a separated environment and does not see other tasks.
 
 Artifacts and tasks output data is mechanism how tasks communicate with each other.
 
