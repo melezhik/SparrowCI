@@ -27,7 +27,7 @@ Create a build scenario `sparrow.yaml`:
        sudo apk apk add --no-cache python3 py3-pip    
 ```
 
-In this simple example task "main" would execute some Python, to make it sure we have a Python in runtime, 
+In this simple example task "main_task" would execute some Python, to make it sure we have a Python in runtime, 
 dependency task "install-python" is executed. 
 
 That's simple!
