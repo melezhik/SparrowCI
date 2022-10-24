@@ -13,7 +13,7 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.worker = %*ENV<WORKER> || tags()<worker> || "";
 
-  has Str $.scm = %*ENV<SCM> || 'git@github.com:melezhik/rakudist-teddy-bear.git';
+  has Str $.scm = tags()<scm> || %*ENV<SCM> || 'git@github.com:melezhik/rakudist-teddy-bear.git';
 
   has Str $.source_dir = tags()<source_dir> || "";
 

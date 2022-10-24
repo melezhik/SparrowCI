@@ -760,8 +760,8 @@ sparrowdo \
 --no_sudo \
 --with_sparky \
 --sparrowfile ci.raku \
---tags tasks_config=$PWD/examples/python/task.yaml \
---desc "sparrowci python example"
+--tags tasks_config=$PWD/examples/python/task.yaml,scm=https://git.sr.ht/~sircmpwn/himitsu \
+--desc "himitsu build"
 ```
 
 # Thanks to
