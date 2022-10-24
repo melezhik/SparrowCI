@@ -760,8 +760,8 @@ sparrowdo \
 --no_sudo \
 --with_sparky \
 --sparrowfile ci.raku \
---tags tasks_config=$PWD/examples/python/task.yaml,scm=https://git.sr.ht/~sircmpwn/himitsu \
---desc "himitsu build"
+--tags tasks_config=$PWD/examples/go/make.yaml,scm=https://git.sr.ht/~craftyguy/superd \
+--desc "superd build"
 ```
 
 # Thanks to
