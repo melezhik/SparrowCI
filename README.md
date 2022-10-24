@@ -747,22 +747,7 @@ Other examples could be found at [examples](examples) folder
 
 # Development
 
-1. Install Sparky
-
-2. Run example
-
-Then run from command line:
-
-```bash
-sparrowdo \
---color \
---localhost \
---no_sudo \
---with_sparky \
---sparrowfile ci.raku \
---tags tasks_config=$PWD/examples/go/make.yaml,scm=https://git.sr.ht/~craftyguy/superd \
---desc "superd build"
-```
+See [development.md](development.md) document.
 
 # Thanks to
 

@@ -21,7 +21,7 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.storage_job_id is default(tags()<storage_job_id> || "") is rw;
 
-  has Str $.storage_api = "http://127.0.0.1:4000";
+  has Str $.storage_api = %*ENV<STORAGE_API> || "http://127.0.0.1:4000";
   
   has Str $.notify-api = %*ENV<NOTIFY_API> || "http://127.0.0.1:4000";
 
