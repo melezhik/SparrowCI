@@ -2,6 +2,10 @@
 
 SparrowCI - super fun and flexible CI system with many programming languages support.
 
+# Why yet another pipeline DSL?
+
+Read [why?](why.md) manifest
+
 # Quick Start
 
 ## Create SparrowCI pipeline 
