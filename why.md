@@ -30,12 +30,14 @@ steps:
       echo "Task2 returns: ${{ steps.task2_outputs.test }}"
 ```
 
-It’s not only not natural to read (we use none relevant print command to set the output), but also to maintain. 
+IMHO here we have a code that is hard to read (we use none relevant print statements to set a step output), and thus to maintain.
 
-* One of the question that pops up here, if I use high level general purpose programming language why should I use print commands to declare return output ?
-* Another question - how can step return structured, complex object data?
+These typical question would pip up:
 
-* And the last but not the least - how to pass _arbitrary_ configuration as a task input? 
+* If I use high level general purpose programming languages why should I use print statements to declare return output ?
+* How could a step return structured, complex object data?
+
+* And the last but not the least - how to pass _arbitrary_ configuration as a task input?
 
 ---
 
@@ -87,6 +89,3 @@ So we have a good balance of YAML based pipelines for people not willing to go i
 ---
 
 So, with all being said - DSL(YAML) is dead, long live DSL(YAML)! 
-
-
-
