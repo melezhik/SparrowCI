@@ -1,10 +1,23 @@
 # SparrowCI Pipelines Development
 
-Run pipelines locally
+How to run pipelines locally
 
-## On localhost
+## Install
 
-1. Run pipeline
+Install and run Sparky
+
+## Run pipeline
+
+1. Start docker container
+
+```bash
+docker run \
+--rm --name alpine \
+--add-host=host.docker.internal:host-gateway \
+-itd alpine
+```
+
+2. Run pipeline
 
 ```bash
 sparrowdo \

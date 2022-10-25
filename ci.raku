@@ -1,5 +1,4 @@
 use Sparky::JobApi;
-use Sparky;
 use HTTP::Tiny;
 use YAMLish;
 
@@ -9,7 +8,7 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.tasks_config = tags()<tasks_config> || "";
 
-  has Str $.project = %*ENV<PROJECT> || "TeddyBear";
+  has Str $.project = %*ENV<PROJECT> || "SparrowCI";
 
   has Str $.worker = %*ENV<WORKER> || tags()<worker> || "";
 
@@ -17,19 +16,13 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.source_dir = tags()<source_dir> || "";
 
-  has Str $.storage_project is default(tags()<storage_project> || "") is rw;
-
   has Str $.storage_job_id is default(tags()<storage_job_id> || "") is rw;
 
-  has Str $.storage_api = %*ENV<STORAGE_API> || "http://127.0.0.1:4000";
-  
-  has Str $.notify-api = %*ENV<NOTIFY_API> || "http://127.0.0.1:4000";
-
-  has Str $.notify-project = %*ENV<NOTIFY_PROJECT> || "SparrowCINotify";
-
-  has Str $.notify-job = %*ENV<NOTIFY_JOB> || "foobarbaz";
+  my $notify-job;
 
   method !get-last-build {
+
+    use Sparky;
 
     my $dbh = get-dbh();
 
@@ -51,12 +44,25 @@ class Pipeline does Sparky::JobApi::Role {
 
   }
 
-  method !get-storage-api {
+  method !get-storage-api ($docker = False) {
 
-    return self.new-job: 
-      job-id => $.storage_job_id, 
-      project => $.storage_project, 
-      api => $.storage_api;
+    my $sapi;
+
+    if $.storage_job_id {
+      # return existing storage api job  
+      $sapi = self.new-job: 
+        job-id => $.storage_job_id, 
+        project => <SparrowCIStorage>, 
+        api => ($docker ?? 'http://host.docker.internal:host-gateway:4000' !! 'http://127.0.0.1:4000');
+    } else {
+      $sapi = self.new-job: 
+        project => <SparrowCIStorage>, 
+        api => ($docker ?? 'http://host.docker.internal:host-gateway:4000' !! 'http://127.0.0.1:4000');
+      # allocate new storage api job
+      $.storage_job_id = $sapi.info()<job-id>;
+    } 
+
+    return $sapi; 
 
   }
 
@@ -67,11 +73,15 @@ class Pipeline does Sparky::JobApi::Role {
   
   method !get-notify-job {
 
-    self.new-job:
-      :api($.notify-api),
-      :project($.notify-project),
-      :job-id($.notify-job);
+    # return existing notify api job  
+    return $notify-job if $notify-job;
 
+    # allocate new notify api job
+    my $nj = self.new-job:
+      :api<http://127.0.0.1:4000>,
+      :project<SparrowCINotify>;
+    $notify-job = $nj.info()<job-id>;
+    return $nj;
   }
 
   method !queue-notify-job(:$stash) {
@@ -92,12 +102,9 @@ class Pipeline does Sparky::JobApi::Role {
 
   method stage-main {
 
-      my $storage = self.new-job: api => $.storage_api;  
+      use Sparky;
 
-      my %storage = $storage.info();
-
-      $.storage_project = %storage<project>;
-      $.storage_job_id = %storage<job-id>;
+      my $storage = self!get-storage-api: :docker;  
 
       directory "source";
       
@@ -194,10 +201,14 @@ class Pipeline does Sparky::JobApi::Role {
         tags => %(
           stage => "run",
           task => $task<name>,
-          storage_project => $.storage_project,
           storage_job_id => $.storage_job_id,
           source_dir => "{$*CWD}",
         ),
+        sparrowdo => %(
+          docker => "alpine",
+          no_sudo => True, 
+          #bootstrap => True 
+        )
       );
 
       my $st = self.wait-job($j,{ timeout => $timeout.Int });
@@ -237,10 +248,7 @@ class Pipeline does Sparky::JobApi::Role {
       }
 
       # notify job
-      my $nj = self.new-job:
-        :api($.notify-api),
-        :project($.notify-project),
-        :job-id($.notify-job);
+      my $nj = self!get-notify-job();
 
       $nj.put-stash({ 
         status => ( $st<OK> ?? "OK" !! ( $st<TIMEOUT> ?? "TIMEOUT" !! ($st<FAIL> ?? "FAIL" !! "NA") ) ), 
@@ -400,7 +408,6 @@ class Pipeline does Sparky::JobApi::Role {
             stage => "run",
             task => $t<name>,
             source_dir => $.source_dir,
-            storage_project => $.storage_project,
             storage_job_id => $.storage_job_id,
           ),
         );
