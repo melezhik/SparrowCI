@@ -6,7 +6,7 @@ TL;DR - How to write YAML DSL pipelines without frustration.
 
 To be honest, I am not in favor of modern DSL based tools.
 
-At least, I am not in favor of them when people try to use those tools for the things they are not *very well designed to* ( which starts to happen pretty quickly ).
+At least, I am not in favor of them when people try to use those tools for the things they are not *very well designed for* ( which starts to happen pretty quickly ).
 
 Starting from Ansible the course of declarative style DSL languages seems has taken the market, while it does not always mean those tools are easy to use and maintain. 
 
