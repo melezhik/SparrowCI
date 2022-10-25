@@ -32,7 +32,7 @@ steps:
 
 IMHO here we have a code that is hard to read (we use none relevant print statements to set a step output), and thus to maintain.
 
-These typical question would pip up:
+These typical question would pop up:
 
 * If I use high level general purpose programming languages why should I use print statements to declare return output ?
 * How could a step return structured, complex object data?
