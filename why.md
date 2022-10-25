@@ -32,7 +32,10 @@ steps:
 
 It’s not only not natural to read (we use none relevant print command to set the output), but also to maintain. 
 
-One of the question that pops here, if I use high level general purpose programming language why should I use print commands to declare return output ?
+* One of the question that pops up here, if I use high level general purpose programming language why should I use print commands to declare return output ?
+* Another question - how can step return structured, complex object data?
+
+* And the last but not the least how to pass _arbitrary_ configuration as a task input? 
 
 ---
 
@@ -49,21 +52,31 @@ So we have a good balance of YAML based pipelines for people not willing to go i
 ```yaml
   tasks:
     -
-      language: Ruby
-      name: ruby_task
+      language: Python
+      name: task1
       code: |
-        update_state(Hash["message", "I code in Ruby"])
+        update_state({"test": "hello"})
     -
-      name: python_task
+      name: task2
+      language: Python
+      depends: 
+        - 
+          name: task2
+      code: |
+        update_state({"test": "world"})
+    -
+      name: main
       language: Python
       default: true
       depends: 
         - 
-          name: ruby_task
+          name: task1
+        - 
+          name: task2
       code: |
-        print("Hello from Python")
-        print("ruby_task says")
-        print(f”{config()[‘tasks’][‘ruby_task’][‘state’][‘message’]}”
+        print(f”Task1 returns: {config()["tasks"]["task1"]["state"]["test"]}”
+        print(f”Task2 returns: {config()["tasks"]["task2"]["state"]["test"]}”
+
 ```
 
 ---
