@@ -35,7 +35,7 @@ It’s not only not natural to read (we use none relevant print command to set t
 * One of the question that pops up here, if I use high level general purpose programming language why should I use print commands to declare return output ?
 * Another question - how can step return structured, complex object data?
 
-* And the last but not the least how to pass _arbitrary_ configuration as a task input? 
+* And the last but not the least - how to pass _arbitrary_ configuration as a task input? 
 
 ---
 
@@ -55,13 +55,15 @@ So we have a good balance of YAML based pipelines for people not willing to go i
       language: Python
       name: task1
       code: |
-        print("task1 here")
+        print("task1 start")
+        print(f"you passed {config()['message']}")
         update_state({"test": "hello"})
     -
       name: task2
       language: Python
       code: |
-        print("task2 here")
+        print("task2 start")
+        print(f"you passed {config()['message']}")
         update_state({"test": "world"})
     -
       name: main
@@ -70,11 +72,15 @@ So we have a good balance of YAML based pipelines for people not willing to go i
       depends: 
         - 
           name: task1
+          config:
+            message: hello task1
         - 
           name: task2
+          config:
+            message: hello task2
       code: |
-        print(f”Task1 returns: {config()["tasks"]["task1"]["state"]["test"]}”
-        print(f”Task2 returns: {config()["tasks"]["task2"]["state"]["test"]}”
+        print(f"Task1 returns: {config()["tasks"]["task1"]["state"]["test"]}")
+        print(f"Task2 returns: {config()["tasks"]["task2"]["state"]["test"]}")
 
 ```
 
