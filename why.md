@@ -88,4 +88,4 @@ So we have a good balance of YAML based pipelines for people not willing to go i
 
 ---
 
-So, with all being said - DSL(YAML) is dead, long live DSL(YAML)! 
+So, with that being said - DSL(YAML) is dead, long live DSL(YAML)! 
