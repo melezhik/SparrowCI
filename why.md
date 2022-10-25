@@ -1,6 +1,6 @@
 # SparrowCI - DSL is dead, long live DSL!
 
-TLDR; How to write YAML DSL pipelines without frustration.
+TL;DR - How to write YAML DSL pipelines without frustration.
 
 ---
 
