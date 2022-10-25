@@ -55,14 +55,13 @@ So we have a good balance of YAML based pipelines for people not willing to go i
       language: Python
       name: task1
       code: |
+        print("task1 here")
         update_state({"test": "hello"})
     -
       name: task2
       language: Python
-      depends: 
-        - 
-          name: task2
       code: |
+        print("task2 here")
         update_state({"test": "world"})
     -
       name: main
