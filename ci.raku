@@ -10,8 +10,6 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.project = %*ENV<PROJECT> || "SparrowCI";
 
-  has Str $.worker = %*ENV<WORKER> || tags()<worker> || "";
-
   has Str $.scm = tags()<scm> || %*ENV<SCM> || 'git@github.com:melezhik/rakudist-teddy-bear.git';
 
   has Str $.source_dir is default(tags()<source_dir> || "") is rw;
@@ -25,6 +23,8 @@ class Pipeline does Sparky::JobApi::Role {
   my $notify-job;
 
   my @jobs;
+
+  my $time;
 
   method !get-storage-api (:$docker = False) {
 
@@ -55,32 +55,28 @@ class Pipeline does Sparky::JobApi::Role {
     load-yaml(self!get-storage-api(:$docker).get-file("sparrow.yaml",:text));
   }
   
-  method !get-notify-job {
+  method !build-report(:$stash) {
 
-    # return existing notify api job  
-    return $notify-job if $notify-job;
+    say "build web report ...";
 
-    # allocate new notify api job
-    my $nj = self.new-job:
-      :api<http://127.0.0.1:4000>,
-      :project<SparrowCINotify>;
-    $notify-job = $nj.info()<job-id>;
-    return $nj;
-  }
+    my %headers = content-type => 'application/json';
 
-  method !queue-notify-job(:$stash) {
+    $stash<project> = $.project;
+    $stash<with-sparrowci> = True;
+    $stash<date> = "{DateTime.now}";
+    $stash<worker-status> = "OK";
+    $stash<scm> = $.scm;
+    $stash<elapsed> => $time.Int;
 
-    my $nj = self!get-notify-job();
+    my $r = HTTP::Tiny.post: "http://127.0.0.1:2222/build", 
+      headers => %headers,
+      content => to-json($stash);
 
-    $nj.put-stash: $stash;
+    $r<status> == 200 or die "{$r<status>} : { $r<content> ?? $r<content>.decode !! ''}";
 
-    $nj.queue({
-      description => "{$.project} - build report",
-      tags => %(
-        stage => "notify",
-        worker => $.worker,
-      ),
-    });
+    my $res = $r<content>.decode;
+
+    say "build web report OK, report_id: {$res}";
 
   }
 
@@ -113,6 +109,8 @@ class Pipeline does Sparky::JobApi::Role {
 
       say "tags: {tags().perl}";
 
+      $time = now - INIT now;
+
       directory "source";
       
       git-scm $.scm, %(
@@ -140,7 +138,7 @@ class Pipeline does Sparky::JobApi::Role {
             log => "sparrow.yaml not found", 
             git-data => $git-data,
           );
-          self!queue-notify-job: :$stash;
+          self!build-report: :$stash;
           die "sparrow.yaml file not found"; 
         }
         self!get-storage-api().put-file("source/sparrow.yaml","sparrow.yaml");
@@ -162,7 +160,7 @@ class Pipeline does Sparky::JobApi::Role {
               git-data => $git-data,
               sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
             );
-            self!queue-notify-job: :$stash;
+            self!build-report: :$stash;
             die $err-message;  
           }  
         } 
@@ -176,7 +174,7 @@ class Pipeline does Sparky::JobApi::Role {
           git-data => $git-data,
           sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
         );
-        self!queue-notify-job: :$stash;
+        self!build-report: :$stash;
         die "default task is not found";
       }
 
@@ -187,7 +185,7 @@ class Pipeline does Sparky::JobApi::Role {
           git-data => $git-data,
           sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
         );
-        self!queue-notify-job: :$stash;
+        self!build-report: :$stash;
         die "default task - too many found";
       }
 
@@ -268,25 +266,14 @@ class Pipeline does Sparky::JobApi::Role {
       # notify job
       my $nj = self!get-notify-job();
 
-      $nj.put-stash({ 
+      my $stash = %(
         status => ( $st<OK> ?? "OK" !! ( $st<TIMEOUT> ?? "TIMEOUT" !! ($st<FAIL> ?? "FAIL" !! "NA") ) ), 
         log => @logs.join("\n"), 
         git-data => $git-data,
         sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
+      );  
 
-      });  
-
-      $nj.queue({
-        description => "{$.project} - build report",
-        tags => %(
-          stage => "notify",
-          worker => $.worker,
-        ),
-      });
-
-      #die $st.perl unless $st<OK> == 1;
-
-      #say $st.perl;
+      self!build-report: :$stash;
 
     }
 
