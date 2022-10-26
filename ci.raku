@@ -18,7 +18,7 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.storage_job_id is default(tags()<storage_job_id> || "") is rw;
 
-  has Str $.docker_bootstrap = tags()<docker_boostrap> || "off";
+  has Str $.docker_bootstrap = tags()<docker_bootstrap> || "off";
 
   has Str $.sparrowdo_bootstrap = tags()<sparrowdo_bootstrap> || "off";
 
@@ -110,6 +110,8 @@ class Pipeline does Sparky::JobApi::Role {
   }
 
   method stage-main {
+
+      say "tags: {tags().perl}";
 
       directory "source";
       
