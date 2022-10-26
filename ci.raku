@@ -20,29 +20,7 @@ class Pipeline does Sparky::JobApi::Role {
 
   my $notify-job;
 
-  method !get-last-build {
-
-    use Sparky;
-
-    my $dbh = get-dbh();
-
-    my $sth = $dbh.prepare(q:to/STATEMENT/);
-      SELECT 
-        max(ID) AS build_id
-      FROM builds 
-    STATEMENT
-
-    $sth.execute();
-
-    my @rows = $sth.allrows();
-
-    my $build-id = @rows[0][0];
-
-    $sth.finish;
-
-    return $build-id;
-
-  }
+  my @jobs;
 
   method !get-storage-api ($docker = False) {
 
@@ -100,9 +78,31 @@ class Pipeline does Sparky::JobApi::Role {
 
   }
 
-  method stage-main {
+  method !get-jobs-list ($j){
+    # traverse jobs DAG
+    # in order: left -> parent -> right
+    my @jobs;
+    if $j.get-stash()<job-childs><left> {
+        for $j.get-stash()<job-childs><left><> -> $c {
+          my $job-id = $c<job-id>;
+          my $project = $c<project>;
+          my $cj = self.new-job: :$job-id, :$project;
+          self!get-jobs-list($cj)
+        }
+    } 
+    @jobs.push: $j.info();
+    if $j.get-stash()<job-childs><right> {
+        for $j.get-stash()<job-childs><right><> -> $c {
+          my $job-id = $c<job-id>;
+          my $project = $c<project>;
+          my $cj = self.new-job: :$job-id, :$project;
+          self!get-jobs-list($cj)
+        }
+    } 
 
-      use Sparky;
+  }
+
+  method stage-main {
 
       my $storage = self!get-storage-api: :docker;  
 
@@ -157,10 +157,6 @@ class Pipeline does Sparky::JobApi::Role {
         } 
       }
 
-      my $dbh = get-dbh();
-
-      my $last-build = self!get-last-build();
-
       my $data = $tasks-config<tasks>.grep({.<default>});
       unless $data {
         my $stash = %(
@@ -213,15 +209,10 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $st = self.wait-job($j,{ timeout => $timeout.Int });
       
-      my $sth = $dbh.prepare(q:to/STATEMENT/);
-          SELECT * from builds where ID  > ? order by id asc
-      STATEMENT
+      # traverse jobs DAG in order
+      # and save result in @jobs
 
-      $sth.execute: $last-build;
-
-      my @builds = $sth.allrows(:array-of-hash);
-
-      $sth.finish;
+      self!get-jobs-list($j);
 
       my $st-to-human = %(
         "-2" => "NA",
@@ -232,13 +223,13 @@ class Pipeline does Sparky::JobApi::Role {
 
       my @logs;
 
-      for @builds -> $b {
+      for @jobs -> $b {
 
-        my $r = HTTP::Tiny.get: "http://127.0.0.1:4000/report/raw/{$b<project>}/{$b<job_id>}";
+        my $r = HTTP::Tiny.get: "http://127.0.0.1:4000/report/raw/{$b<project>}/{$b<job-id>}";
 
         my $log = $r<content> ?? $r<content>.decode !! '';
 
-        say "\n[$b<description>] - [{$st-to-human{$b<state>}}] at [$b<dt>]"; 
+        say "\n[$b<description>] - [{$st-to-human{$b<state>}}]"; 
         say "================================================================";
         for $log.lines.grep({ $_ !~~ /^^ '>>>'/ }) -> $l {
           say $l;
@@ -312,6 +303,8 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $tasks-data = %();
 
+      my %child-jobs = %();
+
       if $task<depends> {
 
         say ">>> enter depends block: ", $task<depends>.perl;
@@ -324,18 +317,22 @@ class Pipeline does Sparky::JobApi::Role {
 
         my $st = self.wait-jobs(@jobs,{ timeout => $timeout.Int });
 
-        die $st.perl unless $st<OK> == @jobs.elems;
-
-        say ">>> ", $st.perl;
-
         for @jobs -> $dj {
-
+            %child-jobs<left>.push: $dj.info;
             my $d = $dj.get-stash();
-
             if $d<task>:exists {
               $tasks-data{$d<task>}<state> = $d<state>;
             }
         }
+
+        # save job data
+        $j.put-stash(%( child-jobs => %child-jobs ));
+
+        # handle depends jobs errors
+        say ">>> depends jobs status: ", $st.perl;
+
+        die $st.perl unless $st<OK> == @jobs.elems;
+
       }
 
       my $params = $stash<config> || $task<config> || {};
@@ -348,10 +345,6 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $state = self!task-run: :$task, :$params, :$in-artifacts, :$out-artifacts;
  
-      # save task state to job's stash
-
-      $j.put-stash(%( state => $state, task => $task<name> ));
-
       my $parent-data = $state;
 
       if $task<followup> {
@@ -362,13 +355,28 @@ class Pipeline does Sparky::JobApi::Role {
 
         my @jobs = self!run-task-dependency: :$tasks, :$tasks-data, :$parent-data;
 
-        say "waiting for followup tasks have finsihed ...";
+        say ">>> waiting for followup tasks have finsihed ...";
 
         my $st = self.wait-jobs(@jobs,{ timeout => $timeout });
 
+
+        for @jobs -> $fj {
+          %child-jobs<right>.push: $fj.info();
+        }
+
+        # save job data
+        $j.put-stash(%( state => $state, task => $task<name>, child-jobs => %child-jobs ));
+
+        say ">>> followup jobs status: ", $st.perl;
+
+        # handle followup jobs errors
         die $st.perl unless $st<OK> == @jobs.elems;
 
-        say ">>> ", $st.perl;
+      } else {
+
+        # save job data
+        $j.put-stash(%( state => $state, task => $task<name>, child-jobs => %child-jobs ));
+       
       }
 
     }
