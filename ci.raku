@@ -284,7 +284,10 @@ class Pipeline does Sparky::JobApi::Role {
         description => "delete container";
       ) if $.worker;
 
-      die unless $report<status> eq "OK";
+      unless $report<status> eq "OK" {
+        say "some jobs failed or timeouted";
+        exit(1);
+      }
 
     }
 
@@ -336,7 +339,10 @@ class Pipeline does Sparky::JobApi::Role {
         # handle depends jobs errors
         say ">>> depends jobs status: ", $st.perl;
 
-        die $st.perl unless $st<OK> == @jobs.elems;
+        unless $st<OK> == @jobs.elems {
+          say "some depends jobs failed or timeouted: {$st.perl}";
+          exit(1)
+        }
 
       }
 
@@ -375,13 +381,15 @@ class Pipeline does Sparky::JobApi::Role {
         say ">>> followup jobs status: ", $st.perl;
 
         # handle followup jobs errors
-        die $st.perl unless $st<OK> == @jobs.elems;
+
+        unless $st<OK> == @jobs.elems {
+          say "some followup jobs failed or timeouted: {$st.perl}";
+          exit(1);
+        }
 
       } else {
-
         # save job data
-        $j.put-stash(%( state => $state, task => $task<name>, child-jobs => %child-jobs ));
-       
+        $j.put-stash(%( state => $state, task => $task<name>, child-jobs => %child-jobs ));       
       }
 
     }
