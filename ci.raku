@@ -83,18 +83,19 @@ class Pipeline does Sparky::JobApi::Role {
   method !get-jobs-list ($j){
     # traverse jobs DAG
     # in order: left -> parent -> right
-    my @jobs;
-    if $j.get-stash()<job-childs><left> {
-        for $j.get-stash()<job-childs><left><> -> $c {
+    if $j.get-stash()<child-jobs><left> {
+        for $j.get-stash()<child-jobs><left><> -> $c {
           my $job-id = $c<job-id>;
           my $project = $c<project>;
           my $cj = self.new-job: :$job-id, :$project;
           self!get-jobs-list($cj)
         }
     } 
+    say ">>> get-jobs-list: push job={$j.info().perl}";
+
     @jobs.push: $j.info();
-    if $j.get-stash()<job-childs><right> {
-        for $j.get-stash()<job-childs><right><> -> $c {
+    if $j.get-stash()<child-jobs><right> {
+        for $j.get-stash()<child-jobs><right><> -> $c {
           my $job-id = $c<job-id>;
           my $project = $c<project>;
           my $cj = self.new-job: :$job-id, :$project;
@@ -229,7 +230,11 @@ class Pipeline does Sparky::JobApi::Role {
 
         my $log = $r<content> ?? $r<content>.decode !! '';
 
-        say "\n[$b<description>] - [{$st-to-human{$b<state>}}]"; 
+        $r = HTTP::Tiny.get: $b<status-url>;
+
+        my $status = $r<content> ?? $r<content>.decode !! '-2';
+
+        say "\n[$b<project>] - [{$st-to-human{$status}}]"; 
         say "================================================================";
         for $log.lines.grep({ $_ !~~ /^^ '>>>'/ }) -> $l {
           say $l;
