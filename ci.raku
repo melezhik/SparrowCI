@@ -203,7 +203,7 @@ class Pipeline does Sparky::JobApi::Role {
         sparrowdo => %(
           docker => "alpine",
           no_sudo => True, 
-          #bootstrap => True 
+          bootstrap => True 
         )
       );
 
