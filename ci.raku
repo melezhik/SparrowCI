@@ -263,9 +263,6 @@ class Pipeline does Sparky::JobApi::Role {
 
       }
 
-      # notify job
-      my $nj = self!get-notify-job();
-
       my $stash = %(
         status => ( $st<OK> ?? "OK" !! ( $st<TIMEOUT> ?? "TIMEOUT" !! ($st<FAIL> ?? "FAIL" !! "NA") ) ), 
         log => @logs.join("\n"), 
@@ -274,25 +271,6 @@ class Pipeline does Sparky::JobApi::Role {
       );  
 
       self!build-report: :$stash;
-
-    }
-
-    method stage-notify {
-
-      my $nj = self.new-job: :mine(True);
-
-      my $report = $nj.get-stash();
-
-      say "=========================";
-
-      say "status: ", $report<status>;
-
-      say "log: ", $report<log>;
-
-      unless $report<status> eq "OK" {
-        say "some jobs failed or timeouted";
-        exit(1);
-      }
 
     }
 
