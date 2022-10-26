@@ -61,7 +61,10 @@ class Pipeline does Sparky::JobApi::Role {
 
     my %headers = content-type => 'application/json';
 
+    my $j = Sparky::JobApi.new: :mine;
+
     $stash<project> = $.project;
+    $stash<job-id> = $j.info()<job-id>;
     $stash<with-sparrowci> = True;
     $stash<date> = "{DateTime.now}";
     $stash<worker-status> = "OK";
