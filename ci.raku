@@ -14,7 +14,7 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.scm = tags()<scm> || %*ENV<SCM> || 'git@github.com:melezhik/rakudist-teddy-bear.git';
 
-  has Str $.source_dir = tags()<source_dir> || "";
+  has Str $.source_dir is default(tags()<source_dir> || "") is rw;
 
   has Str $.storage_job_id is default(tags()<storage_job_id> || "") is rw;
 
@@ -120,6 +120,10 @@ class Pipeline does Sparky::JobApi::Role {
         branch => "HEAD",
       );
 
+      bash("tar -czvf source.tar.gz source/",%( description => "archive source directory"));
+
+      self!get-storage-api().put-file("source.tar.gz","source.tar.gz");
+
       my $git-data = task-run "git data", "git-commit-data", %(
         dir => "{$*CWD}/source",
       );
@@ -197,7 +201,7 @@ class Pipeline does Sparky::JobApi::Role {
   
         say ">>> prepare docker container";
 
-        bash q:to /HERE/;
+        bash(q:to /HERE/, %(description => "docker run") );
           docker run \
           --rm --name alpine \
           --add-host=host.docker.internal:host-gateway \
@@ -218,7 +222,6 @@ class Pipeline does Sparky::JobApi::Role {
           stage => "run",
           task => $task<name>,
           storage_job_id => $.storage_job_id,
-          source_dir => "{$*CWD}",
         ),
         sparrowdo => %(
           docker => "alpine",
@@ -328,6 +331,12 @@ class Pipeline does Sparky::JobApi::Role {
 
       my %child-jobs = %();
 
+      unless $.source_dir {
+        say "source directory does not yet exist, download source archive from storage";
+        self!get-storage-api(:docker).get-file("source.tar.gz",:bin);
+        bash "tar -xzf source.tar.gz", %( description => "unpack source archive");
+        $.source_dir = "{$*CWD}";
+      }  
       if $task<depends> {
 
         say ">>> enter depends block: ", $task<depends>.perl;
