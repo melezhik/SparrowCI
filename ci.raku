@@ -18,6 +18,10 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.storage_job_id is default(tags()<storage_job_id> || "") is rw;
 
+  has Str $.docker_bootstrap = tags()<docker_boostrap> || "off";
+
+  has Str $.sparrowdo_bootstrap = tags()<sparrowdo_bootstrap> || "off";
+
   my $notify-job;
 
   my @jobs;
@@ -187,6 +191,19 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $j = self.new-job: :$project;
 
+      if $.docker_bootstrap eq "on" {
+  
+        say ">>> prepare docker container";
+
+        bash q:to /HERE/;
+          docker run \
+          --rm --name alpine \
+          --add-host=host.docker.internal:host-gateway \
+          -itd alpine
+        HERE
+
+      }
+
       say ">>> trigger task: {$task.perl}";
 
       my $description = "run [{$task<name>}]";
@@ -204,7 +221,7 @@ class Pipeline does Sparky::JobApi::Role {
         sparrowdo => %(
           docker => "alpine",
           no_sudo => True, 
-          bootstrap => True 
+          bootstrap => ($.sparrowdo_bootstrap eq "on") ?? True !! False 
         )
       );
 
@@ -279,10 +296,6 @@ class Pipeline does Sparky::JobApi::Role {
       say "status: ", $report<status>;
 
       say "log: ", $report<log>;
-
-      bash "az container delete -g sparky2 --name {$.worker} -y -o table || echo", %(
-        description => "delete container";
-      ) if $.worker;
 
       unless $report<status> eq "OK" {
         say "some jobs failed or timeouted";

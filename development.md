@@ -27,6 +27,7 @@ sparrowdo \
 --with_sparky \
 --sparrowfile ci.raku \
 --tags tasks_config=$PWD/examples/go/make.yaml,\
-scm=https://git.sr.ht/~craftyguy/superd \
+scm=https://git.sr.ht/~craftyguy/superd\,
+sparrowdo_bootstrap=on \
 --desc "build pipeline"
 ```
