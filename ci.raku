@@ -104,8 +104,6 @@ class Pipeline does Sparky::JobApi::Role {
 
   method stage-main {
 
-      my $storage = self!get-storage-api: :docker;  
-
       directory "source";
       
       git-scm $.scm, %(
@@ -440,7 +438,7 @@ class Pipeline does Sparky::JobApi::Role {
 
         if $in-artifacts {
 
-          my $job = self!get-storage-api();
+          my $job = self!get-storage-api: :docker;
 
           mkdir ".artifacts";
 
@@ -459,7 +457,7 @@ class Pipeline does Sparky::JobApi::Role {
           $state = task-run $task-dir, $params; 
         }
         if $out-artifacts {
-          my $job = self!get-storage-api();
+          my $job = self!get-storage-api: :docker;
           for $out-artifacts<> -> $f {
             say ">>> copy artifact [{$f<name>}] to storage";
             $job.put-file("{$f<path>}",$f<name>);
