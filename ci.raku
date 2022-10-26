@@ -1,6 +1,7 @@
 use Sparky::JobApi;
 use HTTP::Tiny;
 use YAMLish;
+use JSON::Fast;
 
 class Pipeline does Sparky::JobApi::Role {
 
@@ -69,7 +70,7 @@ class Pipeline does Sparky::JobApi::Role {
     $stash<date> = "{DateTime.now}";
     $stash<worker-status> = "OK";
     $stash<scm> = $.scm;
-    $stash<elapsed> => $time.Int;
+    $stash<elapsed> = $time.Int;
 
     my $r = HTTP::Tiny.post: "http://127.0.0.1:2222/build", 
       headers => %headers,
