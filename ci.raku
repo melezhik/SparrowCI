@@ -334,7 +334,7 @@ class Pipeline does Sparky::JobApi::Role {
       unless $.source_dir {
         say "source directory does not yet exist, download source archive from storage";
         self!get-storage-api(:docker).get-file("source.tar.gz",:bin);
-        bash "tar -xzf source.tar.gz", %( description => "unpack source archive");
+        bash "tar -xzf source.tar.gz", %( description => "unpack source archive", cwd => "{$*CWD}" );
         $.source_dir = "{$*CWD}";
       }  
       if $task<depends> {
