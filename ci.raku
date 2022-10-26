@@ -26,6 +26,8 @@ class Pipeline does Sparky::JobApi::Role {
 
     my $sapi;
 
+    #say "get-storage-api. docker=$docker";
+
     if $.storage_job_id {
       # return existing storage api job  
       $sapi = self.new-job: 
@@ -44,9 +46,9 @@ class Pipeline does Sparky::JobApi::Role {
 
   }
 
-  method !tasks-config {
+  method !tasks-config ($docker = False) {
     say ">>> load sparrow.yaml from storage";
-    load-yaml(self!get-storage-api.get-file("sparrow.yaml",:text));
+    load-yaml(self!get-storage-api(:$docker).get-file("sparrow.yaml",:text));
   }
   
   method !get-notify-job {
@@ -287,7 +289,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $stash = $j.get-stash();
 
-      my $data = self!tasks-config()<tasks>.grep({.<name> eq $.task});
+      my $data = self!tasks-config(:docker)<tasks>.grep({.<name> eq $.task});
 
       die "task {$.task} is not found" unless $data;
 
