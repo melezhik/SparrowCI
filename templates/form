@@ -1,0 +1,20 @@
+<p class="control">
+    <form autocomplete="off" action="/repo" method="POST">
+        <div class="field">
+            <div class="autocomplete">
+              <label class="label">Add repository</label>
+              <input id="repos" class="input" type="text" name="repos" placeholder="Repo name">
+              <span class="help is-success">Type here to search within repos</span>
+            </div>
+        </div>
+        <div class="field>
+          <div class="control">
+            <button class="button is-link">Add Repo</button>
+          </div>
+        </div>    
+        <script>
+          var repos = [ <.repos-js> ]
+          autocomplete(document.getElementById("repos"), repos);
+        </script> 
+    </form>
+  </p> 

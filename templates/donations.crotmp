@@ -1,0 +1,37 @@
+<html>
+    <&HTML-AND-JAVASCRIPT(.css)>
+    <head>
+      <title><.title></title>
+    </head>
+    <body>
+      <div class="container is-fluid">
+        <div>
+          <&HTML-AND-JAVASCRIPT(.navbar)>
+        </div>
+        <?.message>
+          <span class="control">
+            <pre class="notification"><.message></pre>
+          </span>
+        </?>
+        <div>    
+          <nav class="panel is-success">
+            <p class="panel-heading">
+              <.page-title>
+            </p>
+            <div class="panel-block"> 
+              <div class="content" id="doc">
+                SparrowCI is free service.
+                However all the cloud resources
+                are paid by the project author
+                out of pocket.<br>
+                Please, support the project
+                and it will get better!
+                Thanks.<br><br>
+                <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#29abe0', 'E1E75Z6RL');kofiwidget2.draw();</script> 
+              </div>
+            </div>
+          </nav>
+        </div>      
+      </div>      
+    </body>
+</html>

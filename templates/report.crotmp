@@ -1,0 +1,126 @@
+<html>
+    <&HTML-AND-JAVASCRIPT(.css)>
+    <head>
+      <title><.title></title>
+    </head>
+    <body>
+      <div class="container is-fluid">
+        <div>
+          <&HTML-AND-JAVASCRIPT(.navbar)>
+        </div>
+        <?.message>
+          <span class="control">
+            <pre class="notification"><.message></pre>
+          </span>
+        </?>
+        <div>    
+          <nav class="panel is-success">
+            <p class="panel-heading">
+              <.page-title>
+            </p>
+            <div class="panel-block">
+              <nav class="tabs is-boxed is-fullwidth">
+                    <div class="container">
+                      <ul>
+                        <li class="tab" onclick="openTab(event,'Summary')"><a>Summary</a></li>
+                        <li class="tab" onclick="openTab(event,'Init')"><a>Init</a></li>
+                        <li class="tab is-active" onclick="openTab(event,'Report')"><a>Report</a></li>
+                        <li class="tab" onclick="openTab(event,'DR')"><a>Deps report</a></li>
+                        <li class="tab" onclick="openTab(event,'LR')"><a>License report</a></li>
+                        <li class="tab" onclick="openTab(event,'TC')"><a>Test coverage</a></li>
+                      </ul>
+                    </div>
+              </nav>
+            </div>
+            <div class="panel-block">
+                  <div id="Summary" class="content-tab" style="display:none">
+                    BuildID: <.id><br>
+                    Status: <.state><br>
+                    Worker status: <.worker-status><br>
+                    --- <br>
+                    Date: <.date><br>
+                    Time elapsed: <.elapsed> sec<br>
+                    --- <br>
+                    Raku Version: <.raku-env.raku><br>
+                    Zef Version: <.raku-env.zef><br>
+                    --- <br>
+                    <?.scm>
+                    SCM: <a href="<.scm>" target="_blank"><.scm></a><br>
+                    </?>
+                    Git sha: <.git-data.sha><br>
+                    Git comment: <.git-data.comment><br>
+                  </div>
+                  <div id="Init" class="content-tab" style="display:none">
+                    <pre id="init_log"><.init-log></pre>
+                  </div>
+                  <div id="Report" class="content-tab">
+                    <pre id="log"><.log></pre>
+                  </div>
+                  <div id="DR" class="content-tab" style="display:none">
+                    <?.deps-data>
+                      <pre id="dr"><.deps-data></pre>
+                    </?>
+                    <!.deps-data>
+                      no data found      
+                    </!>
+                  </div>
+                  <div id="LR" class="content-tab" style="display:none">
+                    <?.lc-data>
+                      <pre id="lr"><.lc-data></pre>
+                    </?>
+                    <!.lc-data>
+                      no data found      
+                    </!>
+                  </div>
+                  <div id="TC" class="content-tab" style="display:none">
+                    <?.test-coverage-html>
+                      <a href="/tc/<.id>" target="_blank">test coverage report</a>
+                    </?>
+                    <!.test-coverage-html>
+                      no data found
+                    </!>
+                  </div>
+            </div>
+          </nav>
+        </div>      
+      </div>      
+
+      <script src="/js/ansi_up.js" type="text/javascript"></script>
+      <script type="text/javascript">
+
+        var txt  = document.getElementById('init_log').innerText;
+        
+        var ansi_up = new AnsiUp;
+
+        var html = ansi_up.ansi_to_html(txt);
+
+        document.getElementById('init_log').innerHTML = html;
+
+        txt  = document.getElementById('log').innerText;
+        
+        html = ansi_up.ansi_to_html(txt);
+
+        document.getElementById('log').innerHTML = html;
+
+        txt  = document.getElementById('dr').innerText;
+
+        html = ansi_up.ansi_to_html(txt);
+
+        document.getElementById('dr').innerHTML = html;
+
+        txt  = document.getElementById('lr').innerText;
+
+        html = ansi_up.ansi_to_html(txt);
+
+        document.getElementById('lr').innerHTML = html;
+
+      </script>
+    </body>
+</html>
+
+
+
+
+
+
+

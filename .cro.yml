@@ -1,0 +1,8 @@
+cro: 1
+id: sparrowci_web
+name: sparrowci_web
+entrypoint: app.raku
+ignore:
+  - examples
+  - utils/
+  - README.md
