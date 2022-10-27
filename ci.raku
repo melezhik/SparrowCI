@@ -208,9 +208,12 @@ class Pipeline does Sparky::JobApi::Role {
         say ">>> prepare docker container";
 
         bash(qq:to /HERE/, %(description => "docker run") );
-          docker run \
-          --rm --name sparrow-worker \
-          --add-host=host.docker.internal:host-gateway \
+          set -e
+          set -x
+          docker stop -t 1 sparrow-worker 2>/dev/null || echo "no sparrow-worker container running"
+          docker run \\
+          --rm --name sparrow-worker \\
+          --add-host=host.docker.internal:host-gateway \\
           -itd {$.docker_image}
         HERE
 
