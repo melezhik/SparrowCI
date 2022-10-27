@@ -211,6 +211,7 @@ class Pipeline does Sparky::JobApi::Role {
           set -e
           set -x
           docker stop -t 1 sparrow-worker 2>/dev/null || echo "no sparrow-worker container running"
+          sleep 3
           docker run \\
           --rm --name sparrow-worker \\
           --add-host=host.docker.internal:host-gateway \\
