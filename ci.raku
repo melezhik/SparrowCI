@@ -9,9 +9,9 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.tasks_config = tags()<tasks_config> || "";
 
-  has Str $.project = tags()<SPARKY_PROJECT> || "SparrowCI";
+  has Str $.project = tags()<project> || tags()<SPARKY_PROJECT> || "";
 
-  has Str $.scm = tags()<SCM_URL> || "";
+  has Str $.scm = tags()<scm> || tags()<SCM_URL> || "";
 
   has Str $.source_dir is default(tags()<source_dir> || "") is rw;
 
@@ -112,6 +112,29 @@ class Pipeline does Sparky::JobApi::Role {
   }
 
   method stage-main {
+
+      my $j = self.new-job: :project<SparrowCIQueue>;
+
+      my $timeout = 1100;
+
+      $j.queue: %(
+            description => "{$.scm} queue",
+            tags => %(
+              stage => "prepare",
+              project => $.project,
+              scm => $.scm,
+              docker_image => $.docker_image,
+              docker_bootstrap => $.docker_bootstrap,
+              sparrowdo_bootstrap => $.sparrowdo_bootstrap,
+              tasks_config => $.tasks_config
+            ),
+      );
+
+      self.wait-job($j,{ timeout => $timeout.Int });
+
+  }
+
+  method stage-prepare {
 
       say "tags: {tags().perl}";
 
