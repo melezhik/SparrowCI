@@ -9,7 +9,7 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.tasks_config = tags()<tasks_config> || "";
 
-  has Str $.project = %*ENV<PROJECT> || "SparrowCI";
+  has Str $.project = tags()<SPARKY_PROJECT> || "SparrowCI";
 
   has Str $.scm = tags()<scm> || %*ENV<SCM> || 'git@github.com:melezhik/rakudist-teddy-bear.git';
 
@@ -234,7 +234,8 @@ class Pipeline does Sparky::JobApi::Role {
         ),
         sparrowdo => %(
           docker => "sparrow-worker",
-          no_sudo => True, 
+          no_sudo => True,
+          repo => "https://sparrowhub.io/repo", 
           bootstrap => ($.sparrowdo_bootstrap eq "on") ?? True !! False 
         )
       );
