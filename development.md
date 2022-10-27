@@ -27,6 +27,6 @@ sparrowdo \
 --sparrowfile ci.raku \
 --tags tasks_config=$PWD/examples/go/make.yaml,\
 scm=https://git.sr.ht/~craftyguy/superd\,
-docker_image=melezhik/sparrow:alpine\ 
+docker_image=melezhik/sparrow:alpine \ 
 --desc "build pipeline"
 ```
