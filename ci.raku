@@ -11,7 +11,7 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.project = tags()<SPARKY_PROJECT> || "SparrowCI";
 
-  has Str $.scm = tags()<scm> || %*ENV<SCM> || 'git@github.com:melezhik/rakudist-teddy-bear.git';
+  has Str $.scm = tags()<scm> || %*ENV<SCM_URL> || 'git@github.com:melezhik/rakudist-teddy-bear.git';
 
   has Str $.source_dir is default(tags()<source_dir> || "") is rw;
 
