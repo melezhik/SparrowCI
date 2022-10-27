@@ -31,7 +31,7 @@ class Pipeline does Sparky::JobApi::Role {
 
     my $sapi;
 
-    say "get-storage-api. docker_mode=$docker";
+    say ">>> get-storage-api. docker_mode=$docker";
 
     if $.storage_job_id {
       # return existing storage api job  
@@ -138,7 +138,8 @@ class Pipeline does Sparky::JobApi::Role {
         say ">>> copy source/sparrow.yaml to remote storage";
         unless "source/sparrow.yaml".IO ~~ :e {
           my $stash = %(
-            status => "FAIL", 
+            status => "FAIL",
+            state => 1, 
             log => "sparrow.yaml not found", 
             git-data => $git-data,
           );
@@ -160,6 +161,7 @@ class Pipeline does Sparky::JobApi::Role {
             my $err-message = .message;  
             my $stash = %(
               status => "FAIL", 
+              state => 1,
               log => $err-message, 
               git-data => $git-data,
               sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
@@ -174,6 +176,7 @@ class Pipeline does Sparky::JobApi::Role {
       unless $data {
         my $stash = %(
           status => "FAIL", 
+          state => -1,
           log => "default task is not found", 
           git-data => $git-data,
           sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
@@ -185,6 +188,7 @@ class Pipeline does Sparky::JobApi::Role {
       if $data.elems > 1 {
         my $stash = %(
           status => "FAIL", 
+          state => 1,
           log => "default task - too many found", 
           git-data => $git-data,
           sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
@@ -248,8 +252,13 @@ class Pipeline does Sparky::JobApi::Role {
 
       my @logs;
 
+      my $i = 0;
+
+      my $state;
+
       for @jobs.reverse() -> $b {
 
+        $i++;  
         my $r = HTTP::Tiny.get: "http://127.0.0.1:4000/report/raw/{$b<project>}/{$b<job-id>}";
 
         my $log = $r<content> ?? $r<content>.decode !! '';
@@ -257,6 +266,8 @@ class Pipeline does Sparky::JobApi::Role {
         $r = HTTP::Tiny.get: $b<status-url>;
 
         my $status = $r<content> ?? $r<content>.decode !! '-2';
+
+        $state = $status if $i == 1;
 
         say "\n[$b<project>] - [{$st-to-human{$status}}]"; 
         say "================================================================";
@@ -269,6 +280,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $stash = %(
         status => ( $st<OK> ?? "OK" !! ( $st<TIMEOUT> ?? "TIMEOUT" !! ($st<FAIL> ?? "FAIL" !! "NA") ) ), 
+        state => $state,
         log => @logs.join("\n"), 
         git-data => $git-data,
         sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
