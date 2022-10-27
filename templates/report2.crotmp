@@ -1,0 +1,83 @@
+<html>
+    <&HTML-AND-JAVASCRIPT(.css)>
+    <head>
+      <title><.title></title>
+    </head>
+    <body>
+      <div class="container is-fluid">
+        <div>
+          <&HTML-AND-JAVASCRIPT(.navbar)>
+        </div>
+        <?.message>
+          <span class="control">
+            <pre class="notification"><.message></pre>
+          </span>
+        </?>
+        <div>    
+          <nav class="panel is-success">
+            <p class="panel-heading">
+              <.page-title>
+            </p>
+            <div class="panel-block">
+              <nav class="tabs is-boxed is-fullwidth">
+                    <div class="container">
+                      <ul>
+                        <li class="tab" onclick="openTab(event,'Summary')"><a>Summary</a></li>
+                        <li class="tab" onclick="openTab(event,'PipelineYAML')"><a>Pipeline YAML</a></li>
+                        <li class="tab is-active" onclick="openTab(event,'Report')"><a>Report</a></li>
+                      </ul>
+                    </div>
+              </nav>
+            </div>
+            <div class="panel-block">
+                  <div id="Summary" class="content-tab" style="display:none">
+                    BuildID: <.id><br>
+                    Status: <.state><br>
+                    Worker status: <.worker-status><br>
+                    --- <br>
+                    Date: <.date><br>
+                    Time elapsed: <.elapsed> sec<br>
+                    --- <br>
+                    <?.scm>
+                    SCM: <a href="<.scm>" target="_blank"><.scm></a><br>
+                    </?>
+                    Git sha: <.git-data.sha><br>
+                    Git comment: <.git-data.comment><br>
+                  </div>
+                  <div id="PipelineYAML" class="content-tab" style="display:none">
+                    <?.sparrow-yaml>
+                      <pre id="sparrow-yaml"><code class="language-yaml"><.sparrow-yaml></code></pre>
+                    </?>
+                    <!.sparrow-yaml>
+                      <pre id="sparrow-yaml">pipeline code not found</pre>
+                    </!>
+                  </div>
+                  <div id="Report" class="content-tab">
+                    <pre id="log"><.log></pre>
+                  </div>
+            </div>
+          </nav>
+        </div>      
+      </div>      
+
+      <script src="/js/ansi_up.js" type="text/javascript"></script>
+      <script type="text/javascript">
+
+        var txt  = document.getElementById('log').innerText;
+        
+        var ansi_up = new AnsiUp;
+
+        var html = ansi_up.ansi_to_html(txt);
+
+        document.getElementById('log').innerHTML = html;
+
+      </script>
+    </body>
+</html>
+
+
+
+
+
+
+

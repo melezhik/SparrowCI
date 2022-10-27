@@ -1,0 +1,138 @@
+<html>
+    <&HTML-AND-JAVASCRIPT(.css)>
+    <head>
+      <title><.title></title>
+      <script type="text/javascript" src="js/select-search.js"></script>
+      <link rel="stylesheet" type="text/css" href="css/select-search.css" />
+    </head>
+    <body>
+      <div class="container is-fluid">
+        <div>
+          <&HTML-AND-JAVASCRIPT(.navbar)>
+        </div>
+        <?.message>
+          <span class="control">
+            <pre class="notification"><.message></pre>
+          </span>
+        </?>
+        <div>    
+          <nav class="panel is-success">
+            <p class="panel-heading">
+              <.page-title>
+            </p>
+            <div class="panel-block">
+              <nav class="tabs is-boxed is-fullwidth">
+                    <div class="container">
+                      <ul>
+                        <li class="tab is-active" onclick="openTab(event,'ActiveList')"><a>Active Repos</a></li>
+                        <li class="tab" onclick="openTab(event,'ManageRepos')"><a>Manage Repos</a></li>
+                        <li class="tab" onclick="openTab(event,'AddRepo')"><a>Add Repo</a></li>
+                        <li class="tab" onclick="openTab(event,'SyncRepos')"><a>Sync Repos</a></li>
+                      </ul>
+                    </div>
+              </nav>
+            </div>
+            <div class="panel-block">
+                <div id="ActiveList" class="panel-block content-tab">
+                  <p class="control">
+                    <table class="table" border=0>
+                    <@projects: $i>
+                      <tr>
+                        <td>
+                          <$i.type-human>@<$i.repo>
+                        </td>
+                        <td>
+                          |
+                        </td>  
+                        <td>
+                          <a href="/repo/<$i.repo>/link?type=<$i.type>" target="_blank">Http Link</a>
+                        </td>
+                        <td>
+                          |
+                        </td>  
+                        <td>
+                          <a href="/project/<$i.project>/badge/markdown">Badge</a>
+                        </td>
+                      </tr>  
+                    </@>
+                    </table>
+                  </p>
+                </div>
+                <div id="ManageRepos" class="panel-block content-tab" style="display:none">
+                  <p class="control">
+                    <table class="table">
+                    <@projects: $i>
+                      <tr>
+                        <td>
+                            <$i.type-human>@<$i.repo>
+                        </td>
+                        <td>
+                          <form action="/repo-build" method="POST">
+                            <input id="repo" class="input" type="hidden" name="repo" value="<$i.repo>">
+                            <input type="hidden" name="type" value="<$i.type>">  
+                            <button class="button is-small">Rebuild</button>
+                          </form>
+                        </td>
+                        <td>
+                          <form action="/repo-rm" method="POST">
+                            <input id="repo" class="input" type="hidden" name="repo" value="<$i.repo>">
+                            <input type="hidden" name="type" value="<$i.type>">  
+                            <button class="button is-small">Delete</button>
+                          </form>
+                        </td>
+                      </tr>
+                    </@>
+                    </table>
+                  </p>     
+                </div>  
+                <div id="AddRepo" class="panel-block content-tab" style="display:none">
+                  <p class="control">
+                    <form autocomplete="off" action="/repo" method="POST">
+                        <div class="field">
+                            <div class="autocomplete">
+                              <label class="label">Add repository</label>
+                              <input id="repos" class="input" type="text" name="repos" placeholder="GH repo name | Git repo URL">
+                              <span class="help is-success">Type here to search within your GitHub repos</span>
+                              <label class="checkbox">
+                                <input type="checkbox" value="on" name="typegit">
+                                 Not a GitHub repo
+                              </label>
+                            </div>
+                        </div>
+                        <div class="field>
+                          <div class="control">
+                            <button class="button is-link">Add Repo</button>
+                          </div>
+                        </div>    
+                        <script>
+                          var repos = [ <.gh-repos-js> ]
+                          autocomplete(document.getElementById("repos"), repos);
+                        </script> 
+                    </form>
+                  </p> 
+                </div>
+                <div id="SyncRepos" class="panel-block content-tab" style="display:none">
+                  <p class="control">
+                    <form action="/repos-sync" method="POST">
+                      <div class="field">
+                          <div class="autocomplete">
+                            <label class="label">Sync Repositories</label>
+                            <span class="help is-success">Last sync date: <.repos-sync-date></span>
+                          </div>
+                      </div>
+                      <div class="field>
+                        <div class="control">
+                          <button class="button is-link">Sync</button>
+                        </div>
+                      </div>    
+                    </form>
+                  </p> 
+                </div>  
+            </div>  
+          </nav>
+        </div>      
+      </div>      
+  </body>
+</html>
+
+

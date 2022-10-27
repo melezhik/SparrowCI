@@ -1,7 +1,7 @@
 use Sparky::JobApi;
-use Sparky;
 use HTTP::Tiny;
 use YAMLish;
+use JSON::Fast;
 
 class Pipeline does Sparky::JobApi::Role {
 
@@ -9,95 +9,111 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.tasks_config = tags()<tasks_config> || "";
 
-  has Str $.project = %*ENV<PROJECT> || "TeddyBear";
-
-  has Str $.worker = %*ENV<WORKER> || tags()<worker> || "";
+  has Str $.project = %*ENV<PROJECT> || "SparrowCI";
 
   has Str $.scm = tags()<scm> || %*ENV<SCM> || 'git@github.com:melezhik/rakudist-teddy-bear.git';
 
-  has Str $.source_dir = tags()<source_dir> || "";
-
-  has Str $.storage_project is default(tags()<storage_project> || "") is rw;
+  has Str $.source_dir is default(tags()<source_dir> || "") is rw;
 
   has Str $.storage_job_id is default(tags()<storage_job_id> || "") is rw;
 
-  has Str $.storage_api = %*ENV<STORAGE_API> || "http://127.0.0.1:4000";
-  
-  has Str $.notify-api = %*ENV<NOTIFY_API> || "http://127.0.0.1:4000";
+  has Str $.docker_bootstrap = tags()<docker_bootstrap> || "on";
 
-  has Str $.notify-project = %*ENV<NOTIFY_PROJECT> || "SparrowCINotify";
+  has Str $.docker_image = tags()<docker_image> || "melezhik/sparrow:alpine";
 
-  has Str $.notify-job = %*ENV<NOTIFY_JOB> || "foobarbaz";
+  has Str $.sparrowdo_bootstrap = tags()<sparrowdo_bootstrap> || "off";
 
-  method !get-last-build {
+  my $notify-job;
 
-    my $dbh = get-dbh();
+  my @jobs;
 
-    my $sth = $dbh.prepare(q:to/STATEMENT/);
-      SELECT 
-        max(ID) AS build_id
-      FROM builds 
-    STATEMENT
+  method !get-storage-api (:$docker = False) {
 
-    $sth.execute();
+    my $sapi;
 
-    my @rows = $sth.allrows();
+    say ">>> get-storage-api. docker_mode=$docker";
 
-    my $build-id = @rows[0][0];
+    if $.storage_job_id {
+      # return existing storage api job  
+      $sapi = self.new-job: 
+        job-id => $.storage_job_id, 
+        project => <SparrowCIStorage>, 
+        api => ($docker ?? 'http://host.docker.internal:host-gateway:4000' !! 'http://127.0.0.1:4000');
+    } else {
+      $sapi = self.new-job: 
+        project => <SparrowCIStorage>, 
+        api => ($docker ?? 'http://host.docker.internal:host-gateway:4000' !! 'http://127.0.0.1:4000');
+      # allocate new storage api job
+      $.storage_job_id = $sapi.info()<job-id>;
+    } 
 
-    $sth.finish;
-
-    return $build-id;
-
-  }
-
-  method !get-storage-api {
-
-    return self.new-job: 
-      job-id => $.storage_job_id, 
-      project => $.storage_project, 
-      api => $.storage_api;
+    return $sapi; 
 
   }
 
-  method !tasks-config {
-    say ">>> load sparrow.yaml from storage";
-    load-yaml(self!get-storage-api.get-file("sparrow.yaml",:text));
+  method !tasks-config (:$docker = False) {
+    say ">>> load sparrow.yaml from storage, docker_mode=$docker";
+    load-yaml(self!get-storage-api(:$docker).get-file("sparrow.yaml",:text));
   }
   
-  method !get-notify-job {
+  method !build-report(:$stash) {
 
-    self.new-job:
-      :api($.notify-api),
-      :project($.notify-project),
-      :job-id($.notify-job);
+    say "build web report ...";
+
+    my %headers = content-type => 'application/json';
+
+    my $j = Sparky::JobApi.new: :mine;
+
+    my $time = now - INIT now;
+
+    $stash<project> = $.project;
+    $stash<job-id> = $j.info()<job-id>;
+    $stash<with-sparrowci> = True;
+    $stash<date> = "{DateTime.now}";
+    $stash<worker-status> = "OK";
+    $stash<scm> = $.scm;
+    $stash<elapsed> = $time.Int;
+
+    my $r = HTTP::Tiny.post: "http://127.0.0.1:2222/build", 
+      headers => %headers,
+      content => to-json($stash);
+
+    $r<status> == 200 or die "{$r<status>} : { $r<content> ?? $r<content>.decode !! ''}";
+
+    my $res = $r<content>.decode;
+
+    say "build web report OK, report_id: {$res}";
 
   }
 
-  method !queue-notify-job(:$stash) {
+  method !get-jobs-list ($j){
+    # traverse jobs DAG
+    # in order: left -> parent -> right
+    if $j.get-stash()<child-jobs><left> {
+        for $j.get-stash()<child-jobs><left><> -> $c {
+          my $job-id = $c<job-id>;
+          my $project = $c<project>;
+          my $cj = self.new-job: :$job-id, :$project;
+          self!get-jobs-list($cj)
+        }
+    } 
+    say ">>> get-jobs-list: push job={$j.info().perl}";
 
-    my $nj = self!get-notify-job();
-
-    $nj.put-stash: $stash;
-
-    $nj.queue({
-      description => "{$.project} - build report",
-      tags => %(
-        stage => "notify",
-        worker => $.worker,
-      ),
-    });
+    @jobs.push: $j.info();
+    if $j.get-stash()<child-jobs><right> {
+        for $j.get-stash()<child-jobs><right><> -> $c {
+          my $job-id = $c<job-id>;
+          my $project = $c<project>;
+          my $cj = self.new-job: :$job-id, :$project;
+          self!get-jobs-list($cj)
+        }
+    } 
 
   }
 
   method stage-main {
 
-      my $storage = self.new-job: api => $.storage_api;  
-
-      my %storage = $storage.info();
-
-      $.storage_project = %storage<project>;
-      $.storage_job_id = %storage<job-id>;
+      say "tags: {tags().perl}";
 
       directory "source";
       
@@ -105,6 +121,10 @@ class Pipeline does Sparky::JobApi::Role {
         to => "source",
         branch => "HEAD",
       );
+
+      bash("tar -czvf source.tar.gz source/",%( description => "archive source directory"));
+
+      self!get-storage-api().put-file("source.tar.gz","source.tar.gz");
 
       my $git-data = task-run "git data", "git-commit-data", %(
         dir => "{$*CWD}/source",
@@ -118,11 +138,12 @@ class Pipeline does Sparky::JobApi::Role {
         say ">>> copy source/sparrow.yaml to remote storage";
         unless "source/sparrow.yaml".IO ~~ :e {
           my $stash = %(
-            status => "FAIL", 
+            status => "FAIL",
+            state => 1, 
             log => "sparrow.yaml not found", 
             git-data => $git-data,
           );
-          self!queue-notify-job: :$stash;
+          self!build-report: :$stash;
           die "sparrow.yaml file not found"; 
         }
         self!get-storage-api().put-file("source/sparrow.yaml","sparrow.yaml");
@@ -140,40 +161,39 @@ class Pipeline does Sparky::JobApi::Role {
             my $err-message = .message;  
             my $stash = %(
               status => "FAIL", 
+              state => -2,
               log => $err-message, 
               git-data => $git-data,
               sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
             );
-            self!queue-notify-job: :$stash;
+            self!build-report: :$stash;
             die $err-message;  
           }  
         } 
       }
 
-      my $dbh = get-dbh();
-
-      my $last-build = self!get-last-build();
-
       my $data = $tasks-config<tasks>.grep({.<default>});
       unless $data {
         my $stash = %(
           status => "FAIL", 
+          state => -2,
           log => "default task is not found", 
           git-data => $git-data,
           sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
         );
-        self!queue-notify-job: :$stash;
+        self!build-report: :$stash;
         die "default task is not found";
       }
 
       if $data.elems > 1 {
         my $stash = %(
           status => "FAIL", 
+          state => -2,
           log => "default task - too many found", 
           git-data => $git-data,
           sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
         );
-        self!queue-notify-job: :$stash;
+        self!build-report: :$stash;
         die "default task - too many found";
       }
 
@@ -182,6 +202,22 @@ class Pipeline does Sparky::JobApi::Role {
       my $project = $task<name>;
 
       my $j = self.new-job: :$project;
+
+      if $.docker_bootstrap eq "on" {
+  
+        say ">>> prepare docker container";
+
+        bash(qq:to /HERE/, %(description => "docker run") );
+          set -e
+          set -x
+          docker stop -t 1 sparrow-worker 2>/dev/null || echo "no sparrow-worker container running"
+          docker run \\
+          --rm --name sparrow-worker \\
+          --add-host=host.docker.internal:host-gateway \\
+          -itd {$.docker_image}
+        HERE
+
+      }
 
       say ">>> trigger task: {$task.perl}";
 
@@ -194,23 +230,21 @@ class Pipeline does Sparky::JobApi::Role {
         tags => %(
           stage => "run",
           task => $task<name>,
-          storage_project => $.storage_project,
           storage_job_id => $.storage_job_id,
-          source_dir => "{$*CWD}",
         ),
+        sparrowdo => %(
+          docker => "sparrow-worker",
+          no_sudo => True, 
+          bootstrap => ($.sparrowdo_bootstrap eq "on") ?? True !! False 
+        )
       );
 
       my $st = self.wait-job($j,{ timeout => $timeout.Int });
       
-      my $sth = $dbh.prepare(q:to/STATEMENT/);
-          SELECT * from builds where ID  > ? order by id asc
-      STATEMENT
+      # traverse jobs DAG in order
+      # and save result in @jobs
 
-      $sth.execute: $last-build;
-
-      my @builds = $sth.allrows(:array-of-hash);
-
-      $sth.finish;
+      self!get-jobs-list($j);
 
       my $st-to-human = %(
         "-2" => "NA",
@@ -221,13 +255,17 @@ class Pipeline does Sparky::JobApi::Role {
 
       my @logs;
 
-      for @builds -> $b {
+      for @jobs.reverse() -> $b {
 
-        my $r = HTTP::Tiny.get: "http://127.0.0.1:4000/report/raw/{$b<project>}/{$b<job_id>}";
+        my $r = HTTP::Tiny.get: "http://127.0.0.1:4000/report/raw/{$b<project>}/{$b<job-id>}";
 
         my $log = $r<content> ?? $r<content>.decode !! '';
 
-        say "\n[$b<description>] - [{$st-to-human{$b<state>}}] at [$b<dt>]"; 
+        $r = HTTP::Tiny.get: $b<status-url>;
+
+        my $status = $r<content> ?? $r<content>.decode !! '-2';
+
+        say "\n[$b<project>] - [{$st-to-human{$status}}]"; 
         say "================================================================";
         for $log.lines.grep({ $_ !~~ /^^ '>>>'/ }) -> $l {
           say $l;
@@ -236,51 +274,15 @@ class Pipeline does Sparky::JobApi::Role {
 
       }
 
-      # notify job
-      my $nj = self.new-job:
-        :api($.notify-api),
-        :project($.notify-project),
-        :job-id($.notify-job);
-
-      $nj.put-stash({ 
+      my $stash = %(
         status => ( $st<OK> ?? "OK" !! ( $st<TIMEOUT> ?? "TIMEOUT" !! ($st<FAIL> ?? "FAIL" !! "NA") ) ), 
+        state => ( $st<OK> ?? "1" !! ( $st<TIMEOUT> ?? "-1" !! ($st<FAIL> ?? "-2" !! "-10") ) ),
         log => @logs.join("\n"), 
         git-data => $git-data,
         sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
+      );  
 
-      });  
-
-      $nj.queue({
-        description => "{$.project} - build report",
-        tags => %(
-          stage => "notify",
-          worker => $.worker,
-        ),
-      });
-
-      #die $st.perl unless $st<OK> == 1;
-
-      #say $st.perl;
-
-    }
-
-    method stage-notify {
-
-      my $nj = self.new-job: :mine(True);
-
-      my $report = $nj.get-stash();
-
-      say "=========================";
-
-      say "status: ", $report<status>;
-
-      say "log: ", $report<log>;
-
-      bash "az container delete -g sparky2 --name {$.worker} -y -o table || echo", %(
-        description => "delete container";
-      ) if $.worker;
-
-      die unless $report<status> eq "OK";
+      self!build-report: :$stash;
 
     }
 
@@ -290,7 +292,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $stash = $j.get-stash();
 
-      my $data = self!tasks-config()<tasks>.grep({.<name> eq $.task});
+      my $data = self!tasks-config(:docker<True>)<tasks>.grep({.<name> eq $.task});
 
       die "task {$.task} is not found" unless $data;
 
@@ -304,6 +306,18 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $tasks-data = %();
 
+      my %child-jobs = %();
+
+      unless $.source_dir {
+        say "source directory does not yet exist, download source archive from storage";
+        my $blob = self!get-storage-api(:docker).get-file("source.tar.gz",:bin);
+        "source.tar.gz".IO.spurt($blob,:bin);
+        bash "tar -xzf source.tar.gz && ls -l source/", %( 
+          description => "unpack source archive", 
+          cwd => "{$*CWD}" 
+        );
+        $.source_dir = "{$*CWD}";
+      }  
       if $task<depends> {
 
         say ">>> enter depends block: ", $task<depends>.perl;
@@ -316,18 +330,25 @@ class Pipeline does Sparky::JobApi::Role {
 
         my $st = self.wait-jobs(@jobs,{ timeout => $timeout.Int });
 
-        die $st.perl unless $st<OK> == @jobs.elems;
-
-        say ">>> ", $st.perl;
-
         for @jobs -> $dj {
-
+            %child-jobs<left>.push: $dj.info;
             my $d = $dj.get-stash();
-
             if $d<task>:exists {
               $tasks-data{$d<task>}<state> = $d<state>;
             }
         }
+
+        # save job data
+        $j.put-stash(%( child-jobs => %child-jobs ));
+
+        # handle depends jobs errors
+        say ">>> depends jobs status: ", $st.perl;
+
+        unless $st<OK> == @jobs.elems {
+          say "some depends jobs failed or timeouted: {$st.perl}";
+          exit(1)
+        }
+
       }
 
       my $params = $stash<config> || $task<config> || {};
@@ -340,10 +361,6 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $state = self!task-run: :$task, :$params, :$in-artifacts, :$out-artifacts;
  
-      # save task state to job's stash
-
-      $j.put-stash(%( state => $state, task => $task<name> ));
-
       my $parent-data = $state;
 
       if $task<followup> {
@@ -354,13 +371,30 @@ class Pipeline does Sparky::JobApi::Role {
 
         my @jobs = self!run-task-dependency: :$tasks, :$tasks-data, :$parent-data;
 
-        say "waiting for followup tasks have finsihed ...";
+        say ">>> waiting for followup tasks have finsihed ...";
 
         my $st = self.wait-jobs(@jobs,{ timeout => $timeout });
 
-        die $st.perl unless $st<OK> == @jobs.elems;
 
-        say ">>> ", $st.perl;
+        for @jobs -> $fj {
+          %child-jobs<right>.push: $fj.info();
+        }
+
+        # save job data
+        $j.put-stash(%( state => $state, task => $task<name>, child-jobs => %child-jobs ));
+
+        say ">>> followup jobs status: ", $st.perl;
+
+        # handle followup jobs errors
+
+        unless $st<OK> == @jobs.elems {
+          say "some followup jobs failed or timeouted: {$st.perl}";
+          exit(1);
+        }
+
+      } else {
+        # save job data
+        $j.put-stash(%( state => $state, task => $task<name>, child-jobs => %child-jobs ));       
       }
 
     }
@@ -400,7 +434,6 @@ class Pipeline does Sparky::JobApi::Role {
             stage => "run",
             task => $t<name>,
             source_dir => $.source_dir,
-            storage_project => $.storage_project,
             storage_job_id => $.storage_job_id,
           ),
         );
@@ -425,7 +458,7 @@ class Pipeline does Sparky::JobApi::Role {
 
         if $in-artifacts {
 
-          my $job = self!get-storage-api();
+          my $job = self!get-storage-api: :docker;
 
           mkdir ".artifacts";
 
@@ -444,7 +477,7 @@ class Pipeline does Sparky::JobApi::Role {
           $state = task-run $task-dir, $params; 
         }
         if $out-artifacts {
-          my $job = self!get-storage-api();
+          my $job = self!get-storage-api: :docker;
           for $out-artifacts<> -> $f {
             say ">>> copy artifact [{$f<name>}] to storage";
             $job.put-file("{$f<path>}",$f<name>);
