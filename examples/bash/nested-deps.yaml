@@ -18,7 +18,7 @@ tasks:
     default: true
     code: |
       echo "task B"
-      exit 1
+      #exit 1
     depends:
     -
       name: task_A
