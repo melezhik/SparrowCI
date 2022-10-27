@@ -17,7 +17,9 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.storage_job_id is default(tags()<storage_job_id> || "") is rw;
 
-  has Str $.docker_bootstrap = tags()<docker_bootstrap> || "off";
+  has Str $.docker_bootstrap = tags()<docker_bootstrap> || "on";
+
+  has Str $.docker_image = tags()<docker_image> || "melezhik/sparrow:alpine";
 
   has Str $.sparrowdo_bootstrap = tags()<sparrowdo_bootstrap> || "off";
 
@@ -205,11 +207,11 @@ class Pipeline does Sparky::JobApi::Role {
   
         say ">>> prepare docker container";
 
-        bash(q:to /HERE/, %(description => "docker run") );
+        bash(qq:to /HERE/, %(description => "docker run") );
           docker run \
-          --rm --name alpine \
+          --rm --name sparrow-worker \
           --add-host=host.docker.internal:host-gateway \
-          -itd alpine
+          -itd {$.docker_image}
         HERE
 
       }
@@ -228,7 +230,7 @@ class Pipeline does Sparky::JobApi::Role {
           storage_job_id => $.storage_job_id,
         ),
         sparrowdo => %(
-          docker => "alpine",
+          docker => "sparrow-worker",
           no_sudo => True, 
           bootstrap => ($.sparrowdo_bootstrap eq "on") ?? True !! False 
         )
