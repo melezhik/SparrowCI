@@ -25,8 +25,6 @@ class Pipeline does Sparky::JobApi::Role {
 
   my @jobs;
 
-  my $time;
-
   method !get-storage-api (:$docker = False) {
 
     my $sapi;
@@ -63,6 +61,8 @@ class Pipeline does Sparky::JobApi::Role {
     my %headers = content-type => 'application/json';
 
     my $j = Sparky::JobApi.new: :mine;
+
+    my $time = now - INIT now;
 
     $stash<project> = $.project;
     $stash<job-id> = $j.info()<job-id>;
@@ -112,8 +112,6 @@ class Pipeline does Sparky::JobApi::Role {
   method stage-main {
 
       say "tags: {tags().perl}";
-
-      $time = now - INIT now;
 
       directory "source";
       
