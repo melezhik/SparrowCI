@@ -77,7 +77,7 @@ my $application = route {
       template 'templates/quickstart.crotmp', %(
         page-title => "Quick Start", 
         title => title(),   
-        data => parse-markdown("README.md".IO.slurp).to_html,
+        data => parse-markdown("quickstart.md".IO.slurp).to_html,
         css => css($theme),
         theme => $theme,
         navbar => navbar($user, $token, $theme),
