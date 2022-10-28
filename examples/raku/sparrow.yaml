@@ -38,8 +38,9 @@ tasks:
     name: install-carton
     language: Bash
     code: |
-      sudo apk add --wait 100 perl-utils
-      cpan install Carton 
+      set -e
+      curl -L http://cpanmin.us | perl - --self-upgrade
+      cpanm -n Carton 
 
   - name: install-powershell
     language: Bash
