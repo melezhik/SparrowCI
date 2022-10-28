@@ -30,7 +30,7 @@ tasks:
     language: Bash
     code: |
       set -e
-      sudo apk add \
+      sudo apk add --wait 100 \
       ruby-dev ruby-bundler \
       python3 py3-pip python3-dev py3-pytest
       perl perl-utils
@@ -43,9 +43,8 @@ tasks:
   - name: install-powershell
     language: Bash
     code: |
-
       # install the requirements
-      sudo apk add --no-cache \
+      sudo apk add --wait 100 --no-cache \
           ca-certificates \
           less \
           ncurses-terminfo-base \
@@ -60,7 +59,7 @@ tasks:
           icu-libs \
           curl
 
-      sudo apk -X https://dl-cdn.alpinelinux.org/alpine/edge/main add --no-cache \
+      sudo apk -X https://dl-cdn.alpinelinux.org/alpine/edge/main add --wait 100 --no-cache \
           lttng-ust
 
       # Download the powershell '.tar.gz' archive
