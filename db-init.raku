@@ -1,17 +1,17 @@
 use v6;
 use DBIish;
 use Data::Dump;
-use SparkyCI::Conf;
+use SparrowCI::Conf;
 
 sub MAIN (
-  Str  :$root = sparkyci-root(),
+  Str  :$root = sparrowci-root(),
 )
 
 {
 
 mkdir $root;
 
-my %conf = get-sparkyci-conf();
+my %conf = get-sparrowci-conf();
 
 my $dbh;
 my $engine;

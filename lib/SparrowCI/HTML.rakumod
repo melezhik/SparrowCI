@@ -1,11 +1,11 @@
-unit module SparkyCI::HTML;
+unit module SparrowCI::HTML;
 
-use SparkyCI::Conf;
-use SparkyCI::Security;
+use SparrowCI::Conf;
+use SparrowCI::Security;
 
 sub css (Mu $theme) is export {
 
-  my %conf = get-sparkyci-conf();
+  my %conf = get-sparrowci-conf();
 
   my $bulma-theme ;
 

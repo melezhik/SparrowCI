@@ -8,6 +8,19 @@ How to run pipelines locally
 
 * Install and run Sparky
 
+* Install SparrowCI web app
+
+```bash
+zef install . --/test
+
+```
+
+* Run SparrowCI web app
+
+```bash
+cro run
+```
+
 ## Run pipeline
 
 1. Pull docker image
@@ -41,4 +54,10 @@ bootstrap it during pipeline execution by using `sparrowdo_bootstrap` tag:
 ```
 --tags=sparrowdo_bootstrap=on
 ```
+
+3. Watch reports
+
+*  For worker reports, visit Sparky web UI - http://127.0.0.1:4000
+
+* For SparrowCI reports, visit SparrowCI web UI - http://127.0.0.1:2222
 

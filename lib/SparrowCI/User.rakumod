@@ -1,6 +1,6 @@
-unit module SparkyCI::User;
-use SparkyCI::Conf;
-use SparkyCI::Security;
+unit module SparrowCI::User;
+use SparrowCI::Conf;
+use SparrowCI::Security;
 use Cro::HTTP::Client;
 use JSON::Fast;
 

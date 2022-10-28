@@ -1,10 +1,10 @@
-unit module SparkyCI::Conf;
+unit module SparrowCI::Conf;
 
 use YAMLish;
 
 my %conf;
 
-sub get-sparkyci-conf is export {
+sub get-sparrowci-conf is export {
 
   return %conf if %conf;
  
@@ -22,7 +22,7 @@ sub http-root is export {
 
 }
 
-sub sparkyci-root is export {
+sub sparrowci-root is export {
 
   "{%*ENV<HOME>}/.sparkyci"
 }

@@ -1,4 +1,4 @@
-unit module SparkyCI::Repo;
+unit module SparrowCI::Repo;
 use YAMLish;
 
 sub get-repo (Mu $user,$repo-id,$type) is export {

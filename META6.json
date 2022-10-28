@@ -10,25 +10,25 @@
     "JSON::Fast",
     "File::Directory::Tree"
   ],
-  "description" : "SparkyCI",
+  "description" : "SparrowCI",
   "license" : "Artistic-2.0",
-  "name" : "SparkyCI",
+  "name" : "SparrowCI",
   "perl" : "6.*",
   "provides" : {
-    "SparkyCI" : "lib/SparkyCI.rakumod",
-    "SparkyCI::DB" : "lib/SparkyCI/DB.rakumod",
-    "SparkyCI::User" : "lib/SparkyCI/User.rakumod",
-    "SparkyCI::User" : "lib/SparkyCI/Repo.rakumod",
-    "SparkyCI::HTML" : "lib/SparkyCI/HTML.rakumod",
-    "SparkyCI::Conf" : "lib/SparkyCI/Conf.rakumod",
-    "SparkyCI::Security" : "lib/SparkyCI/Security.rakumod"
+    "SparrowCI" : "lib/SparrowCI.rakumod",
+    "SparrowCI::DB" : "lib/SparrowCI/DB.rakumod",
+    "SparrowCI::User" : "lib/SparrowCI/User.rakumod",
+    "SparrowCI::User" : "lib/SparrowCI/Repo.rakumod",
+    "SparrowCI::HTML" : "lib/SparrowCI/HTML.rakumod",
+    "SparrowCI::Conf" : "lib/SparrowCI/Conf.rakumod",
+    "SparrowCI::Security" : "lib/SparrowCI/Security.rakumod"
   },
   "resources" : [ ],
   "source-type" : "git",
-  "source-url" : "https://github.com/melezhik/sparkyci.git",
+  "source-url" : "https://github.com/melezhik/SparrowCI.git",
   "support" : {
-    "bugtracker" : "https://github.com/melezhik/sparkyci/issues",
-    "source" : "https://github.com/melezhik/sparkyci.git"
+    "bugtracker" : "https://github.com/melezhik/SparrowCI/issues",
+    "source" : "https://github.com/melezhik/SparrowCI.git"
   },
   "tags" : [ ],
   "test-depends" : [ ],

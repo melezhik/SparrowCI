@@ -1,14 +1,14 @@
-unit module SparkyCI::DB;
+unit module SparrowCI::DB;
 use YAMLish;
 use DBIish;
 use JSON::Fast;
-use SparkyCI::Conf;
+use SparrowCI::Conf;
 
 sub get-dbh {
 
   my $dbh;
 
-  my %conf = get-sparkyci-conf();
+  my %conf = get-sparrowci-conf();
 
   if %conf<database> && %conf<database><engine> && %conf<database><engine> !~~ / :i sqlite / {
 
@@ -23,7 +23,7 @@ sub get-dbh {
 
   } else {
 
-    my $db-name = "{sparkyci-root}/db.sqlite3";
+    my $db-name = "{sparrowci-root}/db.sqlite3";
 
     $dbh  = DBIish.connect("SQLite", database => $db-name );
 
@@ -138,8 +138,8 @@ sub get-last-build ($project) is export {
 
 sub get-report ($id) is export {
 
-  if "{sparkyci-root()}/data/{$id}/data.json".IO ~~ :e {
-    my $r = from-json("{sparkyci-root()}/data/{$id}/data.json".IO.slurp);
+  if "{sparrowci-root()}/data/{$id}/data.json".IO ~~ :e {
+    my $r = from-json("{sparrowci-root()}/data/{$id}/data.json".IO.slurp);
     if $r<state> == 1 {
       $r<state> = "OK"
     } elsif $r<state> == -1 {

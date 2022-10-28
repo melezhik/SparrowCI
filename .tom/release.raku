@@ -1,0 +1,2 @@
+bash "fez upload";
+

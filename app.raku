@@ -1,12 +1,12 @@
 use Cro::HTTP::Router;
 use Cro::HTTP::Server;
 use Cro::WebApp::Template;
-use SparkyCI::DB;
-use SparkyCI::User;
-use SparkyCI::HTML;
-use SparkyCI::Conf;
-use SparkyCI::Security;
-use SparkyCI::Repo;
+use SparrowCI::DB;
+use SparrowCI::User;
+use SparrowCI::HTML;
+use SparrowCI::Conf;
+use SparrowCI::Security;
+use SparrowCI::Repo;
 use Text::Markdown;
 use JSON::Fast;
 use Cro::HTTP::Client;
@@ -14,7 +14,7 @@ use File::Directory::Tree;
 
 my $application = route {
 
-    my %conf = get-sparkyci-conf();
+    my %conf = get-sparrowci-conf();
   
     get -> :$message, :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
       my @results = get-builds();
@@ -216,17 +216,17 @@ my $application = route {
         my $state = %json<state>;
         my $job-id = %json<job-id>;
 
-        say "generate sparkyci build ...";
+        say "generate SparrowCI build ...";
 
         $bid = insert-build :$state, :$project, :$desc, :$job-id;
 
         say "bid: $bid";
 
-        mkdir "{sparkyci-root()}/data/{$bid}";
+        mkdir "{sparrowci-root()}/data/{$bid}";
 
         $build<id> = $bid;
 
-        "{sparkyci-root()}/data/{$bid}/data.json".IO.spurt(to-json($build));
+        "{sparrowci-root()}/data/{$bid}/data.json".IO.spurt(to-json($build));
 
       }
 
