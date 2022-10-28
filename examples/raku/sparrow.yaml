@@ -6,6 +6,7 @@ tasks:
     code: |
       set -e
       set -x
+      s6 --index-update
       cd source 
       tomty --all --show-failed --color 
     depends:
@@ -40,7 +41,7 @@ tasks:
     code: |
       set -e
       sudo apk add --wait 100 perl-app-cpanminus
-      cpanm -n Carton 
+      sudo cpanm -nv Carton 
 
   - name: install-powershell
     language: Bash
