@@ -32,12 +32,13 @@ tasks:
       set -e
       sudo apk add --wait 100 \
       ruby-dev ruby-bundler \
-      python3 py3-pip python3-dev py3-pytest
+      python3 py3-pip python3-dev py3-pytest \
       perl perl-utils
   -
-    name: install-caton
+    name: install-carton
     language: Bash
     code: |
+      sudo apk add --wait 100 perl-utils
       cpan install Carton 
 
   - name: install-powershell
