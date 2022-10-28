@@ -145,7 +145,10 @@ class Pipeline does Sparky::JobApi::Role {
         branch => "HEAD",
       );
 
-      bash("tar -czvf source.tar.gz source/",%( description => "archive source directory"));
+      task-run "archive source directory", "pack-unpack", %(
+        target => "source", 
+        file => "source.tar.gz"
+      );
 
       self!get-storage-api().put-file("source.tar.gz","source.tar.gz");
 
@@ -337,9 +340,10 @@ class Pipeline does Sparky::JobApi::Role {
         say "source directory does not yet exist, download source archive from storage";
         my $blob = self!get-storage-api(:docker).get-file("source.tar.gz",:bin);
         "source.tar.gz".IO.spurt($blob,:bin);
-        bash "tar -xzf source.tar.gz && ls -l source/", %( 
-          description => "unpack source archive", 
-          cwd => "{$*CWD}" 
+        task-run "unpack source archive", "pack-unpack", %(
+          action => "unpack",
+          dir => "source", 
+          file => "source.tar.gz"
         );
         $.source_dir = "{$*CWD}";
       }  
