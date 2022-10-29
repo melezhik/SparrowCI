@@ -154,7 +154,7 @@ my $application = route {
           say "{$repo-dir}/sparrowfile symlink exists"; 
         } else {
           say "create {$repo-dir}/sparrowfile symlink"; 
-          symlink("sparrowfile","{$repo-dir}/sparrowfile");
+          symlink("ci.raku","{$repo-dir}/sparrowfile");
           redirect :see-other, "{http-root()}/repos?message=repo {$repo} added";
         }
       } else {
