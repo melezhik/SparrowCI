@@ -17,7 +17,6 @@ tasks:
         }
       }
     init: |
-      ignore_error();
       for config()<list><> -> $v {
         run_task("test", %( version => $v ));
       }
@@ -25,6 +24,8 @@ tasks:
       -
         name: test
         language: Bash
+        init: |
+          ignore_error
         code: |
           set -e
           rakubrew download moar-$version
