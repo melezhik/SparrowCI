@@ -1,0 +1,46 @@
+tasks:
+  -
+    name: multi-versions
+    default: true
+    language: Raku
+    config:
+      list:
+        - 2022.04
+        - 2022.06
+        - 2022.07
+    code: |
+      for config()<list><> -> $v {
+        if "{cache_root_dir()}/{$v}_ok".IO ~~ :e {
+          say "$v - OK";
+        } else {
+          say "$v - FAIL";
+        }
+      }
+    init: |
+      ignore_error();
+      for config()<list><> -> $v {
+        run_task("test", %( version => $v ));
+      }
+    subtasks:
+      -
+        name: test
+        language: Bash
+        code: |
+          set -e
+          rakubrew download moar-$version
+          rakubrew switch moar-$version
+          cd source/
+          zef install --/test .
+          time zef test . && touch "${cache_root_dir}/${vesion}_ok"
+    depends:
+      -
+        name: rakubrew-install
+  -
+    name: rakubrew-install
+    language: Bash
+    code: |
+      set -e
+      curl -sf https://rakubrew.org/perl/rakubrew -o rakubrew
+      sudo mv rakubrew /usr/local/bin
+      sudo chmod a+x /usr/local/bin/rakubrew
+      rakubrew mode shim
