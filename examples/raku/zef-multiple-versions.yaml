@@ -31,7 +31,7 @@ tasks:
           rakubrew switch moar-$version
           cd source/
           zef install --/test .
-          time zef test . && touch "${cache_root_dir}/${vesion}_ok"
+          time zef test . && touch "${cache_root_dir}/${version}_ok"
     depends:
       -
         name: rakubrew-install
