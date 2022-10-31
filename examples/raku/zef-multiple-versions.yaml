@@ -53,7 +53,7 @@ tasks:
           cd source/
           zef install --/test File::Temp
           zef install --/test --deps-only .
-          /usr/bin/time -o "${cache_root_dir}/${version}_time" \
+          time -o "${cache_root_dir}/${version}_time" \
           zef test . && touch "${cache_root_dir}/${version}_ok"
     depends:
       -
@@ -67,3 +67,4 @@ tasks:
       sudo mv rakubrew /usr/local/bin
       sudo chmod a+x /usr/local/bin/rakubrew
       rakubrew mode shim
+

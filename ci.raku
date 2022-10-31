@@ -342,7 +342,7 @@ class Pipeline does Sparky::JobApi::Role {
         "source.tar.gz".IO.spurt($blob,:bin);
         task-run "unpack source archive", "pack-unpack", %(
           action => "unpack",
-          dir => "source", 
+          # dir => "source", 
           file => "source.tar.gz"
         );
         $.source_dir = "{$*CWD}";
