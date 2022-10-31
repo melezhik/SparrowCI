@@ -1,21 +1,41 @@
 tasks:
   -
-    name: multi-versions
+    name: main
     default: true
+    language: Raku
+    code: |
+      for config()<tasks><multi-versions><state><list><> -> $i {
+        say "[{$i<version>}] - {$i<status>} | {$i<time>}";
+      }
+    depends:
+      -
+        name: multi-versions
+  -
+    name: multi-versions
     language: Raku
     config:
       list:
         - 2022.04
         - 2022.06
         - 2022.07
+        - master
     code: |
+      my @state;
       for config()<list><> -> $v {
+        my $s = %( version => $v );
         if "{cache_root_dir()}/{$v}_ok".IO ~~ :e {
-          say "$v - OK";
+          $s<status> = "OK";
         } else {
-          say "$v - FAIL";
+          $s<status> = "FAIL";
         }
+        if "{cache_root_dir()}/{$v}_time".IO ~~ :e {
+          $s<time> = "{cache_root_dir()}/{$v}_time".IO.slurp();
+        } else {
+          $s<time> = "NA";
+        }
+        @state.push: $s;
       }
+      update_state %( list => @state );
     init: |
       for config()<list><> -> $v {
         run_task("test", %( version => $v ));
@@ -33,7 +53,8 @@ tasks:
           cd source/
           zef install --/test File::Temp
           zef install --/test --deps-only .
-          time zef test . && touch "${cache_root_dir}/${version}_ok"
+          /usr/bin/time -o "${cache_root_dir}/${version}_time" \
+          zef test . && touch "${cache_root_dir}/${version}_ok"
     depends:
       -
         name: rakubrew-install
