@@ -241,7 +241,7 @@ class Pipeline does Sparky::JobApi::Role {
           docker run \\
           --rm --name sparrow-worker \\
           --add-host=host.docker.internal:host-gateway \\
-          -itd {$.docker_image}
+          -itd {$data<image> || $.docker_image}
         HERE
 
       }
