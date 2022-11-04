@@ -19,8 +19,6 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.docker_bootstrap = tags()<docker_bootstrap> || "on";
 
-  has Str $.docker_image = tags()<docker_image> || "melezhik/sparrow:alpine";
-
   has Str $.sparrowdo_bootstrap = tags()<sparrowdo_bootstrap> || "off";
 
   my $notify-job;
@@ -123,7 +121,6 @@ class Pipeline does Sparky::JobApi::Role {
               stage => "prepare",
               project => $.project,
               scm => $.scm,
-              docker_image => $.docker_image,
               docker_bootstrap => $.docker_bootstrap,
               sparrowdo_bootstrap => $.sparrowdo_bootstrap,
               tasks_config => $.tasks_config
@@ -199,6 +196,7 @@ class Pipeline does Sparky::JobApi::Role {
       }
 
       my $data = $tasks-config<tasks>.grep({.<default>});
+
       unless $data {
         my $stash = %(
           status => "FAIL", 
@@ -223,94 +221,101 @@ class Pipeline does Sparky::JobApi::Role {
         die "default task - too many found";
       }
 
-      my $task = $data[0];
+      my @images = $data<image> ?? $data<image><> !! ['melezhik/sparrow:alpine'];
 
-      my $project = $task<name>;
+      for @images -> $image {
 
-      my $j = self.new-job: :$project;
+        my $task = $data[0];
 
-      if $.docker_bootstrap eq "on" {
-  
-        say ">>> prepare docker container";
+        my $project = $task<name>;
 
-        bash(qq:to /HERE/, %(description => "docker run") );
-          set -e
-          set -x
-          docker stop -t 1 sparrow-worker 2>/dev/null || echo "no sparrow-worker container running"
-          sleep 3
-          docker run \\
-          --rm --name sparrow-worker \\
-          --add-host=host.docker.internal:host-gateway \\
-          -itd {$data<image> || $.docker_image}
-        HERE
+        my $j = self.new-job: :$project;
 
-      }
+        if $.docker_bootstrap eq "on" {
+    
+          say ">>> prepare docker container";
 
-      say ">>> trigger task: {$task.perl}";
+          bash(qq:to /HERE/, %(description => "docker run") );
+            set -e
+            set -x
+            docker stop -t 1 sparrow-worker 2>/dev/null || echo "no sparrow-worker container running"
+            sleep 3
+            docker run \\
+            --rm --name sparrow-worker \\
+            --add-host=host.docker.internal:host-gateway \\
+            -itd {$image}
+          HERE
 
-      my $description = "run [{$task<name>}]";
-
-      my $timeout = 1100;
-
-      $j.queue: %(
-        description => $description,
-        tags => %(
-          stage => "run",
-          task => $task<name>,
-          storage_job_id => $.storage_job_id,
-        ),
-        sparrowdo => %(
-          docker => "sparrow-worker",
-          no_sudo => True,
-          repo => "https://sparrowhub.io/repo", 
-          bootstrap => ($.sparrowdo_bootstrap eq "on") ?? True !! False 
-        )
-      );
-
-      my $st = self.wait-job($j,{ timeout => $timeout.Int });
-      
-      # traverse jobs DAG in order
-      # and save result in @jobs
-
-      self!get-jobs-list($j);
-
-      my $st-to-human = %(
-        "-2" => "NA",
-        "-1" => "FAILED",
-        "0" => "RUNNING",
-        "1" => "OK",    
-      );
-
-      my @logs;
-
-      for @jobs.reverse() -> $b {
-
-        my $r = HTTP::Tiny.get: "http://127.0.0.1:4000/report/raw/{$b<project>}/{$b<job-id>}";
-
-        my $log = $r<content> ?? $r<content>.decode !! '';
-
-        $r = HTTP::Tiny.get: $b<status-url>;
-
-        my $status = $r<content> ?? $r<content>.decode !! '-2';
-
-        say "\n[$b<project>] - [{$st-to-human{$status}}]"; 
-        say "================================================================";
-        for $log.lines.grep({ $_ !~~ /^^ '>>>'/ }) -> $l {
-          say $l;
-          @logs.push: $l;
         }
 
+        say ">>> trigger task: {$task.perl}";
+
+        my $description = "run [{$task<name>}]";
+
+        my $timeout = 1100;
+
+        $j.queue: %(
+          description => $description,
+          tags => %(
+            stage => "run",
+            task => $task<name>,
+            storage_job_id => $.storage_job_id,
+          ),
+          sparrowdo => %(
+            docker => "sparrow-worker",
+            no_sudo => True,
+            repo => "https://sparrowhub.io/repo", 
+            bootstrap => ($.sparrowdo_bootstrap eq "on") ?? True !! False 
+          )
+        );
+
+        my $st = self.wait-job($j,{ timeout => $timeout.Int });
+        
+        # traverse jobs DAG in order
+        # and save result in @jobs
+
+        self!get-jobs-list($j);
+
+        my $st-to-human = %(
+          "-2" => "NA",
+          "-1" => "FAILED",
+          "0" => "RUNNING",
+          "1" => "OK",    
+        );
+
+        my @logs;
+
+        for @jobs.reverse() -> $b {
+
+          my $r = HTTP::Tiny.get: "http://127.0.0.1:4000/report/raw/{$b<project>}/{$b<job-id>}";
+
+          my $log = $r<content> ?? $r<content>.decode !! '';
+
+          $r = HTTP::Tiny.get: $b<status-url>;
+
+          my $status = $r<content> ?? $r<content>.decode !! '-2';
+
+          say "\n[$b<project>] - [{$st-to-human{$status}}]"; 
+          say "================================================================";
+          for $log.lines.grep({ $_ !~~ /^^ '>>>'/ }) -> $l {
+            say $l;
+            @logs.push: $l;
+          }
+
+        }
+
+        my $stash = %(
+          status => ( $st<OK> ?? "OK" !! ( $st<TIMEOUT> ?? "TIMEOUT" !! ($st<FAIL> ?? "FAIL" !! "NA") ) ), 
+          state => ( $st<OK> ?? "1" !! ( $st<TIMEOUT> ?? "-1" !! ($st<FAIL> ?? "-2" !! "-10") ) ),
+          log => @logs.join("\n"), 
+          git-data => $git-data,
+          image => $image,
+          sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
+        );  
+
+        self!build-report: :$stash;
+
       }
-
-      my $stash = %(
-        status => ( $st<OK> ?? "OK" !! ( $st<TIMEOUT> ?? "TIMEOUT" !! ($st<FAIL> ?? "FAIL" !! "NA") ) ), 
-        state => ( $st<OK> ?? "1" !! ( $st<TIMEOUT> ?? "-1" !! ($st<FAIL> ?? "-2" !! "-10") ) ),
-        log => @logs.join("\n"), 
-        git-data => $git-data,
-        sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
-      );  
-
-      self!build-report: :$stash;
 
     }
 

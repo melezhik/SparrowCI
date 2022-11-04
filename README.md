@@ -148,9 +148,56 @@ Artifacts and tasks output data is mechanism how tasks communicate with each oth
 
 Workers execute tasks.
 
-SparrowCI workers are ephemeral docker alpine instances, that are created
-for every build and then destroyed. If you need more OS support please
-let me know.
+SparrowCI workers are ephemeral docker instances, that are created
+for every build and then destroyed
+
+# Docker images
+
+By default pipeline runs on Alpine docker image. 
+
+One can choose Debian as well:
+
+```yaml
+images:
+  - melezhik/sparrow:debian
+```
+
+To run on many images:
+
+```yaml
+images:
+  - melezhik/sparrow:alpine
+  - melezhik/sparrow:debian
+```
+
+More Linux distributions will be supported in a future.
+
+To handle different OS within Pipeline use `$os` variable:
+
+```yaml
+name: install-deps
+default: True
+language: Bash
+code: |
+  if test $os = "alpine"; then
+    sudo apk add libressl‑dev
+  elif test $os = "debian"; then
+    sudo apt-get install -y libssl-dev
+  fi
+```
+
+In all none Bash languages use `os()` function:
+
+```yaml
+name: install-deps
+default: True
+language: Python
+code: |
+if os() == "alpine":
+  print("Hello Alpine")
+```
+
+See also - https://github.com/melezhik/Sparrow6/blob/master/documentation/development.md#recognizable-os-list
 
 ## Parallel tasks execution
 
