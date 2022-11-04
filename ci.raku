@@ -221,7 +221,7 @@ class Pipeline does Sparky::JobApi::Role {
         die "default task - too many found";
       }
 
-      my @images = $data<image> ?? $data<image><> !! ['melezhik/sparrow:alpine'];
+      my @images = $tasks-config<image> ?? $tasks-config<image><> !! ['melezhik/sparrow:alpine'];
 
       for @images -> $image {
 
