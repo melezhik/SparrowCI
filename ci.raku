@@ -162,7 +162,7 @@ class Pipeline does Sparky::JobApi::Role {
         unless "source/sparrow.yaml".IO ~~ :e {
           my $stash = %(
             status => "FAIL",
-            state => 1, 
+            state => -2, 
             log => "sparrow.yaml not found", 
             git-data => $git-data,
           );
