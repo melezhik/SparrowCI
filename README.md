@@ -158,14 +158,14 @@ By default pipeline runs on Alpine docker image.
 One can choose Debian as well:
 
 ```yaml
-images:
+image:
   - melezhik/sparrow:debian
 ```
 
 To run on many images:
 
 ```yaml
-images:
+image:
   - melezhik/sparrow:alpine
   - melezhik/sparrow:debian
 ```
