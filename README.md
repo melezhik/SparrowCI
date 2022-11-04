@@ -193,8 +193,8 @@ name: install-deps
 default: True
 language: Python
 code: |
-if os() == "alpine":
-  print("Hello Alpine")
+  if os() == "alpine":
+    print("Hello Alpine")
 ```
 
 See also - https://github.com/melezhik/Sparrow6/blob/master/documentation/development.md#recognizable-os-list
