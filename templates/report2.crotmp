@@ -33,6 +33,7 @@
                   <div id="Summary" class="content-tab" style="display:none">
                     BuildID: <.id><br>
                     Status: <.state><br>
+                    Image: <.image><br>
                     Worker status: <.worker-status><br>
                     --- <br>
                     Date: <.date><br>
