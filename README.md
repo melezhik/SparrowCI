@@ -175,14 +175,13 @@ More Linux distributions will be supported in a future.
 To handle different OS within Pipeline use `$os` variable:
 
 ```yaml
-name: install-deps
-default: True
+name: install-python
 language: Bash
 code: |
   if test $os = "alpine"; then
-    sudo apk add libressl‑dev
+    sudo apk add py3-pip
   elif test $os = "debian"; then
-    sudo apt-get install -y libssl-dev
+    sudo apt-get install -y python3-pip
   fi
 ```
 
@@ -193,8 +192,8 @@ name: install-deps
 default: True
 language: Python
 code: |
-if os() == "alpine":
-  print("Hello Alpine")
+  if os() == "alpine":
+    print("Hello Alpine")
 ```
 
 See also - https://github.com/melezhik/Sparrow6/blob/master/documentation/development.md#recognizable-os-list

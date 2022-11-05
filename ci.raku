@@ -9,6 +9,8 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.tasks_config = tags()<tasks_config> || "";
 
+  has Str $.image = tags()<image> || "";
+
   has Str $.project = tags()<project> || tags()<SPARKY_PROJECT> || "";
 
   has Str $.scm = tags()<scm> || tags()<SCM_URL> || "";
@@ -123,7 +125,8 @@ class Pipeline does Sparky::JobApi::Role {
               scm => $.scm,
               docker_bootstrap => $.docker_bootstrap,
               sparrowdo_bootstrap => $.sparrowdo_bootstrap,
-              tasks_config => $.tasks_config
+              tasks_config => $.tasks_config,
+              image => $.image,
             ),
       );
 
@@ -221,7 +224,8 @@ class Pipeline does Sparky::JobApi::Role {
         die "default task - too many found";
       }
 
-      my @images = $tasks-config<image> ?? $tasks-config<image><> !! ['melezhik/sparrow:alpine'];
+      my @images = $.image ?? [ $.image ] !!
+      ( $tasks-config<image> ?? $tasks-config<image><> !! ['melezhik/sparrow:alpine'] );
 
       for @images -> $image {
 
