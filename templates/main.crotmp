@@ -39,7 +39,11 @@
                   <tr>
                     <td><.id></td>
                     <td><.project></td>
-                    <td><.image></td>
+                    <td>
+                      <?.image>
+                        <.image>
+                      </?>
+                    </td>
                     <td><.state></td>
                     <td><.date></td>
                     <td><a href="/report/<.id>" title="report">link</td>

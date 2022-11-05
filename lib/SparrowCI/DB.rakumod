@@ -70,7 +70,8 @@ sub get-builds ($limit=10, $user?) is export {
 
     my $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT 
-          project, 
+          project,
+          image, 
           CASE
             WHEN state = 1 THEN "OK"
             WHEN state = -1 THEN "TIMEOUT"
@@ -108,6 +109,7 @@ sub get-last-build ($project) is export {
     my $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT 
           project, 
+          image,
           CASE
             WHEN state = 1 THEN "OK"
             WHEN state = -1 THEN "TIMEOUT"
