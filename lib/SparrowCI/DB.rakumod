@@ -40,7 +40,7 @@ sub insert-build (:$state, :$project, :$image, :$desc, :$job-id ) is export {
 
     my $sth = $dbh.prepare(q:to/STATEMENT/);
       INSERT INTO builds (project, state, image, description, job_id)
-      VALUES ( ?,?,?,? )
+      VALUES ( ?,?,?,?,? )
     STATEMENT
 
     $sth.execute($project, $state, $image, $desc, $job-id);
