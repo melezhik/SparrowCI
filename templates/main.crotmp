@@ -28,6 +28,7 @@
                   <tr>
                     <th><abbr title="Build ID">ID</abbr></th>
                     <th><abbr title="Project Name">Project</abbr></th>
+                    <th><abbr title="Image">Image</abbr></th>
                     <th><abbr title="Build Status">Status</abbr></th>
                     <th><abbr title="Build Date">Date</abbr></th>
                     <th><abbr title="Link to report">Report</abbr></th>
@@ -38,6 +39,7 @@
                   <tr>
                     <td><.id></td>
                     <td><.project></td>
+                    <td><.image></td>
                     <td><.state></td>
                     <td><.date></td>
                     <td><a href="/report/<.id>" title="report">link</td>
