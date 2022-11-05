@@ -155,11 +155,20 @@ for every build and then destroyed
 
 By default pipeline runs on Alpine docker image. 
 
-One can choose Debian as well:
+One can choose different Linux distributions.
+
+Debian:
 
 ```yaml
 image:
   - melezhik/sparrow:debian
+```
+
+Arch Linux:
+
+```yaml
+image:
+  - melezhik/sparrow:archlinux
 ```
 
 To run on many images:
@@ -168,6 +177,7 @@ To run on many images:
 image:
   - melezhik/sparrow:alpine
   - melezhik/sparrow:debian
+  - melezhik/sparrow:archlinux
 ```
 
 More Linux distributions will be supported in a future.
