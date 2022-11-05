@@ -34,16 +34,16 @@ sub get-dbh {
 }
 
 
-sub insert-build (:$state, :$project, :$desc, :$job-id ) is export {
+sub insert-build (:$state, :$project, :$image, :$desc, :$job-id ) is export {
 
     my $dbh = get-dbh();
 
     my $sth = $dbh.prepare(q:to/STATEMENT/);
-      INSERT INTO builds (project, state, description, job_id)
+      INSERT INTO builds (project, state, image, description, job_id)
       VALUES ( ?,?,?,? )
     STATEMENT
 
-    $sth.execute($project, $state, $desc, $job-id);
+    $sth.execute($project, $state, $image, $desc, $job-id);
 
     $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT max(ID) AS build_id

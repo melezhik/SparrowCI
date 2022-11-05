@@ -215,10 +215,11 @@ my $application = route {
         my $desc = %json<desc>;
         my $state = %json<state>;
         my $job-id = %json<job-id>;
+        my $image = %json<image>;
 
         say "generate SparrowCI build ...";
 
-        $bid = insert-build :$state, :$project, :$desc, :$job-id;
+        $bid = insert-build :$state, :$image, :$project, :$desc, :$job-id;
 
         say "bid: $bid";
 

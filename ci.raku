@@ -274,6 +274,8 @@ class Pipeline does Sparky::JobApi::Role {
         # traverse jobs DAG in order
         # and save result in @jobs
 
+        @jobs = [];
+  
         self!get-jobs-list($j);
 
         my $st-to-human = %(

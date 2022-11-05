@@ -50,6 +50,7 @@ if $engine ~~ /:i sqlite/ {
           id          INTEGER PRIMARY KEY AUTOINCREMENT,
           project     varchar(255),
           job_id      varchar(255),
+          image       varchar(255),
           description TEXT,
           state       int,
           dt datetime default current_timestamp
@@ -63,6 +64,7 @@ if $engine ~~ /:i sqlite/ {
           id          int primary key auto_increment,
           project     varchar(255),
           job_id      varchar(255),
+          image       = varchar(255),
           description varchar(255),
           state       int,
           dt timestamp default CURRENT_TIMESTAMP
@@ -77,6 +79,7 @@ if $engine ~~ /:i sqlite/ {
           project     varchar(255),
           job_id      varchar(255),
           description varchar(255),
+          image       varchar(255),
           state       int,
           dt timestamp default NOW()
       )
