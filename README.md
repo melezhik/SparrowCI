@@ -157,19 +157,21 @@ By default pipeline runs on Alpine docker image.
 
 One can choose different Linux distributions.
 
-Debian:
+For example, Debian:
 
 ```yaml
 image:
   - melezhik/sparrow:debian
 ```
 
-Arch Linux:
+Use following table to find proper docker image
 
-```yaml
-image:
-  - melezhik/sparrow:archlinux
-```
+| OS          | Image                        |
+| ------------| ---------------------------- |
+| Alpine      | melezhik/sparrow:alpine      |
+| Debian      | melezhik/sparrow:debian      |
+| Ubuntu      | melezhik/sparrow:ubuntu      |
+| Arch Linux  | melezhik/sparrow:archlinux   |
 
 To run on many images:
 
