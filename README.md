@@ -151,7 +151,7 @@ Workers execute tasks.
 SparrowCI workers are ephemeral docker instances, that are created
 for every build and then destroyed
 
-# Docker images
+## Docker images
 
 By default pipeline runs on Alpine docker image. 
 
