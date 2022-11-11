@@ -1,0 +1,44 @@
+tasks:
+  -
+    name: main
+    default: true
+    language: Raku
+    code: |
+      say config()<tasks><go-task><state><Message>
+    depends:
+      -
+        name: go-task
+        config:
+          Message: Hello from Raku
+  -
+    name: go-task
+    language: Go
+    code: |
+      package main
+
+      import (
+        "fmt"
+        "github.com/melezhik/sparrowgo"
+      )
+
+      func main() {
+
+
+        type Params struct {
+          Message string
+        }
+
+        type Message struct {
+          Message string
+        }
+
+        var params Params
+
+        sparrowgo.Config(&params)
+
+        fmt.Printf("Sparrow says: %s\n", params.Message)
+
+        sparrowgo.UpdateState(&Message{Message : "Hello from Go"})
+
+      }
+    
