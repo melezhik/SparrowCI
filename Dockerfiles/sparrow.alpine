@@ -19,8 +19,8 @@ raku -I. bin/zef install . --/test --install-to=home
 RUN zef update
 RUN zef install --/test JSON::Fast
 RUN sudo apk add build-base
-RUN echo OK1 && zef install --/test https://github.com/melezhik/Sparrow6.git
+RUN echo OK2 && zef install --/test https://github.com/melezhik/Sparrow6.git
 RUN echo OK3 && zef install --/test https://github.com/melezhik/Tomtit.git
 RUN echo OK4 && zef install --/test https://github.com/melezhik/Tomty.git
 RUN echo OK5 && zef install --/test --force-install https://github.com/melezhik/sparky-job-api.git
-
+RUN sudo apk add go --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
