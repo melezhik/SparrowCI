@@ -21,7 +21,7 @@ tasks:
 
       func main() {
 
-        sparrowgo.DebugOn()
+        // sparrowgo.DebugOn()
 
         type Params struct {
           Message string
