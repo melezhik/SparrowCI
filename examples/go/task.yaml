@@ -8,6 +8,8 @@ tasks:
     depends:
       -
         name: go-task
+        config:
+          Message: Hello from Raku
   -
     name: go-task
     language: Go
