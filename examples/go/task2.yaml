@@ -10,6 +10,8 @@ tasks:
         name: go-task
         config:
           Message: Hello from Raku
+    check: |
+      Hello from Go
   -
     name: go-task
     language: Go

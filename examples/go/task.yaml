@@ -4,7 +4,7 @@ tasks:
     default: true
     language: Raku
     code: |
-      say config()<tasks>.perl
+      say config()<tasks><go-task><state><Message>
     depends:
       -
         name: go-task
@@ -21,7 +21,7 @@ tasks:
 
       func main() {
 
-        sparrowgo.DebugOn()
+        // sparrowgo.DebugOn()
 
         type Params struct {
           Message string
