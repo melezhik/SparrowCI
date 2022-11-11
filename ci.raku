@@ -553,6 +553,7 @@ class Pipeline does Sparky::JobApi::Role {
           powershell => "ps1",
           python => "py",
           ruby => "rb",
+          go => "go"
         );
 
         die "unkonwn language $lang" unless %lang-to-ext{lc($lang)}:exists;
