@@ -488,6 +488,7 @@ Read more about `set_stdout` function on https://github.com/melezhik/Sparrow6/bl
 Currently SparrowCI supports following list of programming languages:
 
 - Raku
+- Go
 - Bash
 - Python
 - Perl
