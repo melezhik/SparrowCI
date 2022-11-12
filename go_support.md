@@ -11,7 +11,7 @@ Here is some example:
 ```yaml
 tasks:
   - 
-    name: main
+    name: my_task
     default: true
     language: Go
     code: |
