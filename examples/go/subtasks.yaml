@@ -8,10 +8,21 @@ tasks:
 
       import (
         "fmt"
+        "github.com/melezhik/sparrowgo"
       )
 
       func main() {
-        fmt.Println("hello from Go")        
+
+        // sparrowgo.DebugOn()
+
+        type State struct { Message string }
+
+        var state State
+
+        sparrowgo.GetState(&state)
+
+        fmt.Printf("task state: %s\n",state.Message)
+
       }
     init: |    
       package main
@@ -26,7 +37,7 @@ tasks:
           Message string
         }
 
-        sparrowgo.RunTask("foo",Params{Message: "hello from main"})
+        sparrowgo.RunTask("foo",Params{Message: "Hello from main"})
 
       }
     subtasks:
