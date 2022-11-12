@@ -488,7 +488,7 @@ Read more about `set_stdout` function on https://github.com/melezhik/Sparrow6/bl
 Currently SparrowCI supports following list of programming languages:
 
 - Raku
-- Go
+- Go (*)
 - Bash
 - Python
 - Perl
@@ -503,6 +503,8 @@ To chose a language for underling task just use `language: $language` statement:
   code: |
     Write-Host "Hello from Powershell"
 ```
+
+(*) golang support is not yet fully implemented, for details visit this [page](go_support.md)
 
 ## Tasks parameters and configuration
 
