@@ -2,8 +2,8 @@
 
 SparrowCI allows to write tasks on Go. The API
 is similar to all other languages, but because of
-Go specific ( of naming public functions and so on)
-has some slight differences.
+Go specific (naming of public functions, etc)
+has some nuances.
 
 Here is some example:
 

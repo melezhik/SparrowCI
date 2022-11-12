@@ -504,7 +504,7 @@ To chose a language for underling task just use `language: $language` statement:
     Write-Host "Hello from Powershell"
 ```
 
-(*) golang support is not yet fully implemented, for details visit this [page](go_support.md)
+(*) golang support is not yet fully implemented, for details visit this [page](go_support.md).
 
 ## Tasks parameters and configuration
 
