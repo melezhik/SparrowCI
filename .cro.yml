@@ -3,6 +3,6 @@ id: sparrowci_web
 name: sparrowci_web
 entrypoint: app.raku
 ignore:
-  - examples
+  - examples/
   - utils/
   - README.md
