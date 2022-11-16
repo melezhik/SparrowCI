@@ -6,5 +6,5 @@ sparrowdo \
 --sparrowfile ci.raku \
 --tags scm=https://github.com/tbrowder/CSV-AutoClass.git,\
 sparrowdo_bootstrap=off,\
-tasks_config=$PWD/examples/go/task.yaml \
+tasks_config=$PWD/examples/go/depends.yaml \
 --desc "sparrowci test"

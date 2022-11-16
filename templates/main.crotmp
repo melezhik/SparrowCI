@@ -37,7 +37,7 @@
                 <tbody>
                 <@results>
                   <tr>
-                    <td><.id></td>
+                    <td><a href="/report/<.id>" title="report"><.id></a></td>
                     <td><.project></td>
                     <td>
                       <?.image>
@@ -46,7 +46,7 @@
                     </td>
                     <td><.state></td>
                     <td><.date></td>
-                    <td><a href="/report/<.id>" title="report">link</td>
+                    <td><a href="/report/<.id>" title="report">link</a></td>
                   </tr>
                 </@>
                 </tbody>

@@ -1,0 +1,56 @@
+tasks:
+  - name: main_task
+    default: true
+    language: go
+    code: |
+      package main
+
+      import (
+       "fmt"
+       "github.com/melezhik/sparrowgo"
+      )
+
+      func main() {
+
+         task_state := make(map[string](map[string](map[string](map[string]interface{}))))
+
+         sparrowgo.Config(&task_state)
+
+         fmt.Printf("task state: %s\n",task_state["tasks"]["go_task"]["state"]["Message"])
+
+      }
+    depends:
+      -
+        name: go_task
+  - name: go_task
+    language: go
+    config:
+      Message: "Hello from Sparrow"
+    code: |
+      
+      package main
+      
+      import (
+        "fmt"
+        "github.com/melezhik/sparrowgo"
+      )
+      
+      func main() {
+           
+        type Params struct {
+          Message string
+        }
+      
+        type Message struct {
+          Message string
+        }
+      
+        var params Params
+      
+        sparrowgo.Config(&params)
+      
+        fmt.Printf("Sparrow says: %s\n", params.Message)
+           
+        sparrowgo.UpdateState(&Message{Message : "Hello from Go"})
+      
+      }

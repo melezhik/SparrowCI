@@ -1,6 +1,17 @@
+# Go support
+
+SparrowCI allows to write tasks on Go. The API
+is similar to all other languages, but because of
+Go specific (naming of public functions, etc)
+has some nuances.
+
+Here is some example:
+
+
+```yaml
 tasks:
   - 
-    name: main
+    name: my_task
     default: true
     language: Go
     code: |
@@ -72,3 +83,7 @@ tasks:
 
             sparrowgo.UpdateState(Message{Message: "Hello from subtask"})
           }              
+```
+
+For more information visit [sparrowgo](https://github.com/melezhik/sparrowgo) project documentation page.
+ 
