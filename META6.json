@@ -18,6 +18,7 @@
     "SparrowCI" : "lib/SparrowCI.rakumod",
     "SparrowCI::DB" : "lib/SparrowCI/DB.rakumod",
     "SparrowCI::User" : "lib/SparrowCI/User.rakumod",
+    "SparrowCI::News" : "lib/SparrowCI/News.rakumod",
     "SparrowCI::User" : "lib/SparrowCI/Repo.rakumod",
     "SparrowCI::HTML" : "lib/SparrowCI/HTML.rakumod",
     "SparrowCI::Conf" : "lib/SparrowCI/Conf.rakumod",

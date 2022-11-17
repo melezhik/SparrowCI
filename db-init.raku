@@ -43,6 +43,10 @@ $dbh.do(q:to/STATEMENT/);
     DROP TABLE IF EXISTS builds
     STATEMENT
 
+$dbh.do(q:to/STATEMENT/);
+    DROP TABLE IF EXISTS news
+    STATEMENT
+
 if $engine ~~ /:i sqlite/ {
 
   $dbh.do(q:to/STATEMENT/);
@@ -53,6 +57,14 @@ if $engine ~~ /:i sqlite/ {
           image       varchar(255),
           description TEXT,
           state       int,
+          dt datetime default current_timestamp
+      )
+      STATEMENT
+  $dbh.do(q:to/STATEMENT/);
+      CREATE TABLE news (
+          id          INTEGER PRIMARY KEY AUTOINCREMENT,
+          title       varchar(255),
+          url        varchar(255),
           dt datetime default current_timestamp
       )
       STATEMENT
@@ -71,6 +83,15 @@ if $engine ~~ /:i sqlite/ {
       ) CHARACTER SET utf8
       STATEMENT
 
+  $dbh.do(q:to/STATEMENT/);
+      CREATE TABLE builds (
+          id          int primary key auto_increment,
+          title       varchar(255),
+          url        varchar(255),
+          dt timestamp default CURRENT_TIMESTAMP
+      ) CHARACTER SET utf8
+      STATEMENT
+
 } elsif $engine ~~ /:i Pg/ {
 
   $dbh.do(q:to/STATEMENT/);
@@ -85,6 +106,14 @@ if $engine ~~ /:i sqlite/ {
       )
       STATEMENT
 
+  $dbh.do(q:to/STATEMENT/);
+      CREATE TABLE builds (
+          id          SERIAL PRIMARY KEY,
+          title       varchar(255),
+          url        varchar(255),
+          dt timestamp default NOW()
+      )
+      STATEMENT
 }
 
 say "$engine db populated as $db-name";
