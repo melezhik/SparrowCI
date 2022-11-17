@@ -3,6 +3,7 @@ use Cro::HTTP::Server;
 use Cro::WebApp::Template;
 use SparrowCI::DB;
 use SparrowCI::User;
+use SparrowCI::News;
 use SparrowCI::HTML;
 use SparrowCI::Conf;
 use SparrowCI::Security;
@@ -88,6 +89,19 @@ my $application = route {
       template 'templates/donations.crotmp', %(
         page-title => "Support SparrowCI", 
         title => title(),   
+        css => css($theme),
+        theme => $theme,
+        navbar => navbar($user, $token, $theme),
+      )
+    }
+
+    get -> 'news', :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
+      my @results = get-news();
+      #die @results.perl;
+      template 'templates/news.crotmp', %( 
+        page-title => "News",
+        title => title(),   
+        results => @results,
         css => css($theme),
         theme => $theme,
         navbar => navbar($user, $token, $theme),

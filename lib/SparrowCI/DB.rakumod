@@ -4,7 +4,7 @@ use DBIish;
 use JSON::Fast;
 use SparrowCI::Conf;
 
-sub get-dbh {
+sub get-dbh is export {
 
   my $dbh;
 
