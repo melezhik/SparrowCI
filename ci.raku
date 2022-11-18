@@ -9,6 +9,8 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.tasks_config = tags()<tasks_config> || "";
 
+  has Str $.owner = tags()<owner> || "";
+
   has Str $.image = tags()<image> || "";
 
   has Str $.project = tags()<project> || tags()<SPARKY_PROJECT> || "";
@@ -127,6 +129,7 @@ class Pipeline does Sparky::JobApi::Role {
               sparrowdo_bootstrap => $.sparrowdo_bootstrap,
               tasks_config => $.tasks_config,
               image => $.image,
+              owner => $.owner,
             ),
       );
 
@@ -244,15 +247,19 @@ class Pipeline does Sparky::JobApi::Role {
             name => "sparrow-worker"
           );
 
-          my $vault-secrets = ($tasks-config<secrets> || []).join(" ");
+          my $docker-run-params = %();
 
-          task-run "docker run", "docker-cli", %(
-            action => "run",
-            name => "sparrow-worker",
-            image => $image,
-            vault_path => "/kv/sparrow/users/melezhik/secrets",
-            vars => $vault-secrets,
-          );
+          $docker-run-params<action> = "run";
+          $docker-run-params<name> = "sparrow-worker";
+          $docker-run-params<image> = $image;
+
+          if $.owner && $tasks-config<secrets> {
+            $docker-run-params<vars> = $tasks-config<secrets>.join(" ");
+            $docker-run-params<vault_path> = "/kv/sparrow/users/{$.owner}/secrets";
+          }
+
+          task-run "docker run", "docker-cli", $docker-run-params;
+
         }
 
         say ">>> trigger task: {$task.perl}";
