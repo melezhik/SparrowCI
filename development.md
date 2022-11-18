@@ -24,7 +24,7 @@ raku db-init.raku
 * Run SparrowCI web app
 
 ```bash
-cro run
+SC_USER=test SC_TOKEN=test  cro run
 ```
 
 ## Run pipeline
