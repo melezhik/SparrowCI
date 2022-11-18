@@ -239,17 +239,15 @@ class Pipeline does Sparky::JobApi::Role {
     
           say ">>> prepare docker container";
 
-          bash(qq:to /HERE/, %(description => "docker run") );
-            set -e
-            set -x
-            docker stop -t 1 sparrow-worker 2>/dev/null || echo "no sparrow-worker container running"
-            sleep 3
-            docker run \\
-            --rm --name sparrow-worker \\
-            --add-host=host.docker.internal:host-gateway \\
-            -itd {$image}
-          HERE
-
+          task-run "docker stop", "docker-cli", %(
+            action => "stop",
+            name => "sparrow-worker"
+          );
+          task-run "docker run", "docker-cli", %(
+            action => "run",
+            name => "sparrow-worker",
+            image => $image
+          );
         }
 
         say ">>> trigger task: {$task.perl}";
@@ -318,6 +316,11 @@ class Pipeline does Sparky::JobApi::Role {
           image => $image,
           sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
         );  
+
+        task-run "docker stop", "docker-cli", %(
+          action => "stop",
+          name => "sparrow-worker",
+        );
 
         self!build-report: :$stash;
 
