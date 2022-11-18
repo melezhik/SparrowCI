@@ -243,10 +243,15 @@ class Pipeline does Sparky::JobApi::Role {
             action => "stop",
             name => "sparrow-worker"
           );
+
+          my $vault-secrets = ($tasks-config<secrets> || []).join(" ");
+
           task-run "docker run", "docker-cli", %(
             action => "run",
             name => "sparrow-worker",
-            image => $image
+            image => $image,
+            vault_path => "/kv/sparrow/users/melezhik/secrets/",
+            vars => $vault-secrets,
           );
         }
 
