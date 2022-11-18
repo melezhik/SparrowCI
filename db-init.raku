@@ -84,7 +84,7 @@ if $engine ~~ /:i sqlite/ {
       STATEMENT
 
   $dbh.do(q:to/STATEMENT/);
-      CREATE TABLE builds (
+      CREATE TABLE news (
           id          int primary key auto_increment,
           title       varchar(255),
           url        varchar(255),
@@ -107,7 +107,7 @@ if $engine ~~ /:i sqlite/ {
       STATEMENT
 
   $dbh.do(q:to/STATEMENT/);
-      CREATE TABLE builds (
+      CREATE TABLE news (
           id          SERIAL PRIMARY KEY,
           title       varchar(255),
           url        varchar(255),
