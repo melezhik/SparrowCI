@@ -15,6 +15,12 @@ zef install . --/test
 
 ```
 
+* Initialize SparrowCI DB
+
+```bash
+raku db-init.raku
+```
+
 * Run SparrowCI web app
 
 ```bash
