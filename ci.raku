@@ -250,7 +250,7 @@ class Pipeline does Sparky::JobApi::Role {
             action => "run",
             name => "sparrow-worker",
             image => $image,
-            vault_path => "/kv/sparrow/users/melezhik/secrets/",
+            vault_path => "/kv/sparrow/users/melezhik/secrets",
             vars => $vault-secrets,
           );
         }
