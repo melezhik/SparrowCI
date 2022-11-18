@@ -58,3 +58,11 @@ sub projects (Mu $user) is export {
     return @list.sort({ .<repo> || .<type> });
 }
 
+sub secrets (Mu $user) is export {
+    [
+      {
+        name => 'foo',
+        date => "2022.01.02"
+      },
+    ]
+}

@@ -16,6 +16,10 @@ sub get-sparrowci-conf is export {
 
 }
 
+sub conf-use-secrets is export {
+  return get-sparrowci-conf()<use_secrets> || False;
+}
+
 sub http-root is export {
 
   %*ENV<SPARKYCI_HTTP_ROOT> || "";

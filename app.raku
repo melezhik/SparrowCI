@@ -335,6 +335,27 @@ my $application = route {
       }
     }
 
+    get -> 'secrets', :$message, :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
+      if check-user($user, $token) == True {
+        if conf-use-secrets() {
+          my @secrets = secrets($user);
+          template 'templates/secrets.crotmp', %(
+            page-title => "Secrets", 
+            title => title(),
+            secrets => @secrets, 
+            css => css($theme),
+            theme => $theme,
+            navbar => navbar($user, $token, $theme),
+            message => $message,
+          )
+        } else {
+          redirect :see-other, "{http-root()}/?message=secrets are not enabled on this instance";         
+        }
+      } else {
+        redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage secrets";
+      }  
+    }
+
     get -> 'js', *@path {
         cache-control :public, :max-age(300);
         static 'js', @path;
