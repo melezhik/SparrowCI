@@ -65,5 +65,5 @@ bootstrap it during pipeline execution by using `sparrowdo_bootstrap` tag:
 
 *  For worker reports, visit Sparky web UI - http://127.0.0.1:4000
 
-* For SparrowCI reports, visit SparrowCI web UI - http://127.0.0.1:2222
+* For SparrowCI reports ( for low level troubleshooting ), visit SparrowCI web UI - http://127.0.0.1:2222
 
