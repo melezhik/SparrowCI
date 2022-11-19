@@ -66,3 +66,18 @@ sub secrets (Mu $user) is export {
       },
     ]
 }
+
+sub secret-add (Mu $user,$secret,$secret_value) is export {
+    mkdir "{cache-root()}/users/{$user}/secrets/";
+    "{cache-root()}/users/{$user}/secrets/{$secret}".IO.spurt("");
+    my $cmd = "vault write /kv/sparrow/users/{$user}/secrets {$secret}={$secret_value}";
+    shell("if vault -version; then {$cmd}; else echo 'vault is not installed, nothing to do' fi");
+}
+
+sub secret-delete (Mu $user,$secret) is export {
+    if "{cache-root()}/users/{$user}/secrets/{$secret}".IO ~~ :e {
+        unlink("{cache-root()}/users/{$user}/secrets/{$secret}");
+    }
+    my $cmd = "vault delete /kv/sparrow/users/{$user}/secrets/{$secret}";
+    shell("if vault -version; then {$cmd}; else echo 'vault is not installed, nothing to do' fi");
+}
