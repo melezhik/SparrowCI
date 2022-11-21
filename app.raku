@@ -144,7 +144,7 @@ my $application = route {
           bootstrap: false
           format: default
           repo: file:///home/sph/repo
-          tags: cpu=2,mem=6,SCM_URL=$url
+          tags: cpu=2,mem=6,SCM_URL=$url,owner=$user
         disabled: false
         keep_builds: 100
         allow_manual_run: true
