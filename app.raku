@@ -365,7 +365,7 @@ my $application = route {
         say "add secret: $secret";
       }
       secret-add($user,$secret_param,$secret_value_param);
-      redirect :see-other, "{http-root()}/repos?message=secret {$secret_param} added";
+      redirect :see-other, "{http-root()}/secrets?message=secret {$secret_param} added";
     } else {
         redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage secrets"; 
     }
@@ -379,7 +379,7 @@ my $application = route {
         say "delete secret: $secret";
       }
       secret-delete($user,$secret_param);
-      redirect :see-other, "{http-root()}/repos?message=secret {$secret_param} deleted";
+      redirect :see-other, "{http-root()}/secrets?message=secret {$secret_param} deleted";
     } else {
         redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage secrets"; 
     }

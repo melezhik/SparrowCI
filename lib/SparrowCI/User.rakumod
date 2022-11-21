@@ -59,19 +59,34 @@ sub projects (Mu $user) is export {
 }
 
 sub secrets (Mu $user) is export {
-    [
-      {
-        name => 'foo',
-        date => "2022.01.02"
-      },
-    ]
+    my @list;
+    if "{cache-root()}/users/{$user}/secrets/".IO ~~ :d {
+        for dir "{cache-root()}/users/{$user}/secrets/" -> $s {
+            if $s.IO ~~ :f {
+                @list.push: %(
+                    name => $s.IO.basename,
+                    date => $s.IO.modified.Date,
+                    date_hr => DateTime.new(
+                        $s.IO.modified, 
+                        formatter => sub ($self) { 
+                            sprintf "%02d-%02d-%04d %02d:%02d", 
+                            .month, .day, .year, .hour, .minute  
+                            given $self; 
+                        }
+                    ),
+                    datetime => $s.IO.modified.DateTime    
+                )
+            }    
+        }
+    }
+    @list.sort({$^a<datetime> cmp $^b<datetime> });
 }
 
 sub secret-add (Mu $user,$secret,$secret_value) is export {
     mkdir "{cache-root()}/users/{$user}/secrets/";
     "{cache-root()}/users/{$user}/secrets/{$secret}".IO.spurt("");
     my $cmd = "vault write /kv/sparrow/users/{$user}/secrets {$secret}={$secret_value}";
-    shell("if vault -version; then {$cmd}; else echo 'vault is not installed, nothing to do' fi");
+    shell("if vault -version; then {$cmd}; else echo 'vault is not installed, nothing to do'; fi");
 }
 
 sub secret-delete (Mu $user,$secret) is export {
@@ -79,5 +94,5 @@ sub secret-delete (Mu $user,$secret) is export {
         unlink("{cache-root()}/users/{$user}/secrets/{$secret}");
     }
     my $cmd = "vault delete /kv/sparrow/users/{$user}/secrets/{$secret}";
-    shell("if vault -version; then {$cmd}; else echo 'vault is not installed, nothing to do' fi");
+    shell("if vault -version; then {$cmd}; else echo 'vault is not installed, nothing to do'; fi");
 }
