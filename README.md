@@ -706,9 +706,9 @@ secrets:
 ```
 
 (*) Secrets are encrypted at rest and kept in secure backend storage. 
-Secrets are never exposed in internet and only available on
+Secrets are never exposed in the internet and only available for
 internal docker containers when you reference them in pipeline.
-It's users responsibility not to dump secrets in pipeline reports.
+This is users responsibility not to dump secrets in pipeline reports.
 
 3. Use secrets as environment variables withing pipeline tasks:
 
