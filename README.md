@@ -692,9 +692,9 @@ tasks:
 
 WARNING! This feature is still being tested, although security is address 
 seriously (*) in SparrowCI service,  don't use SparrowCI secrets to store your credit card
-information. You've been warned )))
+information and other valuable data. You've been warned )))
 
-To use secrets in SparrowCI pipeline:
+To use secrets n SparrowCI pipeline:
 
 1. Create secret using secret manager in https://ci.sparrowhub.io 
 
