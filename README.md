@@ -705,8 +705,10 @@ secrets:
   - MY_SECRET
 ```
 
-(*) Secrets are encrypted and kept in secure backend storage. Secrets are never exposed in
-public and only use when you reference them within pipeline workers
+(*) Secrets are encrypted at rest and kept in secure backend storage. 
+Secrets are never exposed in internet and only available on
+internal docker containers when you reference them in pipeline.
+It's users responsibility not to dump secrets in pipeline reports.
 
 3. Use secrets as environment variables withing pipeline tasks:
 
