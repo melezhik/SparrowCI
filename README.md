@@ -688,6 +688,36 @@ tasks:
       zef test .
 ```
 
+# Secrets management
+
+WARNING! This feature is still being tested, although security is address 
+seriously (*) in SparrowCI service,  don't use SparrowCI secrets to store your credit card
+information. You've been warned )))
+
+To use secrets in SparrowCI pipeline:
+
+1. Create secret using secret manager in https://ci.sparrowhub.io 
+
+2. Reference secrets by names in a pipeline:
+
+```yaml
+secrets:
+  - MY_SECRET
+```
+
+(*) Secrets are encrypted and kept in secure backend storage. Secrets are never exposed in
+public and only use when you reference them within pipeline workers
+
+3. Use secrets as environment variables withing pipeline tasks:
+
+```yaml
+name: dump
+language: Bash
+code: |
+  echo "Now I am telling you ${MY_SECRET} ..."
+```
+
+
 # Examples
 
 Here is just short list of some possible scenarios.
