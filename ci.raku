@@ -230,6 +230,8 @@ class Pipeline does Sparky::JobApi::Role {
       my @images = $.image ?? [ $.image ] !!
       ( $tasks-config<image> ?? $tasks-config<image><> !! ['melezhik/sparrow:alpine'] );
 
+      my $jobs-status = "OK";
+
       for @images -> $image {
 
         my $task = $data[0];
@@ -284,7 +286,9 @@ class Pipeline does Sparky::JobApi::Role {
         );
 
         my $st = self.wait-job($j,{ timeout => $timeout.Int });
-        
+
+        $jobs-status = "FAIL" unless $st<OK>;
+
         # traverse jobs DAG in order
         # and save result in @jobs
 
@@ -337,6 +341,28 @@ class Pipeline does Sparky::JobApi::Role {
         self!build-report: :$stash;
 
       }
+
+     if "source/.sparrow/followup.yaml".IO ~~ :f and $jobs-status eq "OK" {
+
+        # runs followup jobs
+
+        my $j = self.new-job: :project<SparrowCIQueue>;
+
+        $j.queue: %(
+              description => "{$.scm} queue (followup)",
+              tags => %(
+                stage => "prepare",
+                project => $.project,
+                scm => $.scm,
+                docker_bootstrap => $.docker_bootstrap,
+                sparrowdo_bootstrap => $.sparrowdo_bootstrap,
+                tasks_config => "source/.sparrow/followup.yaml",
+                image => $.image,
+                owner => $.owner,
+              ),
+        );
+
+      } 
 
     }
 
