@@ -344,7 +344,9 @@ class Pipeline does Sparky::JobApi::Role {
 
       }
 
-     if $.run_followup_jobs eq "on" and "source/.sparrow/followup.yaml".IO ~~ :f and $jobs-status eq "OK" {
+     say "run_followup_jobs: {$.run_followup_jobs}";
+ 
+     if $.run_followup_jobs eq "on" && "source/.sparrow/followup.yaml".IO ~~ :f && $jobs-status eq "OK" {
 
         # runs followup jobs
 
