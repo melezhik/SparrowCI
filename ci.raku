@@ -346,7 +346,7 @@ class Pipeline does Sparky::JobApi::Role {
 
      say "run_followup_jobs: {$.run_followup_jobs}";
  
-     if $.run_followup_jobs eq "on" && "source/.sparrow/followup.yaml".IO ~~ :f && $jobs-status eq "OK" {
+     if $.run_followup_jobs eq "on" && $tasks-config<followup_job>  && $jobs-status eq "OK" {
 
         # runs followup jobs
 
@@ -360,7 +360,7 @@ class Pipeline does Sparky::JobApi::Role {
                 scm => $.scm,
                 docker_bootstrap => $.docker_bootstrap,
                 sparrowdo_bootstrap => $.sparrowdo_bootstrap,
-                tasks_config => "source/.sparrow/followup.yaml",
+                tasks_config => $tasks-config<followup_job>,
                 image => $.image,
                 owner => $.owner,
                 run_followup_jobs => "off"

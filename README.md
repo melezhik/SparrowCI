@@ -724,7 +724,11 @@ code: |
 Sometimes one needs to run some followup jobs _after_ main jobs defined at `sparrow.yaml`
 are _successfully_ finished.
 
-To do so create another SparrowCI pipeline located at `.sparrow/folloup.yaml` path:
+To do so:
+
+1) Create another SparrowCI pipeline located at _arbitrary path_.
+
+For example - `.sparrow/followup.yaml`:
 
 ```yaml
 image:
@@ -739,9 +743,19 @@ tasks:
       echo hello from followup job
 ```
 
-Typical use case for followup jobs when once has a "basic" CI test defined at `sparrow.yaml`
-root file and they want to publish a package after such a test succeeds. So they place
-publishing logic into a followup job pipeline `.sparrow/followup.yaml`.
+And then reference to this pipeline from the main one:
+
+```yaml
+
+followup_job: .sparrow/followup.yaml
+
+```
+
+Typical use case for the followup jobs when one has a "basic" CI test defined at `sparrow.yaml`
+and want to publish a package after successful CI.
+
+They may choose to place publishing logic inside a followup pipeline `.sparrow/followup.yaml`
+and reference to it from within a main one.
 
 # Examples
 
