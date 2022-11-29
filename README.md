@@ -743,7 +743,7 @@ tasks:
       echo hello from followup job
 ```
 
-And then reference to this pipeline from the main one:
+2. Reference to this pipeline from the main one:
 
 ```yaml
 
