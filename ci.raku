@@ -360,7 +360,7 @@ class Pipeline does Sparky::JobApi::Role {
                 scm => $.scm,
                 docker_bootstrap => $.docker_bootstrap,
                 sparrowdo_bootstrap => $.sparrowdo_bootstrap,
-                tasks_config => $tasks-config<followup_job>,
+                tasks_config => "source/{$tasks-config<followup_job>}",
                 image => $.image,
                 owner => $.owner,
                 run_followup_jobs => "off"
