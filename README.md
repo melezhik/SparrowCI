@@ -688,7 +688,7 @@ tasks:
       zef test .
 ```
 
-# Secrets management
+## Secrets management
 
 WARNING! This feature is still being tested, although security is address 
 seriously (*) in SparrowCI service,  don't use SparrowCI secrets to store your credit card
@@ -719,6 +719,29 @@ code: |
   echo "Now I am telling you ${MY_SECRET} ..."
 ```
 
+## Followup jobs
+
+Sometimes one needs to run some followup jobs _after_ main jobs defined at `sparrow.yaml`
+are _successfully_ finished.
+
+To do so create another SparrowCI pipeline located at `.sparrow/folloup.yaml` path:
+
+```yaml
+image:
+  - melezhik/sparrow:debian
+
+tasks:
+  -
+    language: Bash
+    name: main
+    default: true
+    code: |
+      echo hello from followup job
+```
+
+Typical use case for followup jobs when once has a "basic" CI test defined at `sparrow.yaml`
+root file and they want to publish a package after such a test succeeds. So they place
+publishing logic into a followup job pipeline `.sparrow/followup.yaml`.
 
 # Examples
 
