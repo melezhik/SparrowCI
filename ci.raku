@@ -25,8 +25,6 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.sparrowdo_bootstrap = tags()<sparrowdo_bootstrap> || "off";
 
-  has Str $.run_followup_jobs = tags()<run_followup_jobs> || "on";
-
   my $notify-job;
 
   my @jobs;
@@ -344,9 +342,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       }
 
-     say "run_followup_jobs: {$.run_followup_jobs}";
- 
-     if $.run_followup_jobs eq "on" && $tasks-config<followup_job>  && $jobs-status eq "OK" {
+     if $tasks-config<followup_job> && $jobs-status eq "OK" {
 
         # runs followup jobs
 
@@ -362,8 +358,7 @@ class Pipeline does Sparky::JobApi::Role {
                 sparrowdo_bootstrap => $.sparrowdo_bootstrap,
                 tasks_config => "source/{$tasks-config<followup_job>}",
                 image => $.image,
-                owner => $.owner,
-                run_followup_jobs => "off"
+                owner => $.owner
               ),
         );
 

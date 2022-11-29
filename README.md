@@ -757,6 +757,9 @@ and want to publish a package after successful CI.
 They may choose to place publishing logic inside a followup pipeline `.sparrow/followup.yaml`
 and reference to it from within a main one.
 
+Followup jobs could be cascading, when one followup jobs calls another one and so on,
+just be careful not to end up in endless loop.
+
 # Examples
 
 Here is just short list of some possible scenarios.
