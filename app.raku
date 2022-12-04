@@ -132,7 +132,7 @@ my $application = route {
     if check-user($user, $token) == True {
       my $repo; my $type;
       request-body -> (:$repos,:$typegit) {
-        $repo = $repos;
+        $repo = $repos.subst(/\s+/,"",:g);
         $type = $typegit ?? "git" !! "gh";
         say "add repo: $repo type: $type";
       }

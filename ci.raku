@@ -380,7 +380,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $task = $data[0];
 
-      my $timeout = 800;
+      my $timeout = 1200;
 
       say ">>> handle task: ", $task.perl;
 
