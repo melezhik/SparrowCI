@@ -23,5 +23,5 @@ RUN sudo apt-get install build-essential
 RUN echo OK1 && zef install --/test https://github.com/melezhik/Sparrow6.git
 RUN echo OK3 && zef install --/test https://github.com/melezhik/Tomtit.git
 RUN echo OK4 && zef install --/test https://github.com/melezhik/Tomty.git
-RUN echo OK5 && zef install --/test --force-install https://github.com/melezhik/sparky-job-api.git
+RUN echo OK6 && zef install --/test --force-install https://github.com/melezhik/sparky-job-api.git
 
