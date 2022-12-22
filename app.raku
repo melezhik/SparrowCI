@@ -324,6 +324,7 @@ my $application = route {
 
   get -> 'project', Str $project, 'badge', {
     my $b = get-last-build($project);
+    cache-control :no-store;
     if $b<state> eq "OK" {
       redirect :see-other, 'https://img.shields.io/static/v1?label=SparrowCI&message=Build+|+OK&color=green'
     } elsif $b<state> eq "FAIL" {

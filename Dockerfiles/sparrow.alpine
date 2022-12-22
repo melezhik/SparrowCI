@@ -22,5 +22,5 @@ RUN sudo apk add build-base
 RUN echo OK4 && zef install --/test https://github.com/melezhik/Sparrow6.git
 RUN echo OK3 && zef install --/test https://github.com/melezhik/Tomtit.git
 RUN echo OK4 && zef install --/test https://github.com/melezhik/Tomty.git
-RUN echo OK6 && zef install --/test --force-install https://github.com/melezhik/sparky-job-api.git
+RUN echo OK7 && zef install --/test --force-install https://github.com/melezhik/sparky-job-api.git
 RUN sudo apk add go --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community

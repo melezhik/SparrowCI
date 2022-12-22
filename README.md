@@ -886,6 +886,10 @@ Other examples could be found at [examples](examples) folder
 
 See [development.md](development.md) document.
 
+# External systems integration
+
+See [reporters.md](reporters.md) document.
+
 # Thanks to
 
 God and Jesus Christ who inspires me
