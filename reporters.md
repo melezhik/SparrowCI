@@ -3,9 +3,13 @@
 SparrowCI instances administrators might configure integration with
 third party external systems via reporters mechanism.
 
-In this example after _every_ pipeline execution, SparrowCI notifies
-Bugzilla service with a build information and optionally close related bug:
+# Examples
 
+
+## Bugzilla
+
+In this flow after _every_ pipeline has been executed, SparrowCI notifies
+Bugzilla service with a build information and optionally close a related bug:
 
 ```bash
 cat << 'HERE' > ~/.sparkyci/reporters/bugzilla.yaml
@@ -74,13 +78,12 @@ tasks:
 
 More detailed explanation:
 
-Reporter will add a comment containing a pipeline build link to related Bugzilla bug. 
+* Reporter adds a comment with a build http link to the related Bugzilla bug
 
-Optionally if a build has succeeded and a commit message contains `close!` string,
-reporter closes the bug. 
+* If a build has succeeded and a commit message contains `close!` string, the bug is closed
 
-Bugzilla bug number is set in commit message with "bug: number" pattern. 
+* Bugzilla bug number is set in commit message with `bug: number` pattern
 
-Access to Bugzilla rest api is set via `BUGZILLA_RESTAPI_KEY` Sparrow [secret](https://github.com/melezhik/SparrowCI#secrets-management).
+* Access to Bugzilla rest api is set via `BUGZILLA_RESTAPI_KEY` [secret](https://github.com/melezhik/SparrowCI#secrets-management)
 
-Secret should be added to the account of a user that owns pipelines.
+Secret should be added to the account of a user who owns pipelines.
