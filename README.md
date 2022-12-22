@@ -882,6 +882,10 @@ tasks:
 
 Other examples could be found at [examples](examples) folder
 
+# Environment variables
+
+See [reporters.md](reporters.md) document.
+
 # Development
 
 See [development.md](development.md) document.
