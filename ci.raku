@@ -260,9 +260,21 @@ class Pipeline does Sparky::JobApi::Role {
           $docker-run-params<image> = $image;
 
           if $.owner && $tasks-config<secrets> {
-            $docker-run-params<vars> = $tasks-config<secrets>.join(" ");
+            $docker-run-params<secrets> = $tasks-config<secrets>.join(" ");
             $docker-run-params<vault_path> = "/kv/sparrow/users/{$.owner}/secrets";
           }
+          
+          my $docker-opts = "-e SCM_URL={$.scm}";
+
+          # common pipeline variables:
+          $docker-opts ~= " -e SCM_SHA={$git-data<sha>}";
+          $docker-opts ~= " -e SCM_COMMIT_MESSAGE={$git-data<comment>||''}";
+
+          # following variables are only available for reporter pipelines:
+          $docker-opts ~= " -e BUILD_STATUS={tags()<build_status>}" if tags()<build_status>;
+          $docker-opts ~= " -e BUILD_URL={tags()<build_url>}" if tags()<build_url>;
+
+          $docker-run-params<options> = $docker-opts;
 
           task-run "docker run", "docker-cli", $docker-run-params;
 
@@ -355,8 +367,6 @@ class Pipeline does Sparky::JobApi::Role {
                 is_reporter => "yes",
                 project => $.project,
                 scm => $.scm,
-                scm_sha => $git-data<sha>,
-                scm_commit_message => $git-data<comment>,
                 docker_bootstrap => $.docker_bootstrap,
                 sparrowdo_bootstrap => $.sparrowdo_bootstrap,
                 tasks_config => $r.path,
@@ -382,8 +392,6 @@ class Pipeline does Sparky::JobApi::Role {
                 stage => "prepare",
                 project => $.project,
                 scm => $.scm,
-                scm_sha => $git-data<sha>,
-                scm_commit_message => $git-data<comment>,
                 docker_bootstrap => $.docker_bootstrap,
                 sparrowdo_bootstrap => $.sparrowdo_bootstrap,
                 tasks_config => "source/{$tasks-config<followup_job>}",
