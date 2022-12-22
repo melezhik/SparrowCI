@@ -77,7 +77,7 @@ More detailed explanation:
 Reporter will add a comment containing a pipeline build link to related Bugzilla bug. 
 
 Optionally if a build has succeeded and a commit message contains `close!` string,
-reporter closed the bug. 
+reporter closes the bug. 
 
 Bugzilla bug number is set in commit message with "bug: number" pattern. 
 
