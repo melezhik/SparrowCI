@@ -3,19 +3,31 @@
 SparrowCI instances administrators might configure integration of SparrowCI instance with
 third party external services by using reporters mechanism.
 
-Reporters are plain SparrowCI pipeline(s) get executed after _regular_ SparrowCI pipeline has finished.
+Reporters are plain SparrowCI pipeline(s) get executed after a _regular_ SparrowCI pipeline has finished.
 
 Reporters provides an effective mechanism of any sort of notification. 
 
 Following environment variables are available in reporter pipelines:
 
-* BUILD_STATUS
+* **BUILD_STATUS**
 
 Pipeline build status
 
-* BUILD_URL
+* **BUILD_URL**
 
 Http url for build report 
+
+* **SCM_URL**
+
+Url of SCM repository a build has been triggered for
+
+* **SCM_SHA**
+
+SCM commit sha
+
+* **SCM_COMMIT_MESSAGE**
+
+SCM commit message
 
 To create reporter just create a SparrowCI pipeline inside `~/.sparkyci/reporters/` directory.
 
