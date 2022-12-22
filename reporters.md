@@ -1,15 +1,26 @@
 # Reporters
 
-SparrowCI instances administrators might configure SparrowCI instance integration with
+SparrowCI instances administrators might configure integration of SparrowCI instance with
 third party external services by using reporters mechanism.
+
+Reporter(s) is a plain SparrowCI pipeline(s) gets executed after _regular_ SparrowCI pipeline has finished.
+
+They are effective mechanism of any sorts of notifications. Following environment variables are available in 
+reporter pipeline:
+
+* BUILD_STATUS
+
+Pipeline build status
+
+* BUILD_URL
+
+Http url for build report 
 
 # Examples
 
-
 ## Bugzilla
 
-In this flow after _every_ pipeline has been executed, SparrowCI notifies
-Bugzilla service with a build information and optionally close a related bug:
+In this flow SparrowCI notifies Bugzilla service with a build information and optionally close a related bug:
 
 ```bash
 cat << 'HERE' > ~/.sparkyci/reporters/bugzilla.yaml
