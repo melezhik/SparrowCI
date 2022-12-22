@@ -35,7 +35,7 @@ To create reporter just create a SparrowCI pipeline inside `~/.sparkyci/reporter
 
 ## Bugzilla
 
-In this flow SparrowCI notifies Bugzilla service with a build information and optionally close a related bug:
+In this flow SparrowCI notifies Bugzilla service with a build information and optionally closes a related bug:
 
 ```bash
 cat << 'HERE' > ~/.sparkyci/reporters/bugzilla.yaml
