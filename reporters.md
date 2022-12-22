@@ -49,12 +49,12 @@ tasks:
     config:
       bugzilla_api: https://bugzilla-dev.allizom.org
     init: |
-      config()<tasks><git-commit><state><comment> ~~ /"bug:" \s+ (\D+)/;
+      %*ENV<SCM_COMMIT_MESSAGE> ~~ /"bug:" \s+ (\D+)/;
       my $bug-id = "$0";
       run_task "comment", %(
         bugid => $bug-id
       );
-      if config()<tasks><git-commit><state><comment> ~~ /'close!'/ 
+      if %*ENV<SCM_COMMIT_MESSAGE> ~~ /'close!'/ 
         and %*ENV<BUILD_STATUS> eq "OK" {
         run_task "close", %(
           bugid => $bug-id
@@ -92,14 +92,6 @@ tasks:
 
           curl -fs -H "Content-Type: application/json" -X PUT \
           --data @data.json $bugzilla_api/rest/bug/$bugid?api_key=$BUGZILLA_RESTAPI_KEY
-
-    depends:
-      -
-        name: git-commit
-  - name: git-commit
-    plugin: git-commit-data
-    config:
-      dir: source
 ```
 
 More detailed explanation:
