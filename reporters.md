@@ -83,4 +83,4 @@ Bugzilla bug number is set in commit message with "bug: number" pattern.
 
 Access to Bugzilla rest api is set via `BUGZILLA_RESTAPI_KEY` Sparrow [secret](https://github.com/melezhik/SparrowCI#secrets-management).
 
-Secret should be added to a user account that owns pipelines.
+Secret should be added to the account of a user that owns pipelines.
