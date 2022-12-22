@@ -882,9 +882,17 @@ tasks:
 
 Other examples could be found at [examples](examples) folder
 
+# Environment variables
+
+See [variables.md](variables.md) document.
+
 # Development
 
 See [development.md](development.md) document.
+
+# External systems integration
+
+See [reporters.md](reporters.md) document.
 
 # Thanks to
 

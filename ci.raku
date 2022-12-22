@@ -25,6 +25,8 @@ class Pipeline does Sparky::JobApi::Role {
 
   has Str $.sparrowdo_bootstrap = tags()<sparrowdo_bootstrap> || "off";
 
+  has Str $.is_reporter = tags()<is_reporter> || "";
+
   my $notify-job;
 
   my @jobs;
@@ -85,6 +87,8 @@ class Pipeline does Sparky::JobApi::Role {
     my $res = $r<content>.decode;
 
     say "build web report OK, report_id: {$res}";
+
+    return $res;
 
   }
 
@@ -256,9 +260,20 @@ class Pipeline does Sparky::JobApi::Role {
           $docker-run-params<image> = $image;
 
           if $.owner && $tasks-config<secrets> {
-            $docker-run-params<vars> = $tasks-config<secrets>.join(" ");
+            $docker-run-params<secrets> = $tasks-config<secrets>.join(" ");
             $docker-run-params<vault_path> = "/kv/sparrow/users/{$.owner}/secrets";
           }
+          
+          # common pipeline variables:
+          my $docker-opts = "-e SCM_URL={$.scm}";
+          $docker-opts ~= " -e SCM_SHA={$git-data<sha>}";
+          $docker-opts ~= " -e SCM_COMMIT_MESSAGE={$git-data<comment>||''}";
+
+          # following variables are only available for reporter pipelines:
+          $docker-opts ~= " -e BUILD_STATUS={tags()<build_status>}" if tags()<build_status>;
+          $docker-opts ~= " -e BUILD_URL={tags()<build_url>}" if tags()<build_url>;
+
+          $docker-run-params<options> = $docker-opts;
 
           task-run "docker run", "docker-cli", $docker-run-params;
 
@@ -338,8 +353,30 @@ class Pipeline does Sparky::JobApi::Role {
           name => "sparrow-worker",
         );
 
-        self!build-report: :$stash;
+        my $report = self!build-report: :$stash;
 
+        if "{%*ENV<HOME>}/.sparky/reporters/".IO ~~ :d and $.is_reporter ne "yes" {
+          # runs reporters jobs
+          for dir("{%*ENV<HOME>}/.sparky/reporters/", test => /'.yaml'$$/) -> $r {
+            my $j = self.new-job: :project<SparrowCIQueue>;
+            $j.queue: %(
+              description => "{$.scm} queue (reporter - {$r.basename})",
+              tags => %(
+                stage => "prepare",
+                is_reporter => "yes",
+                project => $.project,
+                scm => $.scm,
+                docker_bootstrap => $.docker_bootstrap,
+                sparrowdo_bootstrap => $.sparrowdo_bootstrap,
+                tasks_config => $r.path,
+                image => $.image,
+                owner => $.owner,
+                build_status => $jobs-status,  
+                build_url => "https://ci.sparrowhub.io/report/{$report<build-id>}",
+              ),
+            );
+          }
+        } 
       }
 
      if $tasks-config<followup_job> && $jobs-status eq "OK" {
@@ -349,7 +386,7 @@ class Pipeline does Sparky::JobApi::Role {
         my $j = self.new-job: :project<SparrowCIQueue>;
 
         $j.queue: %(
-              description => "{$.scm} queue (followup)",
+              description => "{$.scm} queue (followup - {$tasks-config<followup_job>})",
               tags => %(
                 stage => "prepare",
                 project => $.project,
@@ -361,9 +398,7 @@ class Pipeline does Sparky::JobApi::Role {
                 owner => $.owner
               ),
         );
-
       } 
-
     }
 
     method stage-run {
