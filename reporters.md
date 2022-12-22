@@ -1,7 +1,7 @@
 # Reporters
 
-SparrowCI instances administrators might configure integration with
-third party external systems via reporters mechanism.
+SparrowCI instances administrators might configure SparrowCI instance integration with
+third party external services by using reporters mechanism.
 
 # Examples
 
