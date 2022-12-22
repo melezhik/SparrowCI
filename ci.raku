@@ -267,7 +267,8 @@ class Pipeline does Sparky::JobApi::Role {
           # common pipeline variables:
           my $docker-opts = "-e SCM_URL={$.scm}";
           $docker-opts ~= " -e SCM_SHA={$git-data<sha>}";
-          $docker-opts ~= " -e SCM_COMMIT_MESSAGE={$git-data<comment>||''}";
+          my $git-comment = $git-data<comment>.split("\n").first.subst("'","",:g);
+          $docker-opts ~= " -e SCM_COMMIT_MESSAGE='{$git-comment}'";
 
           # following variables are only available for reporter pipelines:
           $docker-opts ~= " -e BUILD_STATUS={tags()<build_status>}" if tags()<build_status>;
