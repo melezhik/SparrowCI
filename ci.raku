@@ -264,9 +264,8 @@ class Pipeline does Sparky::JobApi::Role {
             $docker-run-params<vault_path> = "/kv/sparrow/users/{$.owner}/secrets";
           }
           
-          my $docker-opts = "-e SCM_URL={$.scm}";
-
           # common pipeline variables:
+          my $docker-opts = "-e SCM_URL={$.scm}";
           $docker-opts ~= " -e SCM_SHA={$git-data<sha>}";
           $docker-opts ~= " -e SCM_COMMIT_MESSAGE={$git-data<comment>||''}";
 
