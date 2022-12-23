@@ -78,13 +78,24 @@ class Pipeline does Sparky::JobApi::Role {
     $stash<scm> = $.scm;
     $stash<elapsed> = $time.Int;
 
-    my $r = HTTP::Tiny.post: "http://127.0.0.1:2222/build", 
-      headers => %headers,
-      content => to-json($stash);
-
-    $r<status> == 200 or die "{$r<status>} : { $r<content> ?? $r<content>.decode !! ''}";
-
-    my $res = $r<content>.decode;
+    my $res;
+    my $cnt = 0;
+    
+    while True {
+      my $r = HTTP::Tiny.post: "http://127.0.0.1:2222/build", 
+        headers => %headers,
+        content => to-json($stash);
+        if $r<status> == 200 {
+          $res = from-json($r<content>.decode);
+          last;
+        }
+        if $cnt == 3 or $r<status> != 599 {
+          die "{$r<status>} : { $r<content> ?? $r<content>.decode !! ''}"
+        }
+        $cnt++;
+        say ">>> (599 recieved) http retry: #0{$cnt}";
+        sleep(60);
+    }
 
     say "build web report OK, report_id: {$res}";
 
