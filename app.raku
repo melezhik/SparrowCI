@@ -329,7 +329,7 @@ my $application = route {
       redirect :see-other, 'https://img.shields.io/static/v1?label=SparrowCI&message=Build+|+OK&color=green'
     } elsif $b<state> eq "FAIL" {
       redirect :see-other, 'https://img.shields.io/static/v1?label=SparrowCI&message=Build+|+FAIL&color=red'
-    } elsif $b<state> eq "FAIL" {
+    } elsif $b<state> eq "TIMEOUT" {
       redirect :see-other, 'https://img.shields.io/static/v1?label=SparrowCI&message=Build+|+TIMEOUT&color=yellow'
     } else {
       redirect :see-other, 'https://img.shields.io/static/v1?label=SparrowCI&message=Build+|+UNKOWN&color=gray'
