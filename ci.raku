@@ -365,30 +365,33 @@ class Pipeline does Sparky::JobApi::Role {
           name => "sparrow-worker",
         );
 
-        my $report = self!build-report: :$stash;
-
-        if "{%*ENV<HOME>}/.sparky/reporters/".IO ~~ :d and $.is_reporter ne "yes" {
-          # runs reporters jobs
-          for dir("{%*ENV<HOME>}/.sparky/reporters/", test => /'.yaml'$$/) -> $r {
-            my $j = self.new-job: :project<SparrowCIQueue>;
-            $j.queue: %(
-              description => "{$.scm} queue (reporter - {$r.basename})",
-              tags => %(
-                stage => "prepare",
-                is_reporter => "yes",
-                project => $.project,
-                scm => $.scm,
-                docker_bootstrap => $.docker_bootstrap,
-                sparrowdo_bootstrap => $.sparrowdo_bootstrap,
-                tasks_config => $r.path,
-                image => $.image,
-                owner => $.owner,
-                build_status => $jobs-status,  
-                build_url => "https://ci.sparrowhub.io/report/{$report<build-id>}",
-              ),
-            );
+        # we don't create reports for 
+        # reporters jobs 
+        unless  $.is_reporter {
+          my $report = self!build-report: :$stash;
+          if "{%*ENV<HOME>}/.sparrowci/reporters/".IO ~~ :d and $.is_reporter ne "yes" {
+            # runs reporters jobs
+            for dir("{%*ENV<HOME>}/.sparrowci/reporters/", test => /'.yaml'$$/) -> $r {
+              my $j = self.new-job: :project<SparrowCIQueue>;
+              $j.queue: %(
+                description => "{$.scm} queue (reporter - {$r.basename})",
+                tags => %(
+                  stage => "prepare",
+                  is_reporter => "yes",
+                  project => $.project,
+                  scm => $.scm,
+                  docker_bootstrap => $.docker_bootstrap,
+                  sparrowdo_bootstrap => $.sparrowdo_bootstrap,
+                  tasks_config => $r.path,
+                  image => $.image,
+                  owner => $.owner,
+                  build_status => $jobs-status,  
+                  build_url => "https://ci.sparrowhub.io/report/{$report<build-id>}",
+                ),
+              );
+            }
           }
-        } 
+        }
       }
 
      if $tasks-config<followup_job> && $jobs-status eq "OK" {

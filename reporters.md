@@ -7,7 +7,7 @@ Reporters are plain SparrowCI pipeline(s) get executed after a _regular_ Sparrow
 
 Reporters provides an effective mechanism of any sort of notification. 
 
-To create reporter just create a SparrowCI pipeline inside `~/.sparkyci/reporters/` directory.
+To create reporter just create a SparrowCI pipeline inside `~/.sparrowci/reporters/` directory.
 
 # Examples
 
@@ -16,7 +16,8 @@ To create reporter just create a SparrowCI pipeline inside `~/.sparkyci/reporter
 In this flow SparrowCI notifies Bugzilla service with a build information and optionally closes a related bug:
 
 ```bash
-cat << 'HERE' > ~/.sparkyci/reporters/bugzilla.yaml
+mkdir -p ~/.sparrowci/reporters
+cat << 'HERE' > ~/.sparrowci/reporters/bugzilla.yaml
 secrets:
   - BUGZILLA_RESTAPI_KEY
 tasks:

@@ -4,7 +4,7 @@ sparrowdo \
 --no_sudo \
 --with_sparky \
 --sparrowfile ci.raku \
---tags scm=https://github.com/tbrowder/CSV-AutoClass.git,\
+--tags scm=https://github.com/melezhik/sparrowci-sandbox.git,\
 sparrowdo_bootstrap=off,\
-tasks_config=$PWD/examples/go/depends.yaml \
+tasks_config=$PWD/examples/bash/task.yaml \
 --desc "sparrowci test"
