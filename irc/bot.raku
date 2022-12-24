@@ -7,9 +7,8 @@ class SparrowCIBot does IRC::Client::Plugin {
         react {
           whenever self!messages<> -> $m {
             say "handle message for bot: {$m.perl}";
-            my $text = "hello from sparrowbot";
             say "send message to irc channel: <{$channel}> ...";
-            $.irc.send: :where($channel) :text($text);
+            $.irc.send: :where($channel) :text($m<text>);
             say "unlink {$m<file>.path} ...";
             unlink $m<file>;
           }
@@ -19,9 +18,12 @@ class SparrowCIBot does IRC::Client::Plugin {
     method !messages {
         supply {
             loop {
-                for dir("/tmp/foo2/") -> $m {
-                  my %meta = %( text => "test bot", file => $m );
-                  emit %meta;
+                for dir("{%*ENV<HOME>}/.sparrowci/irc/bot/messages/") -> $m {
+                  my $msg = $m.IO.slurp;
+                  if $msg {
+                    my %meta = %( text => $msg, file => $m );
+                    emit %meta;
+                  }
                 }
                 #exit(0);
             }
@@ -34,13 +36,13 @@ say "=====";
 
 .run with IRC::Client.new:
     #:userhost<mybf.io>
-    :port(6697)
+    :port(5555)
     :ssl(True)
-    #:ca-file("./libera.pem")
+    :ca-file("/home/sph/.znc/znc.pem")
     :nick<sparrowbot>
-    :username<sparrowbot>
+    :username('admin/libera')
     :password(%*ENV<sparrowbot_password>)
-    :host<irc.libera.chat>
+    :host<127.0.0.1>
     :channels($channel)
     :debug
     :plugins(SparrowCIBot.new)
