@@ -286,7 +286,7 @@ class Pipeline does Sparky::JobApi::Role {
           $docker-opts ~= " -e BUILD_URL={tags()<build_url>}" if tags()<build_url>;
 
           if $.is_reporter {
-            $docker-opts ~= " -v {%*ENV<HOME>}/.sparrowci/irc/bot/messages:/irc/bot/messages";
+            $docker-opts ~= " -v {%*ENV<HOME>}/.sparrowci/irc/bot/messages/:/tmp/irc/bot/messages/";
           }
 
           $docker-run-params<options> = $docker-opts;
