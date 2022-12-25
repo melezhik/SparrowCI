@@ -1,10 +1,11 @@
 [Abstract: Can you explain the whole project and its expected outcome(s).]
 
-SparrowCI - super fun and flexible CI system with many programming languages support. Currently CI has some users across Raku language community (https://raku.org), please also see public IRC channel - https://irclogs.raku.org/raku-sparrow/live.html . CI allows to test community modules written on Raku and reports any errors back to the IRC channel. 
+SparrowCI - super fun and flexible CI system with many programming languages support. Currently CI has some users across Raku language community (https://raku.org), please also see the public IRC channel - https://irclogs.raku.org/raku-sparrow/live.html . CI allows to test community modules written on Raku and report any errors back to the IRC channel with further discussion. 
 
 [Have you been involved with projects or organisations relevant to this project before? And if so, can you tell us a bit about your contributions?]
 
-I am owner and developer of the system. I own the site and domain - https://ci.sparrowhub.io and other subsystem involved in the CI process. 
+I am the owner and developer of the system. I own the site and domain - https://ci.sparrowhub.io and other subsystem involved in the CI process. I have been helping Raku modules author to use the system, often creating pipelines for them and make pull requests - please see my activity at http://github.com/melezhik . I am also an active member of the Raku community - https://raku.org , my IRC nickname is melezhik. 
+
 
 [Requested amount - 10.000 euro]
 
