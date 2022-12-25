@@ -4,8 +4,8 @@ SparrowCI - super fun and flexible CI system with many programming languages sup
 
 [Have you been involved with projects or organisations relevant to this project before? And if so, can you tell us a bit about your contributions?]
 
-I am the owner and developer of the system. I own the site and domain - https://ci.sparrowhub.io and other subsystem involved in the CI process. I have been helping Raku modules author to use the system, often creating pipelines for them and make pull requests - please see my activity at http://github.com/melezhik . I am also an active member of the Raku community - https://raku.org , my IRC nickname is melezhik. 
-
+I am the owner and developer of the system. I own the site and domain - https://ci.sparrowhub.io and other subsystem involved in the entire system. 
+I have been helping Raku modules authors to use the system, often creating pipelines for them and make pull requests - please see my activity at http://github.com/melezhik . I am also an active member of the Raku community - https://raku.org , my IRC nickname is melezhik. 
 
 [Requested amount - 10.000 euro]
 
@@ -36,4 +36,4 @@ The main challenge now is to scale https://ci.sparrowhub.io to allow serve many 
 
 https://ci.sparrowhub.io now is mainly used by few people in Raku community and me. SparrowCI also is integrated with https://sparrowhub.io - Sparrow plugins repository. The CI has public IRC channel - http://kiwiirc.com/nextclient/irc.libera.chat/#raku-sparrow where people discuss modules build failures , the channels logs are available is public - https://irclogs.raku.org/raku-sparrow/live.html
 
-My goal is to allow more and more Raku users and later form other language communities to use CI as a free, fast and reliable   services 
+My goal is to allow more and more Raku users and later from other languages communities to use the CI as a free, fast and reliable service.
