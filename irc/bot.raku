@@ -25,7 +25,7 @@ class SparrowCIBot does IRC::Client::Plugin {
                     emit %meta;
                   }
                 }
-                #exit(0);
+                exit(0);
             }
         }
     }
