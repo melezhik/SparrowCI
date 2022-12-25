@@ -1,0 +1,42 @@
+SparrowCI - super fun and flexible CI system with many programming languages support. Currently CI has some users across Raku language community (https://raku.org), please also see public IRC channel - https://irclogs.raku.org/raku-sparrow/live.html . CI allows to test community modules written on Raku and reports any errors back to the IRC channel. 
+
+///
+
+I am owner and developer of the system. I own the site and domain - https://ci.sparrowhub.io and other subsystem involved in the CI process. 
+
+///
+
+I need this money to scale infrastructure. Right now this is just the one VM that paid out of my pocket, because of this if users base increase the average time of single build will increase. Right not it's about 5 minutes. I would like to have average time of a build around 1 minute and allow to support around  500 users (right now it's just maybe 3-5 active users ).
+
+I am going to spend this money:
+
+1) 20%  - to pay my work on infrastructure changes (spinning up new VMs and created a pure distributed CI system that will allow high load)
+2) 80%  - pay for new VMs and possible other infrastructure resources and reserve  money for the future infrastructure costs (next 3 years). My estimation is I will have to pay around $300 per month for 3-5 VMs to serve around 300-500 active  users.
+
+///
+
+[]
+
+I need this money to scale infrastructure. Right now this is just the one VM that paid out of my pocket, because of this if users base increase the average time of single build will increase. Right not it's about 5 minutes. I would like to have average time of a build around 1 minute and allow to support around  500 users (right now it's just maybe 3-5 active users ).
+
+I am going to spend this money:
+
+1) 20%  - to pay my work on infrastructure changes (spinning up new VMs and created a pure distributed CI system that will allow high load)
+2) 80%  - pay for new VMs and possible other infrastructure resources and reserve  money for the future infrastructure costs (next 3 years). My estimation is I will have to pay around $300 per month for 3-5 VMs to serve around 300-500 active  users.
+
+///
+
+Typical build scenario is a directed acycling graph of tasks, every task is written on high level programming language, tasks might share states with each other using programming API, this is highly flexible mechanism that does not exist in competitors CI systems (GitHub actions, GitLab). Also pipelines are extensible by writing Sparrow plugins which are written on high level programming languages. GitLab and GitHub does not have a mechanism that allow write plugins on many languages (GitHub action only allow to write extensions on Java Script). SparrowCI has also reporters mechanism that allow to easy integrate it with other third party systems, I don't see this in other CI systems, which are more self contained solutions, while SparrowCI is not intended to be all on one and is easily integrated into other eco systems - including Bugzilla, public IRC , etc - https://github.com/melezhik/SparrowCI/blob/main/reporters.md . And the last  but not the least, one can self host SparrowCI and run pipelines locally ( which is not possible with GitHub Actions or GitLab ) - https://github.com/melezhik/SparrowCI/blob/main/development.md
+
+///
+
+
+The main challenge now is to scale https://ci.sparrowhub.io to allow sever many (hundreds) users and to decrease average build time (for a one build) to 1 minute. 
+
+///
+
+[Describe the ecosystem of the project, and how you will engage with relevant actors and promote the outcomes?]
+
+https://ci.sparrowhub.io now is mainly used by few people in Raku community and me. SparrowCI also is integrated with https://sparrowhub.io - Sparrow plugins repository. The CI has public IRC channel - http://kiwiirc.com/nextclient/irc.libera.chat/#raku-sparrow where people discuss modules build failures , the channels logs are available is public - https://irclogs.raku.org/raku-sparrow/live.html
+
+My goal is to allow more and more Raku users and later form other language communities to use CI as a free, fast and reliable   services 
