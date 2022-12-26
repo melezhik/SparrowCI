@@ -7,7 +7,7 @@ SparrowCI - super fun and flexible CI system with many programming languages sup
 I am the owner and developer of the system. I own the site and domain - https://ci.sparrowhub.io and other subsystem involved in the entire system. 
 I have been helping Raku modules authors to use the system, often creating pipelines for them and make pull requests - please see my activity at http://github.com/melezhik . I am also an active member of the Raku community - https://raku.org , my IRC nickname is melezhik. 
 
-[Requested amount - 10.000 euro]
+[Requested amount - xxxxx euro]
 
 [Explain what the requested budget will be used for? 
 Does the project have other funding sources, both past and present?
