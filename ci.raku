@@ -549,11 +549,12 @@ class Pipeline does Sparky::JobApi::Role {
         die "task {$t<name>} is not found" unless $data;
 
         my $stash-data = %(
+          say ">>> set default depend/followup task/plugin parameters ...";
           config => $data[0]<config> || {},
         );
 
         if $t<config> {
-          say ">>> save job vars ...";
+          say ">>> override default depend/followup task/plugin parameters ...";
           $stash-data<config> =  $t<config>   
         }
 
