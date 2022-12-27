@@ -544,8 +544,12 @@ class Pipeline does Sparky::JobApi::Role {
 
         my $job = self.new-job: :$project;
 
+        my $data = self!tasks-config(:docker<True>)<tasks>.grep({.<name> eq $t<name>});
+        
+        die "task {$t<name>} is not found" unless $data;
+
         my $stash-data = %(
-          config => { }
+          config => $data[0]<config> || {},
         );
 
         if $t<config> {
