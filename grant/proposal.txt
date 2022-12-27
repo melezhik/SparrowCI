@@ -1,0 +1,39 @@
+[Abstract: Can you explain the whole project and its expected outcome(s).]
+
+SparrowCI - super fun and flexible CI system with many programming languages support. Currently CI has some users across Raku language community (https://raku.org), please also see the public IRC channel - https://irclogs.raku.org/raku-sparrow/live.html . CI allows to test community modules written on Raku and report any errors back to the IRC channel with further discussion. 
+
+[Have you been involved with projects or organisations relevant to this project before? And if so, can you tell us a bit about your contributions?]
+
+I am the owner and developer of the system. I own the site and domain - https://ci.sparrowhub.io and other subsystem involved in the entire CI system. 
+I have been helping Raku modules authors to use the system, often creating pipelines for them and make pull requests - please see my activity at http://github.com/melezhik . I am also an active member of the Raku community - https://raku.org , my IRC nickname is melezhik. 
+
+[Requested amount - xxxxx euro]
+
+[Explain what the requested budget will be used for? 
+Does the project have other funding sources, both past and present?
+(If you want, you can in addition attach a budget at the bottom of the form)]
+
+I need this money to scale infrastructure (rent new VMs). 
+
+Right now this is just the one VM that paid out of my pocket, because of this if a user base increases the average time of single build will increase. Right now it's about 5 minutes. I would like to have average time of a build around 2-3 minutes and allow to support around  500 users (right now it's just maybe 3-5 active users ), with ability to handle 5-10 concurrent build requests. 
+
+I am going to spend this money:
+
+1) 20%  - to pay my work on infrastructure changes (spinning up new VMs and created a pure distributed CI system that will allow high load)
+2) 80%  - pay for new VMs and possible other infrastructure resources and reserve  money for the future infrastructure costs (next 3 years). My estimation is I will have to pay around $300 per month for 3-5 VMs to serve around 300-500 active  users.
+
+
+[Compare your own project with existing or historical efforts]
+
+Typical build scenario is a directed acycling graph of tasks, every task is written on high level programming language, tasks might share states with each other using programming API, this is highly flexible mechanism that does not exist in competitors CI systems (GitHub actions, GitLab). Also pipelines are extensible by writing Sparrow plugins which are written on high level programming languages. GitLab and GitHub does not have a mechanism that allow write plugins on many languages (GitHub action only allow to write extensions on Java Script). SparrowCI has also reporters mechanism that allow to easy integrate it with other third party systems, I don't see this in other CI systems, which are more self contained solutions, while SparrowCI is not intended to be all on one and is easily integrated into other eco systems - including Bugzilla, public IRC , etc - https://github.com/melezhik/SparrowCI/blob/main/reporters.md . And the last  but not the least, one can self host SparrowCI and run pipelines locally ( which is not possible with GitHub Actions or GitLab ) - https://github.com/melezhik/SparrowCI/blob/main/development.md
+
+[What are significant technical challenges you expect to solve during the project, if any?)]
+
+
+The main challenge now is to scale https://ci.sparrowhub.io to allow serve many (hundreds) users and to maintain  an average build time (time for a single build) to 2-3 minutes.  The current average build time is around 3-5 minutes which is ok for a few users the system has right now.  But this time will become much bigger  as soon as we get more users because CI works in single  "thread" mode (all the build requests are queued in a single VMs and then processed). In other words the challenge is to make this system distributed and serve many (5-10 concurrent)  parallel build requests for a large user base.
+
+[Describe the ecosystem of the project, and how you will engage with relevant actors and promote the outcomes?]
+
+https://ci.sparrowhub.io now is mainly used by few people in Raku community and me. SparrowCI also is integrated with https://sparrowhub.io - Sparrow plugins repository. The CI has public IRC channel - http://kiwiirc.com/nextclient/irc.libera.chat/#raku-sparrow where people discuss modules build failures , the channels logs are available is public - https://irclogs.raku.org/raku-sparrow/live.html
+
+My goal is to allow more and more Raku users and later from other languages communities to use the CI as a free, fast and reliable service.
