@@ -246,6 +246,7 @@ class Pipeline does Sparky::JobApi::Role {
       ( $tasks-config<image> ?? $tasks-config<image><> !! ['melezhik/sparrow:alpine'] );
 
       my $jobs-status = "OK";
+      my $warn-cnt = 0; # number of warnings found in jobs
 
       for @images -> $image {
 
@@ -284,6 +285,7 @@ class Pipeline does Sparky::JobApi::Role {
           # following variables are only available for reporter pipelines:
           $docker-opts ~= " -e BUILD_STATUS={tags()<build_status>}" if tags()<build_status>;
           $docker-opts ~= " -e BUILD_URL={tags()<build_url>}" if tags()<build_url>;
+          $docker-opts ~= " -e BUILD_WARN_CNT={tags()<warn_cnt>||0}";
 
           if $.is_reporter {
             $docker-opts ~= " -v {%*ENV<HOME>}/.sparrowci/irc/bot/messages/:/tmp/irc/bot/messages/";
@@ -351,6 +353,7 @@ class Pipeline does Sparky::JobApi::Role {
           for $log.lines.grep({ $_ !~~ /^^ '>>>'/ }) -> $l {
             say $l;
             @logs.push: $l;
+            $warn-cnt++ if $l ~~ /^^ "warn:" \s /;
           }
 
         }
@@ -391,6 +394,7 @@ class Pipeline does Sparky::JobApi::Role {
                   owner => $.owner,
                   build_status => $jobs-status,  
                   build_url => "https://ci.sparrowhub.io/report/{$report<build-id>}",
+                  warn_cnt => $warn-cnt,
                 ),
               );
             }

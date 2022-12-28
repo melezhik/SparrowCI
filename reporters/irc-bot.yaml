@@ -7,7 +7,7 @@ tasks:
     code: |
       set -x
       set -e
-      echo "Build finished. $BUILD_URL | $SCM_URL | $SCM_COMMIT_MESSAGE @ $SCM_SHA | $BUILD_STATUS" \
+      echo "Build finished. $BUILD_URL | $SCM_URL | $SCM_COMMIT_MESSAGE @ $SCM_SHA | $BUILD_STATUS | BUILD_WARN_CNT warnings" \
       > /tmp/irc/bot/messages/$SCM_SHA.txt
       env|grep SC
       env|grep BUILD
