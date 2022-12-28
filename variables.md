@@ -20,6 +20,10 @@ Following environment variables are available in [reporters](reporters.md) pipel
 
 Pipeline build status
 
+* **BUILD_WARN_CNT**
+
+Number of warnings
+
 * **BUILD_URL**
 
 Http url for build report 
