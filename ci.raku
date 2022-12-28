@@ -353,7 +353,7 @@ class Pipeline does Sparky::JobApi::Role {
           for $log.lines.grep({ $_ !~~ /^^ '>>>'/ }) -> $l {
             say $l;
             @logs.push: $l;
-            $warn-cnt++ if $l ~~ /^^ "warn:" \s /;
+            $warn-cnt++ if $l ~~ /":: warn:"/;
           }
 
         }
@@ -457,6 +457,7 @@ class Pipeline does Sparky::JobApi::Role {
         );
         $.source_dir = "{$*CWD}";
       }  
+
       if $task<depends> {
 
         say ">>> enter depends block: ", $task<depends>.perl;
@@ -513,7 +514,6 @@ class Pipeline does Sparky::JobApi::Role {
         say ">>> waiting for followup tasks have finsihed ...";
 
         my $st = self.wait-jobs(@jobs,{ timeout => $timeout });
-
 
         for @jobs -> $fj {
           %child-jobs<right>.push: $fj.info();
