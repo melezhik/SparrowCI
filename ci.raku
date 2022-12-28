@@ -57,7 +57,9 @@ class Pipeline does Sparky::JobApi::Role {
 
   method !tasks-config (:$docker = False) {
     say ">>> load sparrow.yaml from storage, docker_mode=$docker";
-    load-yaml(self!get-storage-api(:$docker).get-file("sparrow.yaml",:text));
+    my $file = self!get-storage-api(:$docker).get-file("sparrow.yaml",:text);
+    my $processed-file = $file.subst(/'{{' \s* 'CWD' \s* '}}'/,$.source_dir,:g);
+    load-yaml($processed-file);
   }
   
   method !build-report(:$stash) {
