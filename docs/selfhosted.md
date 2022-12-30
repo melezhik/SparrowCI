@@ -14,11 +14,14 @@ You need to install Sparky on the same machine where SparrowCI is installed.
 
 Sparky API should be accessible on http://127.0.0.1:4000
 
-See [https://github.com/melezhik/sparky#installation](https://github.com/melezhik/sparky#installation)
+Follow [https://github.com/melezhik/sparky#installation](https://github.com/melezhik/sparky#installation)
+for installation details.
 
 * Install SparrowCI web app
 
 ```bash
+git clone https://github.com/melezhik/SparrowCI.git
+cd SparrowCI
 zef install . --/test
 ```
 
@@ -30,8 +33,10 @@ raku db-init.raku
 
 * Setup SparrowCI configuration 
 
+One has to choose _database_ login type.
+
 ```bash
-cat << 'HERE' > ~/.sparkyci.yaml
+cat << 'HERE' > ~/sparkyci.yaml
 login_type: DB
 HERE
 ```
@@ -46,8 +51,3 @@ SparrowCI API will be accessible on http://127.0.0.1:2222 , use `admin` as a log
 and `passW0rd` as a password. 
 
 Please change the password after the first successful login.
-
-## Run pipeline
-
-
-
