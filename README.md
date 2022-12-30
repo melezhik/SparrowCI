@@ -882,19 +882,19 @@ tasks:
 
 Other examples could be found at [examples](examples) folder
 
-# Environment variables
+## Environment variables
 
 See [variables.md](docs/variables.md) document.
 
-# Self-hosted deployment
+## Self-hosted deployment
 
 See [selfhosted.md](docs/selfhosted.md) document.
 
-# Development
+## Development
 
 See [development.md](docs/development.md) document.
 
-# External systems integration
+## External systems integration
 
 See [reporters.md](docs/reporters.md) document.
 
