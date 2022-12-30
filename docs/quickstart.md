@@ -43,12 +43,9 @@ That is it. A build will be triggered soon!
 
 See more examples at [SparrowCI examples](https://github.com/melezhik/SparrowCI/tree/main/examples)
 
-or read documentation to get in depth understanding of SparrowCI pipelines.
+# Documentation 
 
-
-# Documentation
-
-Follow [https://github.com/melezhik/SparrowCI](https://github.com/melezhik/SparrowCI)
+Or get [documentation](https://github.com/melezhik/SparrowCI) for many different topics 
 
 # Author
 
