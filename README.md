@@ -888,7 +888,7 @@ See [variables.md](docs/variables.md) document.
 
 # Self-hosted deployment
 
-See [self-hosted.md](docs/development.md) document.
+See [selfhosted.md](docs/selfhosted.md) document.
 
 # Development
 
