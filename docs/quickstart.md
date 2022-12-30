@@ -41,11 +41,11 @@ That is it. A build will be triggered soon!
 
 # Examples
 
-See more examples at [SparrowCI examples](https://github.com/melezhik/SparrowCI/tree/main/examples)
+See more examples at [SparrowCI examples](https://github.com/melezhik/SparrowCI/tree/main/examples).
 
 # Documentation 
 
-Or get [documentation](https://github.com/melezhik/SparrowCI) for many different topics 
+Or get [documentation](https://github.com/melezhik/SparrowCI) for many different topics.
 
 # Author
 

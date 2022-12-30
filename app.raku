@@ -78,7 +78,7 @@ my $application = route {
     template 'templates/quickstart.crotmp', %(
       page-title => "Quick Start", 
       title => title(),   
-      data => parse-markdown("quickstart.md".IO.slurp).to_html,
+      data => parse-markdown("docs/quickstart.md".IO.slurp).to_html,
       css => css($theme),
       theme => $theme,
       navbar => navbar($user, $token, $theme),
@@ -107,6 +107,7 @@ my $application = route {
       navbar => navbar($user, $token, $theme),
     )
   }
+
   get -> 'repos', :$message, :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
     if check-user($user, $token) == True {
       my $data = conf-login-type() eq "GH" ?? gh-repos($user) !! [];
@@ -385,6 +386,27 @@ my $application = route {
     } else {
         redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage secrets"; 
     }
+  }
+
+  get -> 'account', :$message, :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
+    if check-user($user, $token) == True {
+      template 'templates/account.crotmp', %(
+        page-title => "Account Manager", 
+        title => title(),
+        login => $user, 
+        login-type => conf-login-type(),
+        css => css($theme),
+        theme => $theme,
+        navbar => navbar($user, $token, $theme),
+        message => $message,
+      )
+    } else {
+      if conf-login-type() eq "GH" {
+        redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage account";
+      } else {
+        redirect :see-other, "{http-root()}/login-page2?message=you need to sign in to manage account";
+      }
+    }  
   }
 
   get -> 'js', *@path {

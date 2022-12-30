@@ -46,9 +46,15 @@ sub login-logout (Mu $user, Mu $token) {
 
   if check-user($user,$token) == True {
 
-    "<a class=\"navbar-item\" href=\"{http-root()}/logout?q=123\">
-      Log out
-    </a>"
+    if conf-login-type() eq "GH" {
+      "<a class=\"navbar-item\" href=\"{http-root()}/logout?q=123\">     
+        Log out
+      </a>"
+    } else {
+      "<a class=\"navbar-item\" href=\"{http-root()}/account?q=123\">
+        Account
+      </a>"
+    }
 
   } else {
 

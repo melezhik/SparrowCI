@@ -1,0 +1,62 @@
+<html>
+    <&HTML-AND-JAVASCRIPT(.css)>
+    <head>
+      <title><.title></title>
+      <script type="text/javascript" src="js/select-search.js"></script>
+      <link rel="stylesheet" type="text/css" href="css/select-search.css" />
+    </head>
+    <body>
+      <div class="container is-fluid">
+        <div>
+          <&HTML-AND-JAVASCRIPT(.navbar)>
+        </div>
+        <?.message>
+          <span class="control">
+            <pre class="notification"><.message></pre>
+          </span>
+        </?>
+        <div>    
+          <nav class="panel is-success">
+            <p class="panel-heading">
+              <.page-title>
+            </p>
+            <div class="panel-block">
+              <nav class="tabs is-boxed is-fullwidth">
+                    <div class="container">
+                      <ul>
+                        <li class="tab is-active" onclick="openTab(event,'Info')"><a>Info</a></li>
+                        <li class="tab" onclick="openTab(event,'ChangePassword')"><a>Change Password</a></li>
+                      </ul>
+                    </div>
+              </nav>
+            </div>
+            <div class="panel-block">
+                <div id="Info" class="panel-block content-tab">
+                  <p class="control">
+                    <form action="/logout" method="GET">
+                      <div class="field">
+                        <div class="autocomplete">
+                          <label class="label">Account info</label>
+                          <span class="help is-success">Logged as: <.login></span>
+                        </div>
+                      </div>
+                      <div class="field>
+                        <div class="control">
+                          <button class="button is-link">Logout</button>
+                        </div>
+                      </div> 
+                    </form>
+                  </p>
+                </div>
+                <div id="ChangePassword" class="panel-block content-tab" style="display:none">
+                  <p class="control">
+                  </p>     
+                </div>  
+            </div>  
+          </nav>
+        </div>      
+      </div>      
+  </body>
+</html>
+
+
