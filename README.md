@@ -4,7 +4,7 @@ SparrowCI - super fun and flexible CI system with many programming languages sup
 
 # Why yet another pipeline DSL?
 
-Read [why?](why.md) manifest
+Read [why?](docs/why.md) manifest
 
 # Quick Start
 
@@ -504,7 +504,7 @@ To chose a language for underling task just use `language: $language` statement:
     Write-Host "Hello from Powershell"
 ```
 
-(*) golang support is not yet fully implemented, for details visit this [page](go_support.md).
+(*) golang support is not yet fully implemented, for details visit this [page](docs/go_support.md).
 
 ## Tasks parameters and configuration
 
@@ -884,15 +884,19 @@ Other examples could be found at [examples](examples) folder
 
 # Environment variables
 
-See [variables.md](variables.md) document.
+See [variables.md](docs/variables.md) document.
+
+# Self-hosted deployment
+
+See [self-hosted.md](docs/development.md) document.
 
 # Development
 
-See [development.md](development.md) document.
+See [development.md](docs/development.md) document.
 
 # External systems integration
 
-See [reporters.md](reporters.md) document.
+See [reporters.md](docs/reporters.md) document.
 
 # Thanks to
 

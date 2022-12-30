@@ -14,7 +14,7 @@ SCM commit sha
 
 SCM commit message
 
-Following environment variables are available in [reporters](reporters.md) pipelines:
+Following environment variables are available in [reporters](docs/reporters.md) pipelines:
 
 * **BUILD_STATUS**
 
