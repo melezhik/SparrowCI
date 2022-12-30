@@ -58,7 +58,7 @@ That is it. A build will be triggered soon!
 
 ## Deep dive
 
-See [dsl.md](dsl.md) document for full SparrowCI DSL tutorial.
+See [dsl.md](docs/dsl.md) document for full SparrowCI DSL tutorial.
 
 # Other topics
 
