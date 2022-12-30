@@ -47,6 +47,10 @@ $dbh.do(q:to/STATEMENT/);
     DROP TABLE IF EXISTS news
     STATEMENT
 
+$dbh.do(q:to/STATEMENT/);
+    DROP TABLE IF EXISTS users
+    STATEMENT
+
 if $engine ~~ /:i sqlite/ {
 
   $dbh.do(q:to/STATEMENT/);
@@ -61,10 +65,18 @@ if $engine ~~ /:i sqlite/ {
       )
       STATEMENT
   $dbh.do(q:to/STATEMENT/);
+      CREATE TABLE users (
+          login       varchar(255) PRIMARY KEY,
+          password    varchar(255),
+          description TEXT,
+          dt datetime default current_timestamp
+      )
+      STATEMENT
+  $dbh.do(q:to/STATEMENT/);
       CREATE TABLE news (
           id          INTEGER PRIMARY KEY AUTOINCREMENT,
           title       varchar(255),
-          url        varchar(255),
+          url         varchar(255),
           dt datetime default current_timestamp
       )
       STATEMENT
@@ -76,7 +88,7 @@ if $engine ~~ /:i sqlite/ {
           id          int primary key auto_increment,
           project     varchar(255),
           job_id      varchar(255),
-          image       = varchar(255),
+          image       varchar(255),
           description varchar(255),
           state       int,
           dt timestamp default CURRENT_TIMESTAMP
@@ -85,10 +97,10 @@ if $engine ~~ /:i sqlite/ {
 
   $dbh.do(q:to/STATEMENT/);
       CREATE TABLE news (
-          id          int primary key auto_increment,
-          title       varchar(255),
-          url        varchar(255),
-          dt timestamp default CURRENT_TIMESTAMP
+          id            int primary key auto_increment,
+          title         varchar(255),
+          url           varchar(255),
+          dt timestamp  default CURRENT_TIMESTAMP
       ) CHARACTER SET utf8
       STATEMENT
 
@@ -108,10 +120,10 @@ if $engine ~~ /:i sqlite/ {
 
   $dbh.do(q:to/STATEMENT/);
       CREATE TABLE news (
-          id          SERIAL PRIMARY KEY,
-          title       varchar(255),
-          url        varchar(255),
-          dt timestamp default NOW()
+          id            SERIAL PRIMARY KEY,
+          title         varchar(255),
+          url           varchar(255),
+          dt timestamp  default NOW()
       )
       STATEMENT
 }

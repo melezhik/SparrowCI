@@ -161,3 +161,96 @@ sub get-report ($id) is export {
     return {}
   }
 }
+
+sub insert-user (:$login, :$password, :$description ) is export {
+
+    my $dbh = get-dbh();
+
+    my $sth = $dbh.prepare(q:to/STATEMENT/);
+      INSERT INTO users (login, password, description)
+      VALUES (?,?,?)
+    STATEMENT
+
+    $sth.execute($login,$password,$description);
+
+    $sth.finish;
+
+    $dbh.dispose;
+
+    return;
+
+}
+
+sub get-user ($login) is export {
+
+    my $dbh = get-dbh();
+
+    my $sth = $dbh.prepare(q:to/STATEMENT/);
+        SELECT 
+          login, 
+          password
+        FROM 
+          users
+        WHERE
+          login = ?
+        LIMIT 1  
+    STATEMENT
+
+    $sth.execute($login);
+
+    my @rows = $sth.allrows(:array-of-hash);
+
+    $sth.finish;
+
+    $dbh.dispose;
+
+    return @rows[0];
+ 
+}
+
+sub update-user (:$login,:$password) is export {
+
+    my $dbh = get-dbh();
+
+    my $sth = $dbh.prepare(q:to/STATEMENT/);
+        UPDATE 
+          users
+        SET
+          password = ?  
+        WHERE
+          login = ?
+        LIMIT 1  
+    STATEMENT
+
+    $sth.execute($login,$password);
+
+    my @rows = $sth.allrows(:array-of-hash);
+
+    $sth.finish;
+
+    $dbh.dispose;
+
+    return;
+ 
+}
+
+sub delete-user ($login) is export {
+
+    my $dbh = get-dbh();
+
+    my $sth = $dbh.prepare(q:to/STATEMENT/);
+        DELETE FROM 
+          users
+        WHERE
+          login = ?
+    STATEMENT
+
+    $sth.execute($login);
+
+    $sth.finish;
+
+    $dbh.dispose;
+
+    return;
+
+}

@@ -1,0 +1,43 @@
+<html>
+    <&HTML-AND-JAVASCRIPT(.css)>
+    <head>
+      <title><.title></title>
+    </head>
+    <body>
+      <div class="container is-fluid">
+        <div>
+          <&HTML-AND-JAVASCRIPT(.navbar)>
+        </div>
+        <?.message>
+          <span class="control">
+            <pre class="notification"><.message></pre>
+          </span>
+        </?>
+        <div>    
+          <nav class="panel is-link">
+            <p class="panel-heading">
+              <.page-title>
+            </p>
+            <div class="panel-block">
+                <form action="/login" method="POST">
+                  <div class="field">
+                    <label class="label">Login</label>
+                    <input id="login" class="input" type="text" name="login" placeholder="login">
+                    <label class="label">Password</label>
+                    <input id="value" class="input" type="password" name="password" placeholder="password">
+                  </div>
+                  <div class="field">
+                    <div class="control">
+                      <button class="button is-link">Login</button>
+                    </div>
+                  </div>    
+                </form>
+            </div>
+          </nav>
+        </div>      
+      </div>      
+    </body>
+</html>
+
+
+

@@ -109,7 +109,7 @@ my $application = route {
   }
   get -> 'repos', :$message, :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
     if check-user($user, $token) == True {
-      my $data = gh-repos($user);
+      my $data = conf-login-type() eq "GH" ?? gh-repos($user) !! [];
       my @projects = projects($user);
       my $repos =  $data<>.map({ ("\"{$_<name>||''}\"") }).join(",");
       template 'templates/repos.crotmp', %(
@@ -117,6 +117,7 @@ my $application = route {
         title => title(),
         projects => @projects, 
         gh-repos-js => $repos,
+        login-type => conf-login-type(),
         css => css($theme),
         theme => $theme,
         repos-sync-date => repos-sync-date($user),
@@ -143,7 +144,7 @@ my $application = route {
           no_index_update: false
           bootstrap: false
           format: default
-          repo: file:///home/sph/repo
+          repo: https://sparrowhub.io/repo
           tags: cpu=2,mem=6,SCM_URL=$url,owner=$user
         disabled: false
         keep_builds: 100
@@ -419,44 +420,8 @@ my $application = route {
   #
   
   get -> 'login' {
-
-    if %*ENV<SC_USER> {
-
-        say "SC_USER is set, you need to set SC_TOKEN var as well"
-          unless %*ENV<SC_TOKEN>;
-
-        my $user = %*ENV<SC_USER>;
-
-        say "set user login to {$user}";
-
-        set-cookie 'user', $user;
-
-        mkdir "{cache-root()}/users";
-
-        mkdir "{cache-root()}/users/{$user}";
-
-        mkdir "{cache-root()}/users/{$user}/tokens";
-
-        "{cache-root()}/users/{$user}/meta.json".IO.spurt(
-          to-json({ access_token => %*ENV<SC_TOKEN>})
-        );
-
-        my $tk = gen-token();
-
-        "{cache-root()}/users/$user/tokens/{$tk}".IO.spurt("");
-
-        say "set user token to {$tk}";
-
-        set-cookie 'token', $tk;
-
-        redirect :see-other, "{http-root()}/?message=user logged in";
-
-    } else  {
-
-      redirect :see-other,
-        "https://github.com/login/oauth/authorize?client_id={%*ENV<OAUTH_CLIENT_ID>}&state={%*ENV<OAUTH_STATE>}"
-    }
-
+    redirect :see-other,
+      "https://github.com/login/oauth/authorize?client_id={%*ENV<OAUTH_CLIENT_ID>}&state={%*ENV<OAUTH_STATE>}"
   }
 
   get -> 'logout', :$user is cookie, :$token is cookie {
@@ -563,6 +528,57 @@ my $application = route {
       css => css($theme),
       theme => $theme,
       navbar => navbar($user, $token, $theme),
+    }
+  }
+
+  get -> 'login-page2', :$message, :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
+
+    template 'templates/login-page2.crotmp', {
+      page-title => "Login page",
+      title => title(),
+      http-root => http-root(),
+      message => $message || "sign in using your credentials",
+      css => css($theme),
+      theme => $theme,
+      navbar => navbar($user, $token, $theme),
+    }
+  }
+
+  post -> 'login' {
+    my $user; my $password_param;
+    request-body -> (:$login,:$password) {
+      $user = $login;
+      $password_param = $password;
+      say "login user: $user";
+    }
+    if is-admin-login($user) and $password_param eq conf-admin-password()  {
+      say "login user: $user - OK";
+
+      say "set user login to {$user}";
+
+      set-cookie 'user', $user;
+
+      mkdir "{cache-root()}/users";
+
+      mkdir "{cache-root()}/users/{$user}";
+
+      mkdir "{cache-root()}/users/{$user}/tokens";
+
+      "{cache-root()}/users/{$user}/meta.json".IO.spurt(
+        to-json({ })
+      );
+
+      my $tk = gen-token();
+
+      "{cache-root()}/users/$user/tokens/{$tk}".IO.spurt("");
+
+      say "set user token to {$tk}";
+
+      set-cookie 'token', $tk;
+
+      redirect :see-other, "{http-root()}/?message=user [{$user}] successfully logged in";
+    } else {
+        redirect :see-other, "{http-root()}/login-page2?message=bad credentials"; 
     }
   }
 

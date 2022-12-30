@@ -27,7 +27,9 @@
                         <li class="tab is-active" onclick="openTab(event,'ActiveList')"><a>Active Repos</a></li>
                         <li class="tab" onclick="openTab(event,'ManageRepos')"><a>Manage Repos</a></li>
                         <li class="tab" onclick="openTab(event,'AddRepo')"><a>Add Repo</a></li>
+                        <?{ .login-type eq 'GH' }>
                         <li class="tab" onclick="openTab(event,'SyncRepos')"><a>Sync Repos</a></li>
+                        </?>
                       </ul>
                     </div>
               </nav>
@@ -91,26 +93,39 @@
                         <div class="field">
                             <div class="autocomplete">
                               <label class="label">Add repository</label>
+                              <?{ .login-type eq 'GH' }>
                               <input id="repos" class="input" type="text" name="repos" placeholder="GH repo name | Git repo URL">
+                              </?>
+                              <!{ .login-type eq 'GH' }>
+                              <input id="repos" class="input" type="text" name="repos" placeholder="Git repo URL">
+                              </!>
+                              <?{ .login-type eq 'GH' }>
                               <span class="help is-success">Type here to search within your GitHub repos</span>
                               <label class="checkbox">
                                 <input type="checkbox" value="on" name="typegit">
                                  Not a GitHub repo
                               </label>
+                              </?>
+                              <!{ .login-type eq 'GH' }>
+                                <input type="hidden" value="on" name="typegit">
+                              </!>
                             </div>
                         </div>
                         <div class="field>
                           <div class="control">
                             <button class="button is-link">Add Repo</button>
                           </div>
-                        </div>    
+                        </div>
+                        <?{ .login-type eq 'GH' }>    
                         <script>
                           var repos = [ <.gh-repos-js> ]
                           autocomplete(document.getElementById("repos"), repos);
-                        </script> 
+                        </script>
+                        </?> 
                     </form>
                   </p> 
                 </div>
+                <?{ .login-type eq 'GH' }> 
                 <div id="SyncRepos" class="panel-block content-tab" style="display:none">
                   <p class="control">
                     <form action="/repos-sync" method="POST">
@@ -124,10 +139,11 @@
                         <div class="control">
                           <button class="button is-link">Sync</button>
                         </div>
-                      </div>    
+                      </div> 
                     </form>
                   </p> 
                 </div>  
+                </?>   
             </div>  
           </nav>
         </div>      

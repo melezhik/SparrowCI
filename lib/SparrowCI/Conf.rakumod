@@ -20,6 +20,16 @@ sub conf-use-secrets is export {
   return get-sparrowci-conf()<use_secrets> || False;
 }
 
+sub conf-admin-password is export {
+  return get-sparrowci-conf()<admin_password> || "passW0rd";
+}
+
+# login type
+# by default - GitHub
+sub conf-login-type is export {
+  return get-sparrowci-conf()<login_type> || "GH";
+}
+
 sub http-root is export {
 
   %*ENV<SPARKYCI_HTTP_ROOT> || "";

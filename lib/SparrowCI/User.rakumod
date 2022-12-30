@@ -4,6 +4,10 @@ use SparrowCI::Security;
 use Cro::HTTP::Client;
 use JSON::Fast;
 
+sub is-admin-login (Mu $user) is export {
+    "{$user}" eq "admin"
+}
+
 sub gh-repos (Mu $user) is export {
 
     unless "{cache-root()}/users/{$user}/repos.js".IO ~~ :e {
@@ -19,6 +23,7 @@ sub gh-repos (Mu $user) is export {
 }
 
 sub repos-sync-date (Mu $user) is export {
+    return unless conf-login-type() eq "GH"; 
     "{cache-root()}/users/{$user}/repos.js".IO.modified.DateTime.truncated-to('minute');
 }
 
