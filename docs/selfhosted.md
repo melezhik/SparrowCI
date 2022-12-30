@@ -12,7 +12,7 @@ You need to install docker on the same machine where Sparky and SparrowCI are in
 
 You need to install Sparky on the same machine where SparrowCI is installed.
 
-Sparky API must listen to http://127.0.0.1:4000 address
+Sparky API must listen to http://0.0.0.0:4000 so that docker instances could access it via `host-gateway` network
 
 Follow [https://github.com/melezhik/sparky#installation](https://github.com/melezhik/sparky#installation)
 for installation details.
