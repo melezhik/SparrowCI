@@ -6,13 +6,16 @@ How to run SparrowCI pipelines locally. Useful for SparrowCI developers.
 
 2. Now you can run pipeline locally from the machine where SparrowCI is hosted
 
-Pull _some_ docker image:
+Pull _some_(*) docker image:
 
 ```bash
 docker pull melezhik:alpine
 ```
 
-Now run the pipeline:
+(\*) Follow [this link](https://github.com/melezhik/sparrowdo/blob/master/resources/bootstrap.sh) 
+to see SparrowCI supported Linux distributions. 
+
+Run a pipeline:
 
 ```bash
 sparrowdo \
