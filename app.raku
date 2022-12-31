@@ -446,7 +446,7 @@ my $application = route {
       "https://github.com/login/oauth/authorize?client_id={%*ENV<OAUTH_CLIENT_ID>}&state={%*ENV<OAUTH_STATE>}"
   }
 
-  get -> 'logout', :$user is cookie, :$token is cookie {
+  post -> 'logout', :$user is cookie, :$token is cookie {
 
     set-cookie 'user', Nil;
     set-cookie 'token', Nil;
@@ -464,10 +464,26 @@ my $application = route {
       }
 
     }
-
-
     redirect :see-other, "{http-root()}/?message=user logged out";
   } 
+
+  post -> 'chgpass', :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
+    if check-user($user, $token) == True {
+      my $password_param;
+      request-body -> (:$password) {
+        $password_param = $password;
+        say "change password user: $user";
+      }
+      if get-user($user) {
+        update-user(:login($user), :password($password_param));
+      } else {
+        insert-user(:login($user), :password($password_param),:description<user>)
+      }
+      redirect :see-other, "{http-root()}/account?message=password changed";
+    } else {
+        redirect :see-other, "{http-root()}/login-page?message=you need to sign in to change password"; 
+    }
+  }
 
   get -> 'oauth2', :$state, :$code {
 
@@ -514,21 +530,7 @@ my $application = route {
 
         set-cookie 'user', %data2<login>, http-only => True, expires => $date;
 
-        mkdir "{cache-root()}/users";
-
-        mkdir "{cache-root()}/users/{%data2<login>}";
-
-        mkdir "{cache-root()}/users/{%data2<login>}/tokens";
-
-        "{cache-root()}/users/{%data2<login>}/meta.json".IO.spurt(to-json(%data2));
-
-        my $tk = gen-token();
-
-        "{cache-root()}/users/{%data2<login>}/tokens/{$tk}".IO.spurt("");
-
-        say "set user token to {$tk}";
-
-        set-cookie 'token', $tk, http-only => True, expires => $date;
+        set-cookie 'token', user-create-account(%data2<login>,%data2), http-only => True, expires => $date;
 
         redirect :see-other, "{http-root()}/?message=user logged in";
 
@@ -567,39 +569,71 @@ my $application = route {
   }
 
   post -> 'login' {
-    my $user; my $password_param;
-    request-body -> (:$login,:$password) {
+    my $user; my $password_param; my $create_param;
+    request-body -> (:$login,:$password,:$create) {
       $user = $login;
       $password_param = $password;
-      say "login user: $user";
+      $create_param = $create;
+      say "login user: $user, create: {$create || 'off'}, password: {$password}";
     }
-    if is-admin-login($user) and $password_param eq conf-admin-password()  {
-      say "login user: $user - OK";
+
+    my $user-acc = get-user($user);
+
+    if $user-acc {
+      say "account exists: {$user-acc.perl}"
+    } else {
+      say "account does not exist"
+    }
+
+    if !$user-acc and is-admin-login($user) and $password_param eq conf-admin-password()  {
+
+      say "(1) login user: $user - OK";
 
       say "set user login to {$user}";
 
       set-cookie 'user', $user;
 
-      mkdir "{cache-root()}/users";
+      set-cookie 'token', user-create-account($user);
 
-      mkdir "{cache-root()}/users/{$user}";
+      redirect :see-other, "{http-root()}/?message=user successfully logged in";
 
-      mkdir "{cache-root()}/users/{$user}/tokens";
+    } elsif $user-acc and $user-acc<password> eq $password_param {
 
-      "{cache-root()}/users/{$user}/meta.json".IO.spurt(
-        to-json({ })
-      );
+      say "(2) login user: $user - OK";
 
-      my $tk = gen-token();
+      say "set user login to {$user}";
 
-      "{cache-root()}/users/$user/tokens/{$tk}".IO.spurt("");
+      set-cookie 'user', $user;
 
-      say "set user token to {$tk}";
+      set-cookie 'token', user-create-account($user);
 
-      set-cookie 'token', $tk;
+      redirect :see-other, "{http-root()}/?message=user successfully logged in";
 
-      redirect :see-other, "{http-root()}/?message=user [{$user}] successfully logged in";
-    } else {
+    } elsif $user-acc and $user-acc<password> ne $password_param {
+
+        say "(3) login user: $user - FAIL";
+        redirect :see-other, "{http-root()}/login-page2?message=bad credentials"; 
+
+    } elsif !$user-acc and $create_param and $password_param {
+
+      say "create user: $user ...";
+
+      insert-user(:login($user), :password($password_param),:description<user>);
+
+      say "(4) login user: $user - OK";
+
+      say "set user login to {$user}";
+
+      set-cookie 'user', $user;
+
+      set-cookie 'token', user-create-account($user);
+
+      redirect :see-other, "{http-root()}/?message=user successfully created and logged in";
+
+    }  else {
+
+        say "(5) login user: $user - FAIL";
+
         redirect :see-other, "{http-root()}/login-page2?message=bad credentials"; 
     }
   }

@@ -42,19 +42,13 @@ sub css (Mu $theme) is export {
 
 }
 
-sub login-logout (Mu $user, Mu $token) {
+sub login-account (Mu $user, Mu $token) {
 
   if check-user($user,$token) == True {
 
-    if conf-login-type() eq "GH" {
-      "<a class=\"navbar-item\" href=\"{http-root()}/logout?q=123\">     
-        Log out
-      </a>"
-    } else {
-      "<a class=\"navbar-item\" href=\"{http-root()}/account?q=123\">
-        Account
-      </a>"
-    }
+    "<a class=\"navbar-item\" href=\"{http-root()}/account?q=123\">
+      Account
+    </a>"
 
   } else {
 
@@ -134,7 +128,8 @@ sub navbar (Mu $user, Mu $token, Mu $theme) is export {
                   More
                 </a>
                 <div class="navbar-dropdown">
-                  {login-logout($user, $token)}
+                  {login-account($user, $token)}
+                  <hr class="navbar-divider">
                   {theme-link($theme)}
                   <a class="navbar-item" href="https://github.com/melezhik/SparrowCI" target="_blank">Docs</a>
                   <hr class="navbar-divider">

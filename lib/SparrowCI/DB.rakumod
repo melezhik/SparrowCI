@@ -222,7 +222,7 @@ sub update-user (:$login,:$password) is export {
         LIMIT 1  
     STATEMENT
 
-    $sth.execute($login,$password);
+    $sth.execute($password,$login);
 
     my @rows = $sth.allrows(:array-of-hash);
 

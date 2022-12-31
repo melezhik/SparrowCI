@@ -25,7 +25,9 @@
                     <div class="container">
                       <ul>
                         <li class="tab is-active" onclick="openTab(event,'Info')"><a>Info</a></li>
+                        <!{ .login-type eq 'GH' }>
                         <li class="tab" onclick="openTab(event,'ChangePassword')"><a>Change Password</a></li>
+                        </!> 
                       </ul>
                     </div>
               </nav>
@@ -33,7 +35,7 @@
             <div class="panel-block">
                 <div id="Info" class="panel-block content-tab">
                   <p class="control">
-                    <form action="/logout" method="GET">
+                    <form action="/logout" method="POST">
                       <div class="field">
                         <div class="autocomplete">
                           <label class="label">Account info</label>
@@ -44,14 +46,27 @@
                         <div class="control">
                           <button class="button is-link">Logout</button>
                         </div>
-                      </div> 
+                      </div>
                     </form>
                   </p>
                 </div>
-                <div id="ChangePassword" class="panel-block content-tab" style="display:none">
-                  <p class="control">
-                  </p>     
-                </div>  
+                <!{ .login-type eq 'GH' }>
+                <div class="panel-block">
+                  <div id="ChangePassword" class="panel-block content-tab" style="display:none">
+                    <form action="/chgpass" method="POST">
+                      <div class="field">
+                        <label class="label">New Password</label>
+                        <input id="value" class="input" type="password" name="password" placeholder="password">
+                      </div>
+                      <div class="field">
+                        <div class="control">
+                          <button class="button is-link">Login</button>
+                        </div>
+                      </div>    
+                    </form>
+                  </div>   
+                </div>
+                </!> 
             </div>  
           </nav>
         </div>      

@@ -101,3 +101,25 @@ sub secret-delete (Mu $user,$secret) is export {
     my $cmd = "vault delete /kv/sparrow/users/{$user}/secrets/{$secret}";
     shell("if vault -version; then {$cmd}; else echo 'vault is not installed, nothing to do'; fi");
 }
+
+sub user-create-account (Mu $user, $data = {}) is export {
+
+    mkdir "{cache-root()}/users";
+
+    mkdir "{cache-root()}/users/{$user}";
+
+    mkdir "{cache-root()}/users/{$user}/tokens";
+
+    "{cache-root()}/users/{$user}/meta.json".IO.spurt(
+        to-json($data)
+    );
+
+    my $tk = gen-token();
+
+    "{cache-root()}/users/$user/tokens/{$tk}".IO.spurt("");
+
+    say "set user token to {$tk}";
+
+    return $tk;
+
+}

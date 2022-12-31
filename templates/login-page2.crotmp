@@ -27,6 +27,10 @@
                     <input id="value" class="input" type="password" name="password" placeholder="password">
                   </div>
                   <div class="field">
+                    <span class="help is-success">Create account if not exists</span>
+                    <input type="checkbox" value="on" name="create">
+                  </div>
+                  <div class="field">
                     <div class="control">
                       <button class="button is-link">Login</button>
                     </div>
