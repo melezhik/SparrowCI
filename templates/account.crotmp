@@ -35,20 +35,19 @@
             <div class="panel-block">
                 <div id="Info" class="panel-block content-tab">
                   <p class="control">
-                    <form action="/logout" method="POST">
-                      <div class="field">
-                        <div class="autocomplete">
-                          <label class="label">Account info</label>
-                          <span class="help is-success">Logged in as: <.login></span>
-                        </div>
-                      </div>
-                      <div class="field>
-                        <div class="control">
-                          <button class="button is-link">Logout</button>
-                        </div>
-                      </div>
-                    </form>
-                  </p>
+                    <table class="table">
+                      <tr>
+                        <td>
+                            <span class="help is-success">Login: <.login></span>
+                        </td>
+                        <td>
+                          <form action="/logout" method="POST">
+                            <button class="button is-small">Logout</button>
+                          </form>
+                        </td>
+                      </tr>
+                    </table>
+                  </p>     
                 </div>
                 <!{ .login-type eq 'GH' }>
                 <div class="panel-block">
