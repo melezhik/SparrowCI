@@ -1,0 +1,28 @@
+image:
+  - melezhik/sparrow:debian
+
+secrets:
+  - FEZ_TOKEN
+tasks:
+  - name: release
+    default: true
+    language: Raku
+    code: |
+      say "OK"
+    init: |
+      if %*ENV<SCM_COMMIT_MESSAGE> ~~ /'release!'/ {
+        run_task "upload"
+      }
+    subtasks:
+      -
+        name: upload
+        language: Bash
+        code: |
+          set -e
+          cat << HERE > ~/.fez-config.json
+            {"groups":[],"un":"melezhik","key":"$FEZ_TOKEN"}
+          HERE
+          cd source/
+          zef install --/test fez
+          tom --clean
+          fez upload
