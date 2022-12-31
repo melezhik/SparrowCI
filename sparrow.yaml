@@ -10,6 +10,7 @@ tasks:
     code: |
       say "OK"
     init: |
+      run_task "test";
       if %*ENV<SCM_COMMIT_MESSAGE> ~~ /'release!'/ {
         run_task "upload"
       }
@@ -26,3 +27,10 @@ tasks:
           zef install --/test fez
           tom --clean
           fez upload
+      -
+        name: test
+        language: Bash
+        code: |
+          set -e
+          cd source/
+          zef install --/test .
