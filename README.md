@@ -1,3 +1,5 @@
+[![SparrowCI](https://ci.sparrowhub.io/project/gh-melezhik-SparrowCI/badge)](https://ci.sparrowhub.io)
+
 # SparrowCI
 
 SparrowCI - super fun and flexible CI system with many programming languages support.
