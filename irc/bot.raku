@@ -32,10 +32,10 @@ class SparrowCIBot does IRC::Client::Plugin {
 }
 
 say %*ENV<LIBERA_SASL_PASSWORD>;
+
 say "=====";
 
 .run with IRC::Client.new:
-    #:userhost<mybf.io>
     :port(5555)
     :ssl(True)
     :ca-file("/home/sph/.znc/znc.pem")
