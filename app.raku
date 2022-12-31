@@ -367,8 +367,13 @@ my $application = route {
         $secret_value_param = $secret_value;
         say "add secret: $secret";
       }
+    $secret_param.=subst(/\s/,"",:g);  
+    if $secret_param ~~ /^^ <[ a .. z A .. Z 0 .. 9 \- _ ]>+ $$/ {
       secret-add($user,$secret_param,$secret_value_param);
       redirect :see-other, "{http-root()}/secrets?message=secret {$secret_param} added";
+    }  else {
+      redirect :see-other, "{http-root()}/secrets?message=bad secret name";
+    }
     } else {
         redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage secrets"; 
     }

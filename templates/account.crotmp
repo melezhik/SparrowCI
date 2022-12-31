@@ -39,7 +39,7 @@
                       <div class="field">
                         <div class="autocomplete">
                           <label class="label">Account info</label>
-                          <span class="help is-success">Logged as: <.login></span>
+                          <span class="help is-success">Logged in as: <.login></span>
                         </div>
                       </div>
                       <div class="field>
