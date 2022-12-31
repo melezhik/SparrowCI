@@ -4,63 +4,19 @@ SparrowCI - super fun and flexible CI system with many programming languages sup
 
 # Why yet another pipeline DSL?
 
-Read [why?](docs/why.md) manifest
+Read [why?](docs/why.md) manifest.
 
-# Quick Start
+## Quick start
 
-## Create SparrowCI pipeline 
+See [quickstart.md](docs/quickstart.md) document.
 
-Create a build scenario `sparrow.yaml`:
+## DAG of tasks
 
-```yaml
-- 
-  tasks:
-    -
-      name: main_task
-      language: Python
-      default: true
-      code: |
-        print("hello from Python")
-      depends:
-        - 
-          name: install-python
-    -
-      name: install-python
-      language: Bash
-      code: |
-       sudo apk apk add --no-cache python3 py3-pip    
-```
-
-In this simple example task "main_task" executes some Python code. To make it sure we have a Python in runtime, 
-dependency task "install-python" is executed. 
-
-That's simple!
-
-This example illustrates the core idea behind SparrowCI pipeline - to have a **collection of dependent tasks** (DAG) that executed in **particular order**.
-
-To automatically trigger builds add pipeline source to a git repo:
-
-```bash
-git add sparrow.yaml
-git commit -a -m "SparrowCI pipeline"
-git push
-```
-
-## Add git repository to SparrowCI
-
-* Go to [https://ci.sparrowhub.io](https://ci.sparrowhub.io), sign in using your GitHub credentials
-
-* Go to "My Repos" page and add a repository to your repository list
-
-## Trigger a build
-
-That is it. A build will be triggered soon!
+See [dag.md](docs/dag.md) document to understand the main idea of SparrowCI flow.
 
 ## Deep dive
 
-See [dsl.md](docs/dsl.md) document for full SparrowCI DSL tutorial.
-
-# Other topics
+See [dsl.md](docs/dsl.md) document for a full SparrowCI pipelines tutorial.
 
 ## Environment variables
 
