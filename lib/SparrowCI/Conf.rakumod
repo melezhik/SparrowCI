@@ -30,6 +30,10 @@ sub conf-login-type is export {
   return get-sparrowci-conf()<login_type> || "GH";
 }
 
+sub conf-workers-url is export {
+  return get-sparrowci-conf()<workers_url> || "http://sparky.sparrowhub.io";
+}
+
 sub http-root is export {
 
   %*ENV<SPARKYCI_HTTP_ROOT> || "";
@@ -40,6 +44,7 @@ sub sparrowci-root is export {
 
   "{%*ENV<HOME>}/.sparkyci"
 }
+
 
 sub cache-root is export {
 

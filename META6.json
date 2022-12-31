@@ -8,7 +8,8 @@
     "YAMLish",
     "DBIish",
     "JSON::Fast",
-    "File::Directory::Tree"
+    "File::Directory::Tree",
+    "Digest::SHA1::Native:ver<0.05>+"
   ],
   "description" : "SparrowCI",
   "license" : "Artistic-2.0",

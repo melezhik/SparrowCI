@@ -68,6 +68,7 @@ if $engine ~~ /:i sqlite/ {
       CREATE TABLE users (
           login       varchar(255) PRIMARY KEY,
           password    varchar(255),
+          salt        varchar(255),
           description TEXT,
           dt datetime default current_timestamp
       )

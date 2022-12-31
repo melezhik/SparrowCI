@@ -3,6 +3,7 @@ use YAMLish;
 use DBIish;
 use JSON::Fast;
 use SparrowCI::Conf;
+use Digest::SHA1::Native;
 
 sub get-dbh is export {
 
@@ -166,12 +167,16 @@ sub insert-user (:$login, :$password, :$description ) is export {
 
     my $dbh = get-dbh();
 
+    my $salt = ('0' .. 'z').pick(15).join('');
+
+    my $enc-password = sha1-hex("{$salt}{$password}");
+
     my $sth = $dbh.prepare(q:to/STATEMENT/);
-      INSERT INTO users (login, password, description)
-      VALUES (?,?,?)
+      INSERT INTO users (login, salt, password, description)
+      VALUES (?,?,?,?)
     STATEMENT
 
-    $sth.execute($login,$password,$description);
+    $sth.execute($login,$salt,$enc-password,$description);
 
     $sth.finish;
 
@@ -188,6 +193,7 @@ sub get-user ($login) is export {
     my $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT 
           login, 
+          salt,
           password
         FROM 
           users
@@ -212,17 +218,21 @@ sub update-user (:$login,:$password) is export {
 
     my $dbh = get-dbh();
 
+    my $salt = ('0' .. 'z').pick(15).join('');
+
+    my $enc-password = sha1-hex("{$salt}{$password}");
+
     my $sth = $dbh.prepare(q:to/STATEMENT/);
         UPDATE 
           users
         SET
-          password = ?  
+          password = ?, salt = ?  
         WHERE
           login = ?
         LIMIT 1  
     STATEMENT
 
-    $sth.execute($password,$login);
+    $sth.execute($$enc-password,$salt,$login);
 
     my @rows = $sth.allrows(:array-of-hash);
 

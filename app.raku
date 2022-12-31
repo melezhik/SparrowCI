@@ -12,6 +12,7 @@ use Text::Markdown;
 use JSON::Fast;
 use Cro::HTTP::Client;
 use File::Directory::Tree;
+use Digest::SHA1::Native;
 
 my $application = route {
 
@@ -579,13 +580,15 @@ my $application = route {
       $user = $login;
       $password_param = $password;
       $create_param = $create;
-      say "login user: $user, create: {$create || 'off'}, password: {$password}";
+      my $masked_password = $password ?? "*" x $password.chars !! "";
+      say "login user: $user, create: {$create || 'off'}, password: {$masked_password}";
     }
 
     my $user-acc = get-user($user);
-
+    my $password_param_enc;
     if $user-acc {
-      say "account exists: {$user-acc.perl}"
+      say "account exists";
+      $password_param_enc = sha1-hex("{$user-acc<salt>}{$password_param}")
     } else {
       say "account does not exist"
     }
@@ -602,7 +605,7 @@ my $application = route {
 
       redirect :see-other, "{http-root()}/?message=user successfully logged in";
 
-    } elsif $user-acc and $user-acc<password> eq $password_param {
+    } elsif $user-acc and $user-acc<password> eq $password_param_enc {
 
       say "(2) login user: $user - OK";
 
