@@ -18,7 +18,7 @@
   ],
   "description" : "SparrowCI",
   "license" : "Artistic-2.0",
-  "name" : "SparrowCI",
+  "name" : "SparrowCI - super fun and flexible CI system with many programming languages support",
   "perl" : "6.*",
   "provides" : {
     "SparrowCI" : "lib/SparrowCI.rakumod",
