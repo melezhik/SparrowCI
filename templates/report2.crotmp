@@ -23,39 +23,53 @@
                     <div class="container">
                       <ul>
                         <li class="tab" onclick="openTab(event,'Summary')"><a>Summary</a></li>
-                        <li class="tab" onclick="openTab(event,'PipelineYAML')"><a>Pipeline YAML</a></li>
+                        <li class="tab" onclick="openTab(event,'Pipeline')"><a>Pipeline YAML</a></li>
                         <li class="tab is-active" onclick="openTab(event,'Report')"><a>Report</a></li>
+                        <?{ .runner eq .user }>
+                        <li class="tab" onclick="openTab(event,'Manage')"><a>Manage Build</a></li>
+                        </?>
                       </ul>
                     </div>
               </nav>
             </div>
             <div class="panel-block">
-                  <div id="Summary" class="content-tab" style="display:none">
-                    BuildID: <.id><br>
-                    Status: <.state><br>
-                    Image: <.image><br>
-                    Worker status: <.worker-status><br>
-                    --- <br>
-                    Date: <.date><br>
-                    Time elapsed: <.elapsed> sec<br>
-                    --- <br>
-                    <?.scm>
-                    SCM: <a href="<.scm>" target="_blank"><.scm></a><br>
-                    </?>
-                    Git sha: <.git-data.sha><br>
-                    Git comment: <.git-data.comment><br>
-                  </div>
-                  <div id="PipelineYAML" class="content-tab" style="display:none">
-                    <?.sparrow-yaml>
-                      <pre id="sparrow-yaml"><code class="language-yaml"><.sparrow-yaml></code></pre>
-                    </?>
-                    <!.sparrow-yaml>
-                      <pre id="sparrow-yaml">pipeline code not found</pre>
-                    </!>
-                  </div>
-                  <div id="Report" class="content-tab">
-                    <pre id="log"><.log></pre>
-                  </div>
+                <div id="Summary" class="content-tab" style="display:none">
+                  BuildID: <.id><br>
+                  Status: <.state><br>
+                  Image: <.image><br>
+                  Worker status: <.worker-status><br>
+                  --- <br>
+                  Date: <.date><br>
+                  Time elapsed: <.elapsed> sec<br>
+                  --- <br>
+                  <?.scm>
+                  SCM: <a href="<.scm>" target="_blank"><.scm></a><br>
+                  </?>
+                  Git sha: <.git-data.sha><br>
+                  Git comment: <.git-data.comment><br>
+                </div>
+                <div id="Pipeline" class="content-tab" style="display:none">
+                  <?.sparrow-yaml>
+                    <pre id="sparrow-yaml"><code class="language-yaml"><.sparrow-yaml></code></pre>
+                  </?>
+                  <!.sparrow-yaml>
+                    <pre id="sparrow-yaml">pipeline code not found</pre>
+                  </!>
+                </div>
+                <div id="Report" class="content-tab">
+                  <pre id="log"><.log></pre>
+                </div>
+                <?{ .runner eq .user }>
+                <div class="panel-block">
+                  <div id="Manage" class="panel-block content-tab" style="display:none">
+                    <form action="/repo-build" method="POST">
+                      <input id="repo" class="input" type="hidden" name="repo" value="<.repo>">
+                      <input type="hidden" name="type" value="<.repo-type>">  
+                      <button class="button is-small">Rebuild</button>
+                    </form>
+                  </div>   
+                </div>
+               </?> 
             </div>
           </nav>
         </div>      

@@ -340,7 +340,7 @@ class Pipeline does Sparky::JobApi::Role {
 
         my @logs;
 
-        for @jobs.reverse() -> $b {
+        for @jobs -> $b {
 
           my $r = HTTP::Tiny.get: "http://127.0.0.1:4000/report/raw/{$b<project>}/{$b<job-id>}";
 
