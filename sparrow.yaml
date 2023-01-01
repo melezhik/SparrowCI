@@ -33,4 +33,6 @@ tasks:
         code: |
           set -e
           cd source/
+          zef install --/test \
+          https://github.com/bduggan/p6-digest-sha1-native/archive/refs/tags/0.05.tar.gz 
           zef install --/test .
