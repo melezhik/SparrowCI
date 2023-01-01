@@ -638,17 +638,23 @@ my $application = route {
 
       say "create user: $user ...";
 
-      insert-user(:login($user), :password($password_param),:description<user>);
+      if $user ~~ /^^ <[ a .. z A .. Z 0 .. 9 _ ]>+ $$/ {
 
-      say "(4) login user: $user - OK";
+        insert-user(:login($user), :password($password_param),:description<user>);
 
-      say "set user login to {$user}";
+        say "(4) login user: $user - OK";
 
-      set-cookie 'user', $user;
+        say "set user login to {$user}";
 
-      set-cookie 'token', user-create-account($user);
+        set-cookie 'user', $user;
 
-      redirect :see-other, "{http-root()}/?message=user successfully created and logged in";
+        set-cookie 'token', user-create-account($user);
+
+        redirect :see-other, "{http-root()}/?message=user successfully created and logged in";
+
+      } else {
+        redirect :see-other, "{http-root()}/login-page2?message=bad login";
+      }  
 
     }  else {
 
