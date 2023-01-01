@@ -65,11 +65,11 @@ my $application = route {
     my $path =  %report<with-sparrowci>:exists ?? 'templates/report2.crotmp' !! 'templates/report.crotmp';
     my $title = %report<with-sparrowci>:exists ?? "SparrowCI Report - {%report<project>} | [image: {%report<image> || 'NA'}]" !! "SparrowCI Report - {%report<project>}";
 
-    if %report<project> ~~ /"gh-" (\S+) "-" (\S+)/ {
+    if %report<project> ~~ /"gh-" (\S+?) "-" (\S+)/ {
         %report<runner> = "$0";
         %report<repo> = "$1"; 
         %report<repo-type> = "gh";
-    } elsif %report<project> ~~ /"git-" (\S+) "-" (\S+)/ {
+    } elsif %report<project> ~~ /"git-" (\S+?) "-" (\S+)/ {
         %report<runner> = "$0";
         %report<repo> = "$1"; 
         %report<repo-type> = "git";
