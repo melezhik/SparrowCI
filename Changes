@@ -2,6 +2,10 @@ Revision history for SparrowCI
 
 {{$NEXT}}
 
+0.0.1 2023-01-01T12:16:00Z
+
+    Fix meta file
+
 0.0.1 2023-01-01T12:15:00Z
 
     First version for zef ecosystem

@@ -28,7 +28,8 @@
     "SparrowCI::User" : "lib/SparrowCI/Repo.rakumod",
     "SparrowCI::HTML" : "lib/SparrowCI/HTML.rakumod",
     "SparrowCI::Conf" : "lib/SparrowCI/Conf.rakumod",
-    "SparrowCI::Security" : "lib/SparrowCI/Security.rakumod"
+    "SparrowCI::Security" : "lib/SparrowCI/Security.rakumod",
+    "SparrowCI::User" : "lib/SparrowCI/User.rakumod"
   },
   "resources" : [ ],
   "source-type" : "git",
@@ -39,6 +40,6 @@
   },
   "tags" : [ ],
   "test-depends" : [ ],
-  "version" : "0.0.1"
+  "version" : "0.0.2"
 }
 
