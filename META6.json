@@ -16,9 +16,9 @@
     "JSON::Fast:ver<0.17>",
     "File::Directory::Tree:ver<2022-04.14+>"
   ],
-  "description" : "SparrowCI",
+  "description" : "SparrowCI - super fun and flexible CI system with many programming languages support",
   "license" : "Artistic-2.0",
-  "name" : "SparrowCI - super fun and flexible CI system with many programming languages support",
+  "name" : "SparrowCI",
   "perl" : "6.*",
   "provides" : {
     "SparrowCI" : "lib/SparrowCI.rakumod",
@@ -39,6 +39,6 @@
   },
   "tags" : [ ],
   "test-depends" : [ ],
-  "version" : "0.0.2"
+  "version" : "0.0.3"
 }
 

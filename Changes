@@ -2,7 +2,11 @@ Revision history for SparrowCI
 
 {{$NEXT}}
 
-0.0.1 2023-01-01T12:16:00Z
+0.0.3 2023-01-01T12:55:00Z
+
+    Fix meta file again
+
+0.0.2 2023-01-01T12:16:00Z
 
     Fix meta file
 
