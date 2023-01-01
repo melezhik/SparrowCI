@@ -2,6 +2,11 @@ Revision history for SparrowCI
 
 {{$NEXT}}
 
+0.0.5 2023-01-01T13:10:00Z
+
+    Remove duplicate entries 
+    from meta file
+
 0.0.4 2023-01-01T13:10:00Z
 
     And fix meta file again!
