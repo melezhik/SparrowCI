@@ -25,11 +25,10 @@
     "SparrowCI::DB" : "lib/SparrowCI/DB.rakumod",
     "SparrowCI::User" : "lib/SparrowCI/User.rakumod",
     "SparrowCI::News" : "lib/SparrowCI/News.rakumod",
-    "SparrowCI::User" : "lib/SparrowCI/Repo.rakumod",
+    "SparrowCI::Repo" : "lib/SparrowCI/Repo.rakumod",
     "SparrowCI::HTML" : "lib/SparrowCI/HTML.rakumod",
     "SparrowCI::Conf" : "lib/SparrowCI/Conf.rakumod",
-    "SparrowCI::Security" : "lib/SparrowCI/Security.rakumod",
-    "SparrowCI::User" : "lib/SparrowCI/User.rakumod"
+    "SparrowCI::Security" : "lib/SparrowCI/Security.rakumod"
   },
   "resources" : [ ],
   "source-type" : "git",
