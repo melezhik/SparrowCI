@@ -1,0 +1,13 @@
+cat << HERE > status.json
+{
+  "context": "hello",
+  "description": "sparrowci build ok",
+  "state": "success",
+  "target_url": "http://127.0.0.1:2222"
+}
+HERE
+
+export gitea_token=foobarbaz
+curl -f 127.0.0.1:3000/api/v1/repos/melezhik/kris/statuses/$SCM_SHA?token=$gitea_token \
+-d @status.json  \
+-H "Content-Type: application/json"
