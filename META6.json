@@ -9,9 +9,9 @@
     "DBIish",
     "JSON::Fast",
     "File::Directory::Tree",
-    "Digest::SHA1::Native:ver<0.05>+",
-    "Cro::HTTP:ver<0.8.9>+",
-    "Cro::WebApp:ver<0.8.9>+",
+    "Digest::SHA1::Native:ver<0.05+>",
+    "Cro::HTTP:ver<0.8.9+>",
+    "Cro::WebApp:ver<0.8.9+>",
     "Text::Markdown:ver<1.1.1+>",
     "JSON::Fast:ver<0.17>",
     "File::Directory::Tree:ver<2022-04.14+>"
@@ -39,6 +39,6 @@
   },
   "tags" : [ ],
   "test-depends" : [ ],
-  "version" : "0.0.3"
+  "version" : "0.0.4"
 }
 
