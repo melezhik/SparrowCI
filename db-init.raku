@@ -97,6 +97,16 @@ if $engine ~~ /:i sqlite/ {
       STATEMENT
 
   $dbh.do(q:to/STATEMENT/);
+      CREATE TABLE users (
+          login       varchar(255) PRIMARY KEY,
+          password    varchar(255),
+          salt        varchar(255),
+          description TEXT,
+          dt datetime default CURRENT_TIMESTAMP
+      ) CHARACTER SET utf8
+      STATEMENT
+
+  $dbh.do(q:to/STATEMENT/);
       CREATE TABLE news (
           id            int primary key auto_increment,
           title         varchar(255),
@@ -119,6 +129,15 @@ if $engine ~~ /:i sqlite/ {
       )
       STATEMENT
 
+  $dbh.do(q:to/STATEMENT/);
+      CREATE TABLE users (
+          login       varchar(255) PRIMARY KEY,
+          password    varchar(255),
+          salt        varchar(255),
+          description text,
+          dt datetime default  NOW()
+      )
+      STATEMENT
   $dbh.do(q:to/STATEMENT/);
       CREATE TABLE news (
           id            SERIAL PRIMARY KEY,
