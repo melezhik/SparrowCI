@@ -666,7 +666,7 @@ code: |
 ```
 
 To use secrets in self-hosted version of SparrowCI one needs integrate it with Hashicorp vault,
-see [vault.md](docs/vault.md) document.
+see [vault.md](vault.md) document.
 
 ## Followup jobs
 
