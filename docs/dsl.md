@@ -665,6 +665,9 @@ code: |
   echo "Now I am telling you ${MY_SECRET} ..."
 ```
 
+To use secrets in self-hosted version of SparrowCI one needs integrate it with Hashicorp vault,
+see [vault.md](docs/vault.md) document.
+
 ## Followup jobs
 
 Sometimes one needs to run some followup jobs _after_ main jobs defined at `sparrow.yaml`

@@ -36,6 +36,10 @@ See [development.md](docs/development.md) document.
 
 Spartman is a cli to ease SparrowCI management. See [sparman.md](docs/sparman.md) document.
 
+## Vault
+
+On Hashicorp vault service integration see [vault.md](docs/vault.md) document.
+
 ## External systems integration
 
 See [reporters.md](docs/reporters.md) document.
