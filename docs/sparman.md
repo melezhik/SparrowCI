@@ -25,7 +25,7 @@ sparman.raku worker_ui stop
 sparman.raku worker_ui status
 ```
 
-## Sparky Worker UI
+## SparrowCI UI
 
 SparrowCI UI is a end-user SparrowCI interface
 
