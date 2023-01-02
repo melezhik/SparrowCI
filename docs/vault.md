@@ -39,4 +39,4 @@ That is it. SparrowCI is now integrated with vault.
 
 # See also
 
-[secrets management](docs/dsl.md#secrets-management)
+[secrets management](dsl.md#secrets-management)
