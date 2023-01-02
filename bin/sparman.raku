@@ -1,7 +1,8 @@
 sub MAIN(
-  Str $comp,
-  Str $action,
-  Str :$base?,
+  Str  $comp,
+  Str  $action,
+  Str  :$base?,
+  Array  :$var?,
   Bool :$verbose = False,
 ) {
 
