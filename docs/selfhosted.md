@@ -8,7 +8,7 @@ SparrowCI self-hosted installation
 
 You need to install docker on the same machine where Sparky and SparrowCI are installed.
 
-* Install and initialize Sparky
+* Install Sparky and initialize Sparky database
 
 Follow [sparky#installation](https://github.com/melezhik/sparky#installation) document.
 
