@@ -1,14 +1,15 @@
 sub MAIN(
-  Str  $comp,
-  Str  $action,
-  Str  :$base?,
-  Array  :$var?,
-  Bool :$verbose = False,
+  Str   $comp,
+  Str   $action,
+  Bool  :$verbose? = False,
+  Str   :$base?,
+  Array :$env?,
 ) {
 
     say "Execute $action on $comp ...";
 
     my $c = _get_conf();
+    my $vars = $env ?? $env<>.map({"export $_"}).join("\n") !! "";
 
     if $comp eq "worker_ui" {
       if ! $c<worker><base> and $action ne "conf" {
@@ -21,9 +22,10 @@ sub MAIN(
           set -e
           pid=$(ps uax|grep bin/sparky-web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
           if test -z $pid; then ] ~
-            qq[cd {$c<worker><base>} ] ~
-            q[mkdir -p ~/.sparky
-            nohup cro run 1>~/.sparky/sparky-web.log 2>&1 & < /dev/null;
+            qq[\ncd {$c<worker><base>}\n] ~
+            q[mkdir -p ~/.sparky ] ~
+            qq[\n$vars\n] ~
+            q[nohup cro run 1>~/.sparky/sparky-web.log 2>&1 & < /dev/null;
             echo "run [OK]"
           else
             echo "already running pid=$pid ..."
@@ -40,7 +42,7 @@ sub MAIN(
           else
             echo "kill $pid ..."
             kill $pid
-            echo "stop [OK]"
+            echo "stop [OK] | pid=$pid"
           fi
         ];
         say $cmd if $verbose;
@@ -57,7 +59,7 @@ sub MAIN(
           if test -z $pid; then
             echo "stop [OK]"
           else
-            echo "run [OK]"
+            echo "run [OK] | pid=$pid"
           fi
         ];
         say $cmd if $verbose;
@@ -70,8 +72,9 @@ sub MAIN(
           set -e
           pid=$(ps uax|grep bin/sparkyd|grep rakudo|grep -v grep | awk '{ print $2 }')
           if test -z $pid; then
-            mkdir -p ~/.sparky/
-            nohup sparkyd 1>~/.sparky/sparkyd.log 2>&1 & < /dev/null;
+            mkdir -p ~/.sparky/] ~
+            qq[\n$vars\n] ~
+            q[nohup sparkyd 1>~/.sparky/sparkyd.log 2>&1 & < /dev/null;
             echo "run [OK]"
           else
             echo "already running pid=$pid ..."
@@ -88,7 +91,7 @@ sub MAIN(
           else
             echo "kill $pid ..."
             kill $pid
-            echo "stop [OK]"
+            echo "stop [OK] | pid=$pid"
           fi
         ];
         say $cmd if $verbose;
@@ -100,7 +103,7 @@ sub MAIN(
           if test -z $pid; then
             echo "stop [OK]"
           else
-            echo "run [OK]"
+            echo "run [OK] | pid=$pid"
           fi
         ];
         say $cmd if $verbose;
@@ -119,9 +122,10 @@ sub MAIN(
           set -e
           pid=$(ps uax|grep sparrowci_web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
           if test -z $pid; then ] ~
-            qq[cd {$c<sparrowci><base>} ] ~
-            q[mkdir -p ~/.sparrowci/
-            nohup cro run 1>~/.sparrowci/sparrowci_web.log 2>&1 & < /dev/null;
+            qq[\ncd {$c<sparrowci><base>}\n] ~
+            q[mkdir -p ~/.sparrowci/] ~
+            qq[\n$vars\n] ~
+            q[nohup cro run 1>~/.sparrowci/sparrowci_web.log 2>&1 & < /dev/null;
             echo "run [OK]"
           else
             echo "already running pid=$pid ..."
@@ -138,7 +142,7 @@ sub MAIN(
           else
             echo "kill $pid ..."
             kill $pid
-            echo "stop [OK]"
+            echo "stop [OK] | pid=$pid"
           fi
         ];
         say $cmd if $verbose;
@@ -155,7 +159,7 @@ sub MAIN(
           if test -z $pid; then
             echo "stop [OK]"
           else
-            echo "run [OK]"
+            echo "run [OK] | pid=$pid"
           fi
         ];
         say $cmd if $verbose;

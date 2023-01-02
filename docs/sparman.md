@@ -34,3 +34,12 @@ sparman.raku ui start
 sparman.raku ui stop
 sparman.raku ui status
 ```
+## Pass environment variables
+
+To pass environmental variables to services, use `--env var=val --env var2=val ...` notation.
+
+For example, to set worker polling timeout to 10 seconds:
+
+```bash
+sparman.raku --env SPARKY_TIMEOUT=10 worker start
+```
