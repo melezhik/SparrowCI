@@ -11,7 +11,7 @@ sub MAIN(
     if $comp eq "worker" and $action ne "conf" {
       unless $c<worker><base> {
         say "worker base dir not found, tell me where to look it up:";
-        say "sp_man --base /path/to/basedir worker conf";
+        say "sparman --base /path/to/basedir worker conf";
         exit(1)
       }
       if $action eq "start" {
@@ -22,6 +22,7 @@ sub MAIN(
             qq[cd {$c<worker><base>} ] ~
             q[mkdir -p ~/.sparkyd
             nohup sparkyd 1>~/.sparky/sparkyd.log 2>&1 & < /dev/null;
+            echo "run [OK]"
           else
             echo "already running pid=$pid ..."
           fi
@@ -37,6 +38,7 @@ sub MAIN(
           else
             echo "kill $pid ..."
             kill $pid
+            echo "stop [OK]"
           fi
         ];
         say $cmd;
@@ -52,15 +54,15 @@ sub MAIN(
 
 
 sub _get_conf {
-  if "{%*ENV<HOME>}/.sp_man/conf.raku".IO ~~ :e {
-    EVALFILE "{%*ENV<HOME>}/.sp_man/conf.raku"
+  if "{%*ENV<HOME>}/.sparman/conf.raku".IO ~~ :e {
+    EVALFILE "{%*ENV<HOME>}/.sparman/conf.raku"
   } else {
     return {}
   }
 }
 
 sub _update_conf (%c) {
-  mkdir "{%*ENV<HOME>}/.sp_man/";
-  say "update {%*ENV<HOME>}/.sp_man/conf.raku ...";
-  "{%*ENV<HOME>}/.sp_man/conf.raku".IO.spurt(%c.perl)
+  mkdir "{%*ENV<HOME>}/.sparman/";
+  say "update {%*ENV<HOME>}/.sparman/conf.raku ...";
+  "{%*ENV<HOME>}/.sparman/conf.raku".IO.spurt(%c.perl)
 }
