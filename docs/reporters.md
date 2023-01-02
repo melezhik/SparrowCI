@@ -84,3 +84,8 @@ More detailed explanation:
 * Access to Bugzilla rest api is set via `BUGZILLA_RESTAPI_KEY` [secret](https://github.com/melezhik/SparrowCI#secrets-management)
 
 Secret should be added to the account of a user who owns pipelines.
+
+
+# See also
+
+* Variables - [variables.md](docs/variables.md)

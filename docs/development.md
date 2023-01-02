@@ -41,3 +41,7 @@ If you an image where Sparrow agent is not installed use `sparrowdo_bootstrap` t
 *  For Sparky workers reports, visit Sparky web UI - http://127.0.0.1:4000
 
 * For SparrowCI reports ( for low level troubleshooting ), visit SparrowCI web UI - http://127.0.0.1:2222
+
+# See also
+
+* Starman - [sparman.md](docs/sparman.md)

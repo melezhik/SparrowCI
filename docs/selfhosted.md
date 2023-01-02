@@ -8,14 +8,9 @@ SparrowCI self-hosted installation
 
 You need to install docker on the same machine where Sparky and SparrowCI are installed.
 
-* Install and run Sparky
+* Install and initialize Sparky
 
-You need to install Sparky on the same machine where SparrowCI is installed.
-
-Sparky API must listen to http://0.0.0.0:4000 so that docker instances could access it via `host-gateway` network
-
-Follow [https://github.com/melezhik/sparky#installation](https://github.com/melezhik/sparky#installation)
-for installation details.
+Follow [sparky#installation](https://github.com/melezhik/sparky#installation) document.
 
 * Install SparrowCI web app
 
@@ -41,13 +36,15 @@ login_type: DB
 HERE
 ```
 
-* Run SparrowCI web app
+* Run SparrowCI stack
 
 ```bash
-cro run
+sparman.raku worker start
+sparman.raku worker_ui start
+sparman.raku ui start
 ```
 
 SparrowCI API will be accessible on http://127.0.0.1:2222 , use `admin` as a login
-and `passW0rd` as a password. 
+and `passW0rd` as a password.
 
 Please change the password after the first successful login.
