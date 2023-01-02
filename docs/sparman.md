@@ -1,6 +1,6 @@
 # Sparman
 
-Spartman is a cli to easy SparrowCI management
+Spartman is a cli to ease SparrowCI management
 
 # API
 

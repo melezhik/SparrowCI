@@ -34,7 +34,7 @@ See [development.md](docs/development.md) document.
 
 ## Sparman
 
-Spartman is a cli to easy SparrowCI management. See [sparman.md](docs/sparman.md) document.
+Spartman is a cli to ease SparrowCI management. See [sparman.md](docs/sparman.md) document.
 
 ## External systems integration
 
