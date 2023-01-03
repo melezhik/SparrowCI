@@ -12,12 +12,13 @@ sub MAIN(
     my $vars = $env ?? $env<>.map({"export $_"}).join("\n") !! "";
 
     if $comp eq "worker_ui" {
-      if ! $c<worker><base> and $action ne "conf" {
+      if ! $c<worker><base> and $action eq "start" {
         say "worker ui base dir not found, tell me where to look it up:";
         say "sparman --base /path/to/basedir worker conf";
         exit(1)
       }
       if $action eq "start" {
+        say "start worker ui ...";
         my $cmd = q[
           set -e
           pid=$(ps uax|grep bin/sparky-web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
@@ -34,7 +35,8 @@ sub MAIN(
         say $cmd if $verbose;
         shell $cmd;
       } elsif $action eq "stop" {
-        my $cmd = q[
+        say "stop worker ui ...";
+       my $cmd = q[
           set -e
           pid=$(ps uax|grep bin/sparky-web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
           if test -z $pid; then
@@ -67,6 +69,7 @@ sub MAIN(
       }
     } 
     if $comp eq "worker" {
+      say "start worker ...";
       if $action eq "start" {
         my $cmd = q[
           set -e
@@ -83,6 +86,7 @@ sub MAIN(
         say $cmd if $verbose;
         shell $cmd;
       } elsif $action eq "stop" {
+        say "stop worker ...";
         my $cmd = q[
           set -e
           pid=$(ps uax|grep bin/sparkyd|grep rakudo|grep -v grep | awk '{ print $2 }')
@@ -112,12 +116,13 @@ sub MAIN(
     }
 
     if $comp eq "ui" {
-      if ! $c<sparrowci><base> and $action ne "conf" {
+      if ! $c<sparrowci><base> and $action eq "start"  {
         say "sparrowci ui base dir not found, tell me where to look it up:";
         say "sparman --base /path/to/basedir ui conf";
         exit(1)
       }
       if $action eq "start" {
+        say "start ui ...";
         my $cmd = q[
           set -e
           pid=$(ps uax|grep sparrowci_web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
@@ -134,6 +139,7 @@ sub MAIN(
         say $cmd if $verbose;
         shell $cmd;
       } elsif $action eq "stop" {
+        say "stop ui ...";
         my $cmd = q[
           set -e
           pid=$(ps uax|grep sparrowci_web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
@@ -153,7 +159,7 @@ sub MAIN(
           _update_conf($c);
         }
       } elsif $action eq "status" {
-        my $cmd = q[
+       my $cmd = q[
           set -e
           pid=$(ps uax|grep sparrowci_web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
           if test -z $pid; then
