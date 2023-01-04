@@ -18,7 +18,6 @@ sub MAIN(
         exit(1)
       }
       if $action eq "start" {
-        say "start worker ui ...";
         my $cmd = q[
           set -e
           pid=$(ps uax|grep "raku bin/sparky-web.raku"|grep -v grep | awk '{ print $2 }')
@@ -35,8 +34,7 @@ sub MAIN(
         say $cmd if $verbose;
         shell $cmd;
       } elsif $action eq "stop" {
-        say "stop worker ui ...";
-       my $cmd = q[
+        my $cmd = q[
           set -e
           pid=$(ps uax|grep "raku bin/sparky-web.raku"|grep -v grep | awk '{ print $2 }')
           if test -z $pid; then
@@ -69,7 +67,6 @@ sub MAIN(
       }
     } 
     if $comp eq "worker" {
-      say "start worker ...";
       if $action eq "start" {
         my $cmd = q[
           set -e
@@ -86,7 +83,6 @@ sub MAIN(
         say $cmd if $verbose;
         shell $cmd;
       } elsif $action eq "stop" {
-        say "stop worker ...";
         my $cmd = q[
           set -e
           pid=$(ps uax|grep bin/sparkyd|grep rakudo|grep -v grep | awk '{ print $2 }')
@@ -122,7 +118,6 @@ sub MAIN(
         exit(1)
       }
       if $action eq "start" {
-        say "start ui ...";
         my $cmd = q[
           set -e
           pid=$(ps uax|grep sparrowci_web.raku|grep raku|grep -v grep | awk '{ print $2 }')
@@ -139,7 +134,6 @@ sub MAIN(
         say $cmd if $verbose;
         shell $cmd;
       } elsif $action eq "stop" {
-        say "stop ui ...";
         my $cmd = q[
           set -e
           pid=$(ps uax|grep "raku bin/sparrowci_web.raku"|grep -v grep | awk '{ print $2 }')
