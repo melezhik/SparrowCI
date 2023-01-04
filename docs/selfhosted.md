@@ -10,7 +10,8 @@ You need to install docker on the same machine where Sparky and SparrowCI are in
 
 * Install Sparky and initialize Sparky database
 
-Follow [sparky#installation](https://github.com/melezhik/sparky#installation) document.
+Follow [sparky#installation](https://github.com/melezhik/sparky#installation) document. Please don't run sparky and sparky-web services,
+as they will be run later, see `Run SparrowCI stack`.
 
 * Install SparrowCI web app
 
@@ -36,15 +37,34 @@ login_type: DB
 HERE
 ```
 
-* Run SparrowCI stack
+# Run SparrowCI stack
+
+Use spaman - cli application that comes with SparrowCI to run underlying SparrowCI components:
+
+Run `sparkyd` - Sparrow jobs worker 
 
 ```bash
 sparman.raku worker start
+```
+
+Run `sparky-web` - worker UI (aka Sparky Web UI)
+
+Sparky UI will be accessible on http://127.0.0.1:4000 , use `user` as a login and `password` as a password.
+
+```bash
 sparman.raku worker_ui start
+```
+
+Run SparrowCI UI
+
+```bash
 sparman.raku ui start
 ```
 
-SparrowCI API will be accessible on http://127.0.0.1:2222 , use `admin` as a login
-and `passW0rd` as a password.
+SparrowCI UI will be accessible on http://127.0.0.1:2222 , use `admin` as a login and `passW0rd` as a password.
 
-Please change the password after the first successful login.
+Please, change the admin user password after the first successful login.
+
+# See also
+
+[spaman](sparman.md) - SparrowCI managemenr tool
