@@ -21,12 +21,12 @@ sub MAIN(
         say "start worker ui ...";
         my $cmd = q[
           set -e
-          pid=$(ps uax|grep bin/sparky-web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
+          pid=$(ps uax|grep "raku bin/sparky-web.raku"|grep -v grep | awk '{ print $2 }')
           if test -z $pid; then ] ~
             qq[\ncd {$c<worker><base>}\n] ~
             q[mkdir -p ~/.sparky ] ~
             qq[\n$vars\n] ~
-            q[nohup cro run 1>~/.sparky/sparky-web.log 2>&1 & < /dev/null;
+            q[nohup raku bin/sparky-web.raku 1>~/.sparky/sparky-web.log 2>&1 < /dev/null &
             echo "run [OK]"
           else
             echo "already running pid=$pid ..."
@@ -38,7 +38,7 @@ sub MAIN(
         say "stop worker ui ...";
        my $cmd = q[
           set -e
-          pid=$(ps uax|grep bin/sparky-web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
+          pid=$(ps uax|grep "raku bin/sparky-web.raku"|grep -v grep | awk '{ print $2 }')
           if test -z $pid; then
             echo "already stopped"
           else
@@ -57,7 +57,7 @@ sub MAIN(
       } elsif $action eq "status" {
         my $cmd = q[
           set -e
-          pid=$(ps uax|grep bin/sparky-web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
+          pid=$(ps uax|grep "raku bin/sparky-web.raku"|grep -v grep | awk '{ print $2 }')
           if test -z $pid; then
             echo "stop [OK]"
           else
@@ -77,7 +77,7 @@ sub MAIN(
           if test -z $pid; then
             mkdir -p ~/.sparky/] ~
             qq[\n$vars\n] ~
-            q[nohup sparkyd 1>~/.sparky/sparkyd.log 2>&1 & < /dev/null;
+            q[nohup sparkyd 1>~/.sparky/sparkyd.log 2>&1 < /dev/null &
             echo "run [OK]"
           else
             echo "already running pid=$pid ..."
@@ -125,12 +125,12 @@ sub MAIN(
         say "start ui ...";
         my $cmd = q[
           set -e
-          pid=$(ps uax|grep sparrowci_web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
+          pid=$(ps uax|grep sparrowci_web.raku|grep raku|grep -v grep | awk '{ print $2 }')
           if test -z $pid; then ] ~
             qq[\ncd {$c<sparrowci><base>}\n] ~
             q[mkdir -p ~/.sparrowci/] ~
             qq[\n$vars\n] ~
-            q[nohup cro run 1>~/.sparrowci/sparrowci_web.log 2>&1 & < /dev/null;
+            q[nohup raku bin/sparrowci_web.raku 1>~/.sparrowci/sparrowci_web.log 2>&1 < /dev/null &
             echo "run [OK]"
           else
             echo "already running pid=$pid ..."
@@ -142,7 +142,7 @@ sub MAIN(
         say "stop ui ...";
         my $cmd = q[
           set -e
-          pid=$(ps uax|grep sparrowci_web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
+          pid=$(ps uax|grep "raku bin/sparrowci_web.raku"|grep -v grep | awk '{ print $2 }')
           if test -z $pid; then
             echo "already stopped"
           else
@@ -161,7 +161,7 @@ sub MAIN(
       } elsif $action eq "status" {
        my $cmd = q[
           set -e
-          pid=$(ps uax|grep sparrowci_web.raku|grep rakudo|grep -v grep | awk '{ print $2 }')
+          pid=$(ps uax|grep "raku bin/sparrowci_web.raku"|grep -v grep | awk '{ print $2 }')
           if test -z $pid; then
             echo "stop [OK]"
           else
