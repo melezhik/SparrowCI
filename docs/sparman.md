@@ -53,3 +53,7 @@ SparrowCI UI - `~/.sparrowci/sparrowci_web.log`
 Sparky Woker UI - `~/.sparky/sparky-web.log`
 
 Sparky Woker - `~/.sparky/sparkyd.log `
+
+# See also
+
+* Self-hosted deployment - [selfhosted.md](docs/selfhosted.md)

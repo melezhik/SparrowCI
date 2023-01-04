@@ -2,6 +2,12 @@ Revision history for SparrowCI
 
 {{$NEXT}}
 
+0.0.6 2023-01-04T17:10:00Z
+
+    Introducing sparman - SparrowCI manager
+    Finalizing vault integration
+    Various docs improvements
+
 0.0.5 2023-01-01T13:10:00Z
 
     Remove duplicate entries 
