@@ -43,3 +43,13 @@ For example, to set worker polling timeout to 10 seconds:
 ```bash
 sparman.raku --env SPARKY_TIMEOUT=10 worker start
 ```
+
+## Logs
+
+Logs are available at the following locations:
+
+SparrowCI UI - `~/.sparrowci/sparrowci_web.log`
+
+Sparky Woker UI - `~/.sparky/sparky-web.log`
+
+Sparky Woker - `~/.sparky/sparkyd.log `
