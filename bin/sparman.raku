@@ -3,13 +3,13 @@ sub MAIN(
   Str   $action,
   Bool  :$verbose? = False,
   Str   :$base?,
-  Array :$env?,
+  Str   :$env?,
 ) {
 
     say "Execute $action on $comp ...";
 
     my $c = _get_conf();
-    my $vars = $env ?? $env<>.map({"export $_"}).join("\n") !! "";
+    my $vars = $env ?? $env.split(/","/).map({"export $_"}).join("\n") !! "";
 
     if $comp eq "worker_ui" {
       if ! $c<worker><base> and $action eq "start" {

@@ -395,7 +395,7 @@ class Pipeline does Sparky::JobApi::Role {
                   image => $.image,
                   owner => $.owner,
                   build_status => $jobs-status,  
-                  build_url => "https://ci.sparrowhub.io/report/{$report<build-id>}",
+                  build_url => "{%*ENV<SPARROWCI_HOST> || 'https://ci.sparrowhub.io'}/report/{$report<build-id>}",
                   warn_cnt => $warn-cnt,
                 ),
               );

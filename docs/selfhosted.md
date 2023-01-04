@@ -44,7 +44,7 @@ Use spaman - cli application that comes with SparrowCI to run underlying Sparrow
 Run `sparkyd` - Sparrow jobs worker 
 
 ```bash
-sparman.raku worker start
+sparman.raku --env SPARROWCI_HOST=http://127.0.0.1:2222 worker start
 ```
 
 Run `sparky-web` - worker UI (aka Sparky Web UI)
