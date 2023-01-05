@@ -1,0 +1,53 @@
+secrets:
+  - BUGZILLA_RESTAPI_KEY
+tasks:
+  - 
+    name: main
+    default: true
+    language: Raku
+    config:
+      bugzilla_api: https://bugzilla-dev.allizom.org
+    init: |
+      %*ENV<SCM_COMMIT_MESSAGE> ~~ /"bug:" \s+ (\D+)/;
+      my $bug-id = "$0";
+      run_task "comment", %(
+        bugid => $bug-id
+      );
+      if %*ENV<SCM_COMMIT_MESSAGE> ~~ /'close!'/ 
+        and %*ENV<BUILD_STATUS> eq "OK" {
+        run_task "close", %(
+          bugid => $bug-id
+        )
+      }
+    subtasks:
+      - 
+        name: comment
+        language: Bash
+        code: |
+          set -e
+          bugzilla_api=$(config bugzilla_api)
+          cat << HERE > data.json
+          {
+            "comment" : "SparrowCI build finished. URL: $BUILD_URL. STATUS: $BUILD_STATUS",
+            "is_private" : false
+          }      
+          HERE
+
+          curl -fs -H "Content-Type: application/json" -X POST \
+          --data @data.json $bugzilla_api/rest/bug/$bugid/comment?api_key=$BUGZILLA_RESTAPI_KEY
+      - 
+        name: close
+        language: Bash
+        code: |
+          set -e
+          bugzilla_api=$(config bugzilla_api)
+          cat << HERE > data.json
+          {
+            "ids" : [$bugid],
+            "status" : "RESOLVED",
+            "resolution" : "MOVED"
+          }          
+          HERE
+
+          curl -fs -H "Content-Type: application/json" -X PUT \
+          --data @data.json $bugzilla_api/rest/bug/$bugid?api_key=$BUGZILLA_RESTAPI_KEY
