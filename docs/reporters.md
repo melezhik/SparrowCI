@@ -85,7 +85,9 @@ More detailed explanation:
 
 Secret should be added to the account of a user who owns pipelines.
 
-
 # See also
 
 * Variables - [variables.md](docs/variables.md)
+
+* Reporters examples - [reporters/](reporters) directory
+
