@@ -8,6 +8,8 @@ sub MAIN(
 
     say "Execute $action on $comp ...";
 
+    die "unknown component" unless $comp  ~~ /^^ (ui|worker|worker_ui) $$/;
+
     my $c = _get_conf();
     my $vars = $env ?? $env.split(/","/).map({"export $_"}).join("\n") !! "";
 
@@ -64,6 +66,8 @@ sub MAIN(
         ];
         say $cmd if $verbose;
         shell $cmd;
+      } else {
+        die "unknown action"
       }
     } 
     if $comp eq "worker" {
@@ -108,6 +112,8 @@ sub MAIN(
         ];
         say $cmd if $verbose;
         shell $cmd;
+      } else {
+        die "unknown action"
       }
     }
 
@@ -164,6 +170,8 @@ sub MAIN(
         ];
         say $cmd if $verbose;
         shell $cmd;
+      } else {
+        die "unknown action"
       }
     } 
 
