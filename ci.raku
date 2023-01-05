@@ -279,7 +279,7 @@ class Pipeline does Sparky::JobApi::Role {
           }
           
           # common pipeline variables:
-          my $docker-opts = "-e SCM_URL={$.scm}";
+          my $docker-opts = "-e SCM_URL={$.scm} -e SP6_DUMP_TASK_CODE=1";
           $docker-opts ~= " -e SCM_SHA={$git-data<sha>}";
           my $git-comment = $git-data<comment>.split("\n").first.subst("'","",:g);
           $docker-opts ~= " -e SCM_COMMIT_MESSAGE='{$git-comment}'";
