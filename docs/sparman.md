@@ -56,4 +56,4 @@ Sparky Woker - `~/.sparky/sparkyd.log `
 
 # See also
 
-* Self-hosted deployment - [selfhosted.md](docs/selfhosted.md)
+* Self-hosted deployment - [selfhosted.md](selfhosted.md)
