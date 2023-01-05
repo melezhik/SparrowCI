@@ -89,5 +89,5 @@ Secret should be added to the account of a user who owns pipelines.
 
 * Variables - [variables.md](docs/variables.md)
 
-* Reporters examples - see [/reporters/](reporters) directory
+* Reporters examples - see [reporters/](https://github.com/melezhik/SparrowCI/tree/main/reporters) directory
 
