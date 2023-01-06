@@ -2,6 +2,12 @@ Revision history for SparrowCI
 
 {{$NEXT}}
 
+0.0.7 2023-01-04T18:10:00Z
+
+    Small improvements in sparoman
+    Enforce tasks dump in ci builds
+    Documentation improvements
+
 0.0.6 2023-01-04T17:10:00Z
 
     Introducing sparman - SparrowCI manager
