@@ -151,7 +151,19 @@ my $application = route {
         $type = $typegit ?? "git" !! "gh";
         say "add repo: $repo type: $type";
       }
-      my $url = $type eq "git" ?? $repo !! "https://github.com/{$user}/{$repo}.git";
+
+      my $url;
+
+      if $type eq "git" {
+        $url = $repo 
+      } elsif $repo ~~ /^^ ( https || 'git@' ) /  {
+        $url = $repo
+      } else {  
+        $url = "https://github.com/{$user}/{$repo}.git";
+      } 
+
+      say "effective url: $url";
+
       my $yaml = qq:to/YAML/;
         sparrowdo:
           no_sudo: true
@@ -159,7 +171,7 @@ my $application = route {
           bootstrap: false
           format: default
           repo: https://sparrowhub.io/repo
-          tags: cpu=2,mem=6,SCM_URL=$url,owner=$user
+          tags: SCM_URL=$url,owner=$user
         disabled: false
         keep_builds: 100
         allow_manual_run: true
@@ -169,9 +181,7 @@ my $application = route {
       YAML
       say "yaml: $yaml";
 
-      my $repo-dir = $type eq "git" ?? 
-        "{%*ENV<HOME>}/.sparky/projects/git-{$user}-{$repo.split('/').tail}" !!
-        "{%*ENV<HOME>}/.sparky/projects/gh-{$user}-$repo";
+      my $repo-dir = "{%*ENV<HOME>}/.sparky/projects/{$type}-{$user}-{$repo.split('/').tail}";
 
       say "create repo dir: $repo-dir";
 
@@ -181,6 +191,7 @@ my $application = route {
 
       if "{$repo-dir}/sparrowfile".IO ~~ :e {
         say "{$repo-dir}/sparrowfile symlink exists"; 
+        redirect :see-other, "{http-root()}/repos?message=repo {$repo} updated";
       } else {
         say "create {$repo-dir}/sparrowfile symlink"; 
         symlink("ci.raku","{$repo-dir}/sparrowfile");
