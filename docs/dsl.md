@@ -772,13 +772,9 @@ tasks:
     default: true
     code: |
       set -e
-      rm -rf source/
-      git clone $(config url) source
       cd source/
       zef install --deps-only --/test .
       zef test .
-    config:
-      url: https://github.com/lizmat/App-Rak.git
 ```
 
 ## Golang build
