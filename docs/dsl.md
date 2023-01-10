@@ -429,7 +429,7 @@ hello from output
 
 Read more about `set_stdout` function on https://github.com/melezhik/Sparrow6/blob/master/documentation/development.md#set-hook-output
 
-## Conditional tasks execution
+## Conditional task execution
 
 Using `if` modifier one can skip specific tasks:
 
@@ -445,7 +445,7 @@ tasks:
       language: Raku
       code: |
         say "skip main task ...";
-        update_state %( status => "skip" )
+        update_state %( status => "skip" );
 ```
 
 `if` block itself is also a regular SparrowCI task that is executed first. 
