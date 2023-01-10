@@ -322,6 +322,8 @@ class Pipeline does Sparky::JobApi::Role {
 
         my $st = self.wait-job($j,{ timeout => $timeout.Int });
 
+        say ">>> STOP WAITING ALL JOBS: {$st.perl}";
+
         $jobs-status = "FAIL" unless $st<OK>;
 
         # traverse jobs DAG in order
@@ -440,7 +442,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $task = $data[0];
 
-      my $timeout = 1200;
+      my $timeout = 600;
 
       say ">>> handle task: ", $task.perl;
 
