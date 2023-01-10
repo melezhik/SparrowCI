@@ -429,6 +429,33 @@ hello from output
 
 Read more about `set_stdout` function on https://github.com/melezhik/Sparrow6/blob/master/documentation/development.md#set-hook-output
 
+## Conditional tasks execution
+
+Using `if` modifier one can skip specific tasks:
+
+```yaml
+tasks:
+  -
+    name: example_task
+    language: Bash
+    default: true
+    code: |
+      echo "Hello from the main tasks"
+    if:
+      language: Raku
+      code: |
+        say "skip main task ...";
+        update_state %( status => "skip")
+```
+
+`if` block itself is also a regular SparrowCI tasks that is executed first. 
+
+If conditional tasks declares status as `skip`, the main task won't be executed.
+
+In case main task has any dependencies (`depends` or `followup`) they also will be skipped.
+ 
+
+
 ## Using Programming Languages 
 
 Currently SparrowCI supports following list of programming languages:

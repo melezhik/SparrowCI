@@ -462,6 +462,17 @@ class Pipeline does Sparky::JobApi::Role {
         $.source_dir = "{$*CWD}";
       }  
 
+      if $task<if> { # compute conditional task
+        say ">>> compute conditional task ...";
+        my $task-if = $task<if>; $task-if<name> = "{$task<name>}-if";
+        my $params = $stash<config> || {};
+        my $state = self!task-run: :task($task-if), :$params;
+        if $state<status> and  $state<status> eq "skip" {
+          say ">>> conditional task returns SKIP, don't execute main task";
+          return;
+        }
+      }
+
       if $task<depends> {
 
         say ">>> enter depends block: ", $task<depends>.perl;
@@ -495,7 +506,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       }
 
-      my $params = $stash<config> || $task<config> || {};
+      my $params = $stash<config> || {};
 
       $params<tasks> = $tasks-data if $tasks-data;
 
