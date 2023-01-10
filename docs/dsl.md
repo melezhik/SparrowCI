@@ -454,7 +454,9 @@ If conditional tasks declares status as `skip`, the main task won't be executed.
 
 In case main task has any dependencies (`depends` or `followup`) they also will be skipped.
  
+Conditional tasks handle the same `config:` parameters that get passed to the main task.
 
+As well as they can access other dependency tasks data (`config()<tasks>`, `config()<parent>`).
 
 ## Using Programming Languages 
 
