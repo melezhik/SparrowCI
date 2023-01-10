@@ -440,12 +440,12 @@ tasks:
     language: Bash
     default: true
     code: |
-      echo "Hello from the main tasks"
+      echo "Hello from the main task"
     if:
       language: Raku
       code: |
         say "skip main task ...";
-        update_state %( status => "skip")
+        update_state %( status => "skip" )
 ```
 
 `if` block itself is also a regular SparrowCI task that is executed first. 
