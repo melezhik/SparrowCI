@@ -448,15 +448,15 @@ tasks:
         update_state %( status => "skip")
 ```
 
-`if` block itself is also a regular SparrowCI tasks that is executed first. 
+`if` block itself is also a regular SparrowCI task that is executed first. 
 
-If conditional tasks declares status as `skip`, the main task won't be executed.
+If conditional tasks declare status as `skip`, the main task won't be executed.
 
-In case main task has any dependencies (`depends` or `followup`) they also will be skipped.
+In case the main task has any dependencies (`depends` or `followup`) they also will be skipped.
  
-Conditional tasks handle the same `config:` parameters that get passed to the main task.
+Conditional tasks handle the same `config()` parameters that get passed to the main task.
 
-As well as they can access other dependency tasks data (`config()<tasks>`, `config()<parent>`).
+Conditional task code can access other dependency tasks data (`config()<tasks>`, `config()<parent>`).
 
 ## Using Programming Languages 
 
