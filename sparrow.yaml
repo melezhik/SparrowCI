@@ -4,35 +4,38 @@ image:
 secrets:
   - FEZ_TOKEN
 tasks:
-  - name: release
+  - 
+    name: test
     default: true
-    language: Raku
+    followup:
+      -
+        name: release
+    language: Bash
     code: |
-      say "OK"
-    init: |
-      run_task "test";
-      if %*ENV<SCM_COMMIT_MESSAGE> ~~ /'release!'/ {
-        run_task "upload"
-      }
-    subtasks:
-      -
-        name: upload
-        language: Bash
-        code: |
-          set -e
-          cat << HERE > ~/.fez-config.json
-            {"groups":[],"un":"melezhik","key":"$FEZ_TOKEN"}
-          HERE
-          cd source/
-          zef install --/test fez
-          tom --clean
-          fez upload
-      -
-        name: test
-        language: Bash
-        code: |
-          set -e
-          cd source/
-          zef install --/test \
-          https://github.com/bduggan/p6-digest-sha1-native/archive/refs/tags/0.05.tar.gz 
-          zef install --/test .
+      set -e
+      env|grep SCM
+      cd source
+      zef install --/test \
+        https://github.com/bduggan/p6-digest-sha1-native/archive/refs/tags/0.05.tar.gz 
+      zef install --/test .
+  -
+    name: release
+    if:
+      language: Raku
+      code: |
+        unless %*ENV<SCM_COMMIT_MESSAGE> ~~ /'release!'/ {
+          update_state %( status => 'skip' )
+        }
+    language: Bash
+    code: |
+      set -e
+      zef install --/test https://github.com/tony-o/raku-fez.git
+
+      cat << HERE > ~/.fez-config.json
+       {"groups":[],"un":"melezhik","key":"$FEZ_TOKEN"}
+      HERE
+
+      cd source/
+
+      tom --clean
+      fez upload --unattended

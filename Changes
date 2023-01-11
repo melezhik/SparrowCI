@@ -2,6 +2,12 @@ Revision history for SparrowCI
 
 {{$NEXT}}
 
+0.0.8 2023-01-11T15:50:00Z
+
+    Conditional task execution
+    Minor fixes in ci logic
+    UI - handle direct git URLs with schema
+
 0.0.7 2023-01-04T18:10:00Z
 
     Small improvements in sparoman
