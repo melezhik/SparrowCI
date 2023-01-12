@@ -473,10 +473,12 @@ class Pipeline does Sparky::JobApi::Role {
       
       if $task<generator> {
 
+        say ">>> run config generator code ... {$task<generator>.perl}";
+
         my $params = $stash<config> || {};
-
-        my $state = self!task-run: :$task, :$params;
-
+        my $tg = $task<generator>;
+        $tg<name> = "{$task<name>}-generator";
+        my $state = self!task-run: :task($tg), :$params;
         @tasks = $state<list><>;  
 
       } else {
@@ -625,7 +627,7 @@ class Pipeline does Sparky::JobApi::Role {
 
     }
 
-    method !task-run (:$task,:$params = {},:$in-artifacts = [],:$out-artifacts = []) {
+    method !task-run (:$task, :$params = {},:$in-artifacts = [],:$out-artifacts = []) {
 
         my $state;
 
