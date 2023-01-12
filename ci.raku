@@ -446,10 +446,6 @@ class Pipeline does Sparky::JobApi::Role {
 
       say ">>> handle task: ", $task.perl;
 
-      my $tasks-data = %();
-
-      my %child-jobs = %();
-
       unless $.source_dir {
         say "source directory does not yet exist, download source archive from storage";
         my $blob = self!get-storage-api(:docker).get-file("source.tar.gz",:bin);
@@ -473,83 +469,107 @@ class Pipeline does Sparky::JobApi::Role {
         }
       }
 
-      if $task<depends> {
+      my @tasks;
+      
+      if $task<generator> {
 
-        say ">>> enter depends block: ", $task<depends>.perl;
+        my $params = $stash<config> || {};
 
-        my $tasks = $task<depends>;
+        my $state = self!task-run: :$task, :$params;
 
-        my @jobs = self!run-task-dependency: :$tasks;
-
-        say ">>> waiting for dependency tasks have finsihed ...";
-
-        my $st = self.wait-jobs(@jobs,{ timeout => $timeout.Int });
-
-        for @jobs -> $dj {
-            %child-jobs<left>.push: $dj.info;
-            my $d = $dj.get-stash();
-            if $d<task>:exists {
-              $tasks-data{$d<task>}<state> = $d<state>;
-            }
-        }
-
-        # save job data
-        $j.put-stash(%( child-jobs => %child-jobs ));
-
-        # handle depends jobs errors
-        say ">>> depends jobs status: ", $st.perl;
-
-        unless $st<OK> == @jobs.elems {
-          say "some depends jobs failed or timeouted: {$st.perl}";
-          exit(1)
-        }
-
-      }
-
-      my $params = $stash<config> || {};
-
-      $params<tasks> = $tasks-data if $tasks-data;
-
-      my $in-artifacts = $task<artifacts><in>;
-
-      my $out-artifacts = $task<artifacts><out>;
-
-      my $state = self!task-run: :$task, :$params, :$in-artifacts, :$out-artifacts;
- 
-      my $parent-data = $state;
-
-      if $task<followup> {
-
-        say ">>> enter followup block: ", $task<followup>.perl;
-
-        my $tasks = $task<followup>;
-
-        my @jobs = self!run-task-dependency: :$tasks, :$tasks-data, :$parent-data;
-
-        say ">>> waiting for followup tasks have finsihed ...";
-
-        my $st = self.wait-jobs(@jobs,{ timeout => $timeout });
-
-        for @jobs -> $fj {
-          %child-jobs<right>.push: $fj.info();
-        }
-
-        # save job data
-        $j.put-stash(%( state => $state, task => $task<name>, child-jobs => %child-jobs ));
-
-        say ">>> followup jobs status: ", $st.perl;
-
-        # handle followup jobs errors
-
-        unless $st<OK> == @jobs.elems {
-          say "some followup jobs failed or timeouted: {$st.perl}";
-          exit(1);
-        }
+        @tasks = $state<list><>;  
 
       } else {
-        # save job data
-        $j.put-stash(%( state => $state, task => $task<name>, child-jobs => %child-jobs ));       
+        push @tasks, $task;
       }
+
+      my %child-jobs = %();
+
+      for @tasks -> $t {
+
+        my $tasks-out-data = %();
+
+        if $task<depends> {
+
+          say ">>> enter depends block: ", $task<depends>.perl;
+
+          my @jobs = self!run-task-dependency: :tasks($task<depends>);
+
+          say ">>> waiting for dependency tasks have finsihed ...";
+
+          my $st = self.wait-jobs(@jobs,{ timeout => $timeout.Int });
+
+          for @jobs -> $dj {
+              %child-jobs<left>.push: $dj.info;
+              my $d = $dj.get-stash();
+              if $d<task>:exists {
+                $tasks-out-data{$d<task>}<state> = $d<state>;
+              }
+          }
+
+          # save job data
+          $j.put-stash(%( child-jobs => %child-jobs ));
+
+          # handle depends jobs errors
+          say ">>> depends jobs status: ", $st.perl;
+
+          unless $st<OK> == @jobs.elems {
+            say "some depends jobs failed or timeouted: {$st.perl}";
+            exit(1)
+          }
+
+        }
+
+        my $params = $task<generator> ?? $t<config> !! ($stash<config> || {});
+
+        # pass depends tasks output data to a parent task
+        # as config()<tasks>
+
+        $params<tasks> = $tasks-out-data if $tasks-out-data;
+
+        my $in-artifacts = $task<artifacts><in>;
+
+        my $out-artifacts = $task<artifacts><out>;
+
+        my $state = self!task-run: :$task, :$params, :$in-artifacts, :$out-artifacts;
+  
+        my $parent-data = $state;
+
+        if $task<followup> {
+
+          say ">>> enter followup block: ", $task<followup>.perl;
+
+          my $tasks = $task<followup>;
+
+          my @jobs = self!run-task-dependency: :$tasks, :tasks-data($tasks-out-data), :$parent-data;
+
+          say ">>> waiting for followup tasks have finsihed ...";
+
+          my $st = self.wait-jobs(@jobs,{ timeout => $timeout });
+
+          for @jobs -> $fj {
+            %child-jobs<right>.push: $fj.info();
+          }
+
+          # save job data
+          $j.put-stash(%( state => $state, task => $task<name>, child-jobs => %child-jobs ));
+
+          say ">>> followup jobs status: ", $st.perl;
+
+          # handle followup jobs errors
+
+          unless $st<OK> == @jobs.elems {
+            say "some followup jobs failed or timeouted: {$st.perl}";
+            exit(1);
+          }
+
+        } else {
+          # save job data
+          $j.put-stash(%( state => $state, task => $task<name>, child-jobs => %child-jobs ));
+
+        }
+
+      } # next task in @tasks
 
     }
 
