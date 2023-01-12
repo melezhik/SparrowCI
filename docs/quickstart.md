@@ -18,7 +18,7 @@ tasks:
       pytest
 ```
 
-This simple code snippet represents a minimalist CICD for python project.
+This simple code snippet represents a minimalist CICD for a Python project.
 
 Commit `sparrow.yaml` and push changes to Git:
 

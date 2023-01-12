@@ -27,6 +27,6 @@ Consider this build scenario `sparrow.yaml`:
 
 In this example task "main_task" executes some Python code. 
 
-To make it sure we have a Python in runtime,  dependency task "install-python" is executed. 
+To make sure we have a Python runtime, the dependency task "install-python" is executed. 
 
-This example illustrates the core idea behind SparrowCI pipeline - to have a **collection of dependent tasks** (DAG) that executed in **particular order**.
+This example illustrates the core idea behind SparrowCI pipeline - to have a **collection of dependent tasks** (DAG) that executed in a **particular order**.
