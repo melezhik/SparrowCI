@@ -647,7 +647,7 @@ tasks:
 Hub tasks is really cool feature when someone needs even more flexibility.
 
 Hub modifier allows to execute a task template as many times as required with dynamically
-generate input parameters. 
+generated input parameters. 
 
 Consider this example:
 
