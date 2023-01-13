@@ -686,8 +686,23 @@ tasks:
 ```
 
 Task1 is executed two times, every time with input parameter `message` having
-different value. Task itself return output data as `MESSAGE` which is _accumulated_ 
+different value (the first iteration with `How`, the second iteration with `are you?` ). 
+
+Task template itself returns output data as `MESSAGE` which is _accumulated_ 
 and accessible in main dependent task as `config()<tasks><task1><state>` list.
+
+Hub block is just a regular SparrowCI task to be executed to resolve task template 
+execution iterator.
+
+The block should return data using `update_state` function, 
+the returned data should be a HashMap with a `list` key that will hold a list of
+input parameters. 
+
+The SparrowCI will iterate over the list and execute task template with
+input parameters taken from the list on every iteration step.
+
+Hub tasks are no different from regular SparrowCI tasks and could use all the features available 
+( for example `depends/followup` references ).
 
 ## Source code and triggering
 
