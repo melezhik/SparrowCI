@@ -646,8 +646,10 @@ tasks:
 
 Hub tasks is really cool feature when someone needs even more flexibility.
 
-Hub modifies allows to execute  task template as many times as required with dynamically
-generate parameters. Consider this example:
+Hub modifier allows to execute a task template as many times as required with dynamically
+generate input parameters. 
+
+Consider this example:
 
 ```yaml
 tasks:
