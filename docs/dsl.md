@@ -683,6 +683,10 @@ tasks:
         );
 ```
 
+Task1 is executed two times, every time with input parameter `message` having
+different value. Task itself return output data as `MESSAGE` which is _accumulated_ 
+and accessible in main dependent task as `config()<tasks><task1><state>` list.
+
 ## Source code and triggering
 
 Build triggering happens automatically upon any changes in a source code.
