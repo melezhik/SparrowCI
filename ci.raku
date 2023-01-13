@@ -471,21 +471,34 @@ class Pipeline does Sparky::JobApi::Role {
 
       my @tasks;
       
-      if $task<generator> {
+      if $task<hub> {
 
-        say ">>> run config generator code ... {$task<generator>.perl}";
+        say ">>> run hub generator code";
 
         my $params = $stash<config> || {};
-        my $tg = $task<generator>;
-        $tg<name> = "{$task<name>}-generator";
-        my $state = self!task-run: :task($tg), :$params;
+        my $ht = $task<hub>;
+        $ht<name> = "{$task<name>}-hub";
+        my $state = self!task-run: :task($ht), :$params;
         @tasks = $state<list><>;  
 
       } else {
+
+        # in case there is no hub
+        # hub is effectively just one task
         push @tasks, $task;
       }
 
+      # child jobs - holds references to 
+      # all depends/followup tasks/jobs
+      # and get's linked to the current job
+
       my %child-jobs = %();
+
+      # accumulated state - represents 
+      # all output data, 
+      # collected from hub tasks
+
+      my @acc-state = (); 
 
       for @tasks -> $t {
 
@@ -522,7 +535,7 @@ class Pipeline does Sparky::JobApi::Role {
 
         }
 
-        my $params = $task<generator> ?? $t<config> !! ($stash<config> || {});
+        my $params = $task<hub> ?? $t<config> !! ($stash<config> || {});
 
         # pass depends tasks output data to a parent task
         # as config()<tasks>
@@ -553,8 +566,9 @@ class Pipeline does Sparky::JobApi::Role {
             %child-jobs<right>.push: $fj.info();
           }
 
-          # save job data
-          $j.put-stash(%( state => $state, task => $task<name>, child-jobs => %child-jobs ));
+          # link job and task data
+          @acc-state.push: $state;
+          $j.put-stash(%( state => { list => @acc-state }, task => $task<name>, child-jobs => %child-jobs ));
 
           say ">>> followup jobs status: ", $st.perl;
 
@@ -566,8 +580,9 @@ class Pipeline does Sparky::JobApi::Role {
           }
 
         } else {
-          # save job data
-          $j.put-stash(%( state => $state, task => $task<name>, child-jobs => %child-jobs ));
+          # link job and task data
+          @acc-state.push: $state;
+          $j.put-stash(%( state => { list => @acc-state }, task => $task<name>, child-jobs => %child-jobs ));
 
         }
 
