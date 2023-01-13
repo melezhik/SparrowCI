@@ -642,6 +642,47 @@ tasks:
       end:
 ```
 
+## Hub tasks
+
+Hub tasks is really cool feature when someone needs even more flexibility.
+
+Hub modifies allows to execute  task template as many times as required with dynamically
+generate parameters. Consider this example:
+
+```yaml
+tasks:
+  -
+    name: main
+    language: Raku
+    default: true
+    code: |
+      for config()<tasks><task1><state><> -> $i {
+        say $i<MESSAGE>
+      }
+    depends:
+      -
+        name: task1
+  -
+    name: task1
+    language: Raku
+    code: |
+      say "Hello from task1, you've passed - [{config()<message>}]";
+      update_state %( MESSAGE => "[{config()<message>}]" );
+    hub:
+      language: Raku
+      code: |
+        update_state %(
+          list => [
+              %(
+                config =>  { message => "How" },
+              ),
+              %(
+                config => { message => "are you?" },
+              ),            
+          ]
+        );
+```
+
 ## Source code and triggering
 
 Build triggering happens automatically upon any changes in a source code.
