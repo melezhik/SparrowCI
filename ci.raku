@@ -568,7 +568,11 @@ class Pipeline does Sparky::JobApi::Role {
 
           # link job and task data
           @acc-state.push: $state;
-          $j.put-stash(%( state => { list => @acc-state }, task => $task<name>, child-jobs => %child-jobs ));
+          $j.put-stash(%( 
+            state => $task<hub> ?? @acc-state !! $state, 
+            task => $task<name>, 
+            child-jobs => %child-jobs 
+          ));
 
           say ">>> followup jobs status: ", $st.perl;
 
@@ -582,7 +586,11 @@ class Pipeline does Sparky::JobApi::Role {
         } else {
           # link job and task data
           @acc-state.push: $state;
-          $j.put-stash(%( state => { list => @acc-state }, task => $task<name>, child-jobs => %child-jobs ));
+          $j.put-stash(%( 
+            state => $task<hub> ?? @acc-state !! $state,
+            task => $task<name>, 
+            child-jobs => %child-jobs 
+          ));
 
         }
 
