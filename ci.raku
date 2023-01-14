@@ -469,7 +469,7 @@ class Pipeline does Sparky::JobApi::Role {
         }
       }
 
-      my @tasks;
+      my @tasks; # hub tasks
       
       if $task<hub> {
 
@@ -479,12 +479,13 @@ class Pipeline does Sparky::JobApi::Role {
         my $ht = $task<hub>;
         $ht<name> = "{$task<name>}-hub";
         my $state = self!task-run: :task($ht), :$params;
-        @tasks = $state<list><>;  
+        @tasks = $state<list> ?? $state<list><> !! [];  
 
       } else {
 
         # in case there is no hub
         # hub is effectively just one task
+        
         push @tasks, $task;
       }
 
@@ -498,13 +499,17 @@ class Pipeline does Sparky::JobApi::Role {
       # all output data, 
       # collected from hub tasks
 
-      my @acc-state = (); 
+      my @acc-state = (); # hub tasks accumulated state
+      my $i = 0; # hub tasks counter 
 
       for @tasks -> $t {
-
+        $i++;  
         my $tasks-out-data = %();
 
-        if $task<depends> {
+        # execute depends tasks _before_ 
+        # tasks from hub
+
+        if $task<depends> && $i ==1 {
 
           say ">>> enter depends block: ", $task<depends>.perl;
 
@@ -550,7 +555,10 @@ class Pipeline does Sparky::JobApi::Role {
   
         my $parent-data = $state;
 
-        if $task<followup> {
+        # execute followup tasks
+        # _after_ hub tasks are finished
+
+        if $task<followup> && $i == @tasks.elems { 
 
           say ">>> enter followup block: ", $task<followup>.perl;
 
