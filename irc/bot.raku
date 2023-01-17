@@ -38,7 +38,7 @@ say "=====";
 .run with IRC::Client.new:
     :port(5555)
     :ssl(True)
-    :ca-file("/home/sph/.znc/znc.pem")
+    :ca-file("{%*ENV<HOME>}/.znc/znc.pem")
     :nick<sparrowbot>
     :username('admin/libera')
     :password(%*ENV<sparrowbot_password>)
