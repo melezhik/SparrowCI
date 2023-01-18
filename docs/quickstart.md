@@ -8,14 +8,15 @@ Just create a file `sparrow.yaml` in your repository root folder:
 
 ```yaml
 tasks:
-    name: unit_tests
-    language: Bash
-    default: true
-    code: |
-      set -e
-      cd source/
-      sudo pip3 install -r requirements.txt
-      pytest
+    -
+      name: unit_tests
+      language: Bash
+      default: true
+      code: |
+        set -e
+        cd source/
+        sudo pip3 install -r requirements.txt
+        pytest
 ```
 
 This simple code snippet represents a minimalist CICD for a Python project.
