@@ -198,6 +198,7 @@ class Pipeline does Sparky::JobApi::Role {
       my $tasks-config;
 
       try {
+
         # check is tasks-confg is a valid YAML
 
         $tasks-config = self!tasks-config;
@@ -216,6 +217,18 @@ class Pipeline does Sparky::JobApi::Role {
             die $err-message;  
           }  
         } 
+      }
+
+      unless $tasks-config<tasks>.isa('Array') {
+        my $stash = %(
+          status => "FAIL", 
+          state => -2,
+          log => "tasks should be an array", 
+          git-data => $git-data,
+          sparrow-yaml => self!get-storage-api.get-file("sparrow.yaml",:text),
+        );
+        self!build-report: :$stash;
+        die "tasks should be an array";
       }
 
       my $data = $tasks-config<tasks>.grep({.<default>});
