@@ -99,16 +99,6 @@
                               <!{ .login-type eq 'GH' }>
                               <input id="repos" class="input" type="text" name="repos" placeholder="Git repo URL">
                               </!>
-                              <?{ .login-type eq 'GH' }>
-                              <span class="help is-success">Type here to search within your GitHub repos</span>
-                              <label class="checkbox">
-                                <input type="checkbox" value="on" name="typegit">
-                                 Not a GitHub repo
-                              </label>
-                              </?>
-                              <!{ .login-type eq 'GH' }>
-                                <input type="hidden" value="on" name="typegit">
-                              </!>
                             </div>
                         </div>
                         <div class="field>

@@ -144,61 +144,71 @@ my $application = route {
   }
 
   post -> 'repo', :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
+ 
     if check-user($user, $token) == True {
-      my $repo; my $type;
-      request-body -> (:$repos,:$typegit) {
+      my $repo;
+      request-body -> (:$repos) {
         $repo = $repos.subst(/\s+/,"",:g);
-        $type = $typegit ?? "git" !! "gh";
-        say "add repo: $repo type: $type";
+        say "add repo: $repo";
       }
 
       my $url;
+      my $type;
 
-      if $type eq "git" {
-        $url = $repo 
-      } elsif $repo ~~ /^^ ( https || 'git@' ) /  {
-        $url = $repo
-      } else {  
+      if $repo ~~ /^^ ( 'https://githbub.com' || 'git@github.com' ) / {
+        $url = $repo; 
+        $type = "gh"; 
+      } elsif $repo ~~ /^^ ( 'https://' || 'git@' ) /  {
+        $url = $repo;
+        $type = "git";
+      } elsif $repo ~~ /<-[ @ \\ \/ : ]>/ and conf-login-type() eq "GH" {  
         $url = "https://github.com/{$user}/{$repo}.git";
-      } 
-
-      say "effective url: $url";
-
-      my $yaml = qq:to/YAML/;
-        sparrowdo:
-          no_sudo: true
-          no_index_update: false
-          bootstrap: false
-          format: default
-          repo: https://sparrowhub.io/repo
-          tags: SCM_URL=$url,owner=$user
-        disabled: false
-        keep_builds: 100
-        allow_manual_run: true
-        scm:
-          url: $url
-          branch: HEAD
-      YAML
-      say "yaml: $yaml";
-
-      my $repo-dir = "{%*ENV<HOME>}/.sparky/projects/{$type}-{$user}-{$repo.split('/').tail}";
-
-      say "create repo dir: $repo-dir";
-
-      mkdir $repo-dir;
-
-      "{$repo-dir}/sparky.yaml".IO.spurt($yaml);
-
-      if "{$repo-dir}/sparrowfile".IO ~~ :e {
-        say "{$repo-dir}/sparrowfile symlink exists"; 
-        redirect :see-other, "{http-root()}/repos?message=repo {$repo} updated";
+        $type = "gh";
       } else {
-        say "create {$repo-dir}/sparrowfile symlink"; 
-        symlink("ci.raku","{$repo-dir}/sparrowfile");
-        redirect :see-other, "{http-root()}/repos?message=repo {$repo} added";
+        $type = "unknown"
       }
+
+      say "effective url: $url, type: $type";
+
+      if $type eq "unknown" {
+        redirect :see-other, "{http-root()}/repos?message=bad repository: {$repo}"; 
+      } else {
+          my $yaml = qq:to/YAML/;
+            sparrowdo:
+              no_sudo: true
+              no_index_update: false
+              bootstrap: false
+              format: default
+              repo: https://sparrowhub.io/repo
+              tags: SCM_URL=$url,owner=$user
+            disabled: false
+            keep_builds: 100
+            allow_manual_run: true
+            scm:
+              url: $url
+              branch: HEAD
+          YAML
+          say "yaml: $yaml";
+
+          my $repo-dir = "{%*ENV<HOME>}/.sparky/projects/{$type}-{$user}-{$repo.split('/').tail}";
+
+          say "create repo dir: $repo-dir";
+
+          mkdir $repo-dir;
+
+          "{$repo-dir}/sparky.yaml".IO.spurt($yaml);
+
+          if "{$repo-dir}/sparrowfile".IO ~~ :e {
+            say "{$repo-dir}/sparrowfile symlink exists"; 
+            redirect :see-other, "{http-root()}/repos?message=repo {$repo} updated";
+          } else {
+            say "create {$repo-dir}/sparrowfile symlink"; 
+            symlink("ci.raku","{$repo-dir}/sparrowfile");
+            redirect :see-other, "{http-root()}/repos?message=repo {$repo} added";
+          }
+        } 
     } else {
-        redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage repositories"; 
+      redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage repositories"; 
     }
   }
 
