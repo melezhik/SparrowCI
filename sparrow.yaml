@@ -19,7 +19,7 @@ tasks:
       zef install --/test \
         https://github.com/bduggan/p6-digest-sha1-native/archive/refs/tags/0.05.tar.gz
       zef install "Pakku:ver<ava-1>" --/test  
-      pakku add to home notest .
+      pakku add noprecomp notest .
       #zef install --/test .
   -
     name: release
