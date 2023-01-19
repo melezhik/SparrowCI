@@ -12,7 +12,7 @@
     "Cro::HTTP:ver<0.8.9+>",
     "Cro::WebApp:ver<0.8.9+>",
     "Text::Markdown:ver<1.1.1+>",
-    "File::Directory::Tree:ver<2022-04.14+>"
+    "File::Directory::Tree:ver<2022-03.14+>"
   ],
   "description" : "SparrowCI - super fun and flexible CI system with many programming languages support",
   "license" : "Artistic-2.0",
