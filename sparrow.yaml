@@ -14,9 +14,12 @@ tasks:
     code: |
       set -e
       env|grep SCM
+      #sudo apt-get install -y libarchive13 libcurl4-openssl-dev > /dev/null
       cd source
       zef install --/test \
-        https://github.com/bduggan/p6-digest-sha1-native/archive/refs/tags/0.05.tar.gz 
+        https://github.com/bduggan/p6-digest-sha1-native/archive/refs/tags/0.05.tar.gz
+      #zef install "Pakku:ver<ava-1>" --/test  
+      #pakku add to home notest .
       zef install --/test .
   -
     name: release
