@@ -16,8 +16,9 @@ tasks:
       env|grep SCM
       cd source
       zef install --/test \
-        https://github.com/bduggan/p6-digest-sha1-native/archive/refs/tags/0.05.tar.gz 
-      zef install --/test .
+        https://github.com/bduggan/p6-digest-sha1-native/archive/refs/tags/0.05.tar.gz
+      zef install "Pakku:ver<ava-1>" --to=home --/test  
+      pakku add notest .
   -
     name: release
     if:
