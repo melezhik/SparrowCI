@@ -27,7 +27,7 @@
                 <thead>
                   <tr>
                     <th><abbr title="Build ID">ID</abbr></th>
-                    <th><abbr title="Project Name">Project</abbr></th>
+                    <th><abbr title="Repo">Repo</abbr></th>
                     <th><abbr title="Image">Image</abbr></th>
                     <th><abbr title="Build Status">Status</abbr></th>
                     <th><abbr title="Build Date">Date</abbr></th>
@@ -38,7 +38,7 @@
                 <@results>
                   <tr>
                     <td><a href="/report/<.id>" title="report"><.id></a></td>
-                    <td><.project></td>
+                    <td><.owner>@<.repo></td>
                     <td>
                       <?.image>
                         <.image>

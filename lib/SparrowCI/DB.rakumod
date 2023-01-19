@@ -95,11 +95,20 @@ sub get-builds ($limit=10, $user?) is export {
 
     $dbh.dispose;
 
+    my @out; 
     if $user {
-     return @rows.grep({.<project> ~~  / ( git || gh ) '-'  $user '-' / });
+     @out = @rows.grep({.<project> ~~  / ( git || gh ) '-'  $user '-' / });
     } else {
-     return @rows;
+     @out = @rows;
     }
+
+    for @out -> $i {
+      my @c = $i<project>.split("-");
+      $i<repo-type> = @c.shift;
+      $i<owner> = @c.shift;
+      $i<repo> = @c.join("");
+    }
+    return @out;
  
 }
 
