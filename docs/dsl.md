@@ -563,7 +563,7 @@ to distinguish output data from different runs:
       default: true
       depends: 
         - 
-          name: python_task
+          name: ruby_task
           localname: ruby_task1
         - 
           name: ruby_task
