@@ -639,9 +639,9 @@ class Pipeline does Sparky::JobApi::Role {
 
       my @jobs;
 
-      for $tasks<> -> $t {
+      for $tasks<>.sort({ .<queue> ?? (.<queue>,.<priority>) !! True }) -> $t {
   
-        my $project = $t<name>;
+        my $project = $t<queue> || $t<name>;
 
         my $job = self.new-job: :$project;
 
