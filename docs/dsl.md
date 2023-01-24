@@ -958,4 +958,4 @@ tasks:
 
 ## Another examples
 
-Other examples could be found at [examples](examples) folder
+Other examples could be found at [examples](../examples) folder

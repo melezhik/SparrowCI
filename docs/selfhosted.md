@@ -10,7 +10,8 @@ You need to install docker on the same machine where Sparky and SparrowCI are in
 
 * Install Sparky and initialize Sparky database
 
-Follow [sparky#installation](https://github.com/melezhik/sparky#installation) document. Please don't run sparky and sparky-web services,
+Follow [sparky#installation](https://github.com/melezhik/sparky#installation) document. 
+Please don't run sparkyd and sparky-web services,
 as they will be run later, see `Run SparrowCI stack`.
 
 * Install SparrowCI web app
@@ -67,4 +68,4 @@ Please, change the admin user password after the first successful login.
 
 # See also
 
-[spaman](sparman.md) - SparrowCI management tool
+[sparman](sparman.md) - SparrowCI management tool
