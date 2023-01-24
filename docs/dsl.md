@@ -704,6 +704,48 @@ input parameters taken from the list on every iteration step.
 Hub tasks are no different from regular SparrowCI tasks and could use all the features available 
 ( for example `depends/followup` references ).
 
+## Hub tasks and conditional tasks
+
+If conditional task is defined _within_ hub block it's applied to
+every element of hub tasks list (vs it's applied only once in the beginning when
+defined before hub block ):
+
+```yaml
+tasks:
+  -
+    name: main
+    language: Raku
+    default: true
+    code: |
+      for config()<tasks><task1><state><> -> $i {
+        say $i<MESSAGE>
+      }
+    depends:
+      -
+        name: even_numbers
+  -
+    name: even_numbers
+    language: Raku
+    code: |
+      say "Hello from even_numbers, you've passed - [{config()<number>}]";
+      update_state %( MESSAGE => "[{config()<number>}]" );
+    hub:
+      language: Raku
+      code: |
+        my @list;
+        for 1 .. 10 -> $i {
+          push @list, %( config => { number => $i } )    
+        }
+        update_state %( list => @list );
+      if:
+        language: Raku
+        code: |
+          if config()<number> % 2 != 0 {
+            say "skip not even number ...";
+            update_state %( status => "skip" );
+          }  
+```
+
 ## Source code and triggering
 
 Build triggering happens automatically upon any changes in a source code.

@@ -500,6 +500,7 @@ class Pipeline does Sparky::JobApi::Role {
         # hub is effectively just one task
         
         push @tasks, $task;
+ 
       }
 
       # child jobs - holds references to 
@@ -516,7 +517,22 @@ class Pipeline does Sparky::JobApi::Role {
       my $i = 0; # hub tasks counter 
 
       for @tasks -> $t {
+
         $i++;  
+
+        # if conditional task exists within hub iterator
+        # compute conditional task for every task in hub tasks list
+        if $t<if> && $task<hub> { 
+            say ">>> compute conditional task ...";
+            my $task-if = $t<if>; $task-if<name> = "{$task<name>}-hub-if-{$i}";
+            my $params = $t<config> || {};
+            my $state = self!task-run: :task($task-if), :$params;
+            if $state<status> and  $state<status> eq "skip" {
+              say ">>> conditional task returns SKIP, don't execute hub task";
+              next;
+            }
+        }
+  
         my $tasks-out-data = %();
 
         # execute depends tasks _before_ 
@@ -553,7 +569,7 @@ class Pipeline does Sparky::JobApi::Role {
 
         }
 
-        my $params = $task<hub> ?? $t<config> !! ($stash<config> || {});
+        my $params = $task<hub> ?? ($t<config> || {}) !! ($stash<config> || {});
 
         # pass depends tasks output data to a parent task
         # as config()<tasks>
