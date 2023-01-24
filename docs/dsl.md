@@ -746,6 +746,47 @@ tasks:
           }  
 ```
 
+## Queues and priorities
+
+Depends/followup tasks by default executed in parallel. To enable
+consecutive execution in order use named queues and priorities:
+
+```yaml
+tasks:
+  -
+    name: main
+    default: true
+    language: Bash
+    code: |
+        echo "hello main"
+    depends:
+      -
+        name: task_A
+        queue: Q1
+        priority: 1000
+      -
+        name: task_B
+        queue: Q1
+        priority: 10
+  -
+    name: task_A
+    language: Bash
+    code: |
+        echo "hello task_A"
+  -
+    name: task_B
+    language: Bash
+    code: |
+        echo "hello task_B"
+```
+
+In the example we have two dependency tasks that will be executed in order
+with priority, the task with highest priority will be executed first (task_A)
+and the task with lowest priority (task_B).
+
+One can have many threads of consecutive execution by having many named queues.
+
+
 ## Source code and triggering
 
 Build triggering happens automatically upon any changes in a source code.
