@@ -68,4 +68,4 @@ Please, change the admin user password after the first successful login.
 
 # See also
 
-[spaman](sparman.md) - SparrowCI management tool
+[sparman](sparman.md) - SparrowCI management tool
