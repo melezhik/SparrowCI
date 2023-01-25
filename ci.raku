@@ -639,7 +639,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       my @jobs;
 
-      for $tasks<>.sort({ .<queue> ?? (.<queue>,.<priority>) !! True }) -> $t {
+      for $tasks<>.sort({ .<queue> ?? (.<queue>,.<priority>) !! True }).reverse -> $t {
   
         my $project = $t<queue> || $t<name>;
 
