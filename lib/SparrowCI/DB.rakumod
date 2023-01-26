@@ -106,7 +106,7 @@ sub get-builds ($limit=10, $user?) is export {
       my @c = $i<project>.split("-");
       $i<repo-type> = @c.shift;
       $i<owner> = @c.shift;
-      $i<repo> = @c.join("");
+      $i<repo> = @c.join("-");
     }
     return @out;
  
