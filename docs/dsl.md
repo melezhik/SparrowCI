@@ -780,11 +780,14 @@ tasks:
         echo "hello task_B"
 ```
 
-In the example we have two dependency tasks that will be executed in order
-with priority, the task with highest priority will be executed first (task_A)
+In the example we have two dependency tasks 
+that will be executed in order
+by priorities - the task with highest priority will be executed first (task_A)
 and the task with lowest priority (task_B).
 
-One can have many threads of consecutive execution by having many named queues.
+Multiple named queues correspond 
+parallel queues in which related tasks
+are executed in order by priorities.
 
 
 ## Source code and triggering
