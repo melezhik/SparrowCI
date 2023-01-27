@@ -665,7 +665,7 @@ class Pipeline does Sparky::JobApi::Role {
 
         $job.put-stash: $stash-data;
 
-        my $description = "run [d] [{$t<name>}]";;
+        my $description = "run [d] [{$t<name>}]";
 
         say ">>> trigger task [$project] | {$t.perl} | stash: {$stash-data.perl}";
 
@@ -678,6 +678,8 @@ class Pipeline does Sparky::JobApi::Role {
             storage_job_id => $.storage_job_id,
           ),
         );
+
+        sleep(3);
 
         @jobs.push: $job;
 
