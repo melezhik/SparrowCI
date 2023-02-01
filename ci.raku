@@ -539,13 +539,13 @@ class Pipeline does Sparky::JobApi::Role {
       if $task<hub> {
 
         say ">>> run hub generator code";
-
         my $params = $stash<config> || {};
+        $params<tasks> = $tasks-out-data if $tasks-out-data;
         my $ht = $task<hub>;
         $ht<name> = "{$task<name>}-hub";
         my $state = self!task-run: :task($ht), :$params;
         @tasks = $state<list> ?? $state<list><> !! [];  
-
+        
       } else {
 
         # in case there is no hub
