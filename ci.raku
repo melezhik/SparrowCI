@@ -471,18 +471,70 @@ class Pipeline does Sparky::JobApi::Role {
         $.source_dir = "{$*CWD}";
       }  
 
+      # child jobs - holds references to 
+      # all depends/followup tasks/jobs
+      # and get's linked to the current job
+
+      my %child-jobs = %();
+
+      # accumulated state - represents 
+      # all output data, 
+      # collected from hub tasks
+
+      my @acc-state = (); # hub tasks accumulated state
+      my $i = 0; # hub tasks counter 
+
+      # task out data will hold
+      # depends tasks output data
+
+      my $tasks-out-data = %();
+
+      my @tasks; # hub tasks
+
+      # execute depends tasks _before_ 
+      # any tasks 
+
+      if $task<depends> {
+
+        say ">>> enter depends block: ", $task<depends>.perl;
+
+        my @jobs = self!run-task-dependency: :tasks($task<depends>);
+
+        say ">>> waiting for dependency tasks have finsihed ...";
+
+        my $st = self.wait-jobs(@jobs,{ timeout => $timeout.Int });
+
+        for @jobs -> $dj {
+            %child-jobs<left>.push: $dj.info;
+            my $d = $dj.get-stash();
+            if $d<task>:exists {
+              $tasks-out-data{$d<task>}<state> = $d<state>;
+            }
+        }
+
+        # save job data
+        $j.put-stash(%( child-jobs => %child-jobs ));
+
+        # handle depends jobs errors
+        say ">>> depends jobs status: ", $st.perl;
+
+        unless $st<OK> == @jobs.elems {
+          say "some depends jobs failed or timeouted: {$st.perl}";
+          exit(1);
+        }
+      }
+
       if $task<if> { # compute conditional task
         say ">>> compute conditional task ...";
         my $task-if = $task<if>; $task-if<name> = "{$task<name>}-if";
         my $params = $stash<config> || {};
+        $params<tasks> = $tasks-out-data if $tasks-out-data;
         my $state = self!task-run: :task($task-if), :$params;
         if $state<status> and  $state<status> eq "skip" {
           say ">>> conditional task returns SKIP, don't execute main task";
           return;
         }
       }
-
-      my @tasks; # hub tasks
       
       if $task<hub> {
 
@@ -503,19 +555,6 @@ class Pipeline does Sparky::JobApi::Role {
  
       }
 
-      # child jobs - holds references to 
-      # all depends/followup tasks/jobs
-      # and get's linked to the current job
-
-      my %child-jobs = %();
-
-      # accumulated state - represents 
-      # all output data, 
-      # collected from hub tasks
-
-      my @acc-state = (); # hub tasks accumulated state
-      my $i = 0; # hub tasks counter 
-
       for @tasks -> $t {
 
         $i++;  
@@ -526,6 +565,7 @@ class Pipeline does Sparky::JobApi::Role {
             say ">>> compute conditional task ...";
             my $task-if = $t<if>; $task-if<name> = "{$task<name>}-hub-if-{$i}";
             my $params = $t<config> || {};
+            $params<tasks> = $tasks-out-data if $tasks-out-data;
             my $state = self!task-run: :task($task-if), :$params;
             if $state<status> and  $state<status> eq "skip" {
               say ">>> conditional task returns SKIP, don't execute hub task";
@@ -533,46 +573,10 @@ class Pipeline does Sparky::JobApi::Role {
             }
         }
   
-        my $tasks-out-data = %();
-
-        # execute depends tasks _before_ 
-        # tasks from hub
-
-        if $task<depends> && $i ==1 {
-
-          say ">>> enter depends block: ", $task<depends>.perl;
-
-          my @jobs = self!run-task-dependency: :tasks($task<depends>);
-
-          say ">>> waiting for dependency tasks have finsihed ...";
-
-          my $st = self.wait-jobs(@jobs,{ timeout => $timeout.Int });
-
-          for @jobs -> $dj {
-              %child-jobs<left>.push: $dj.info;
-              my $d = $dj.get-stash();
-              if $d<task>:exists {
-                $tasks-out-data{$d<task>}<state> = $d<state>;
-              }
-          }
-
-          # save job data
-          $j.put-stash(%( child-jobs => %child-jobs ));
-
-          # handle depends jobs errors
-          say ">>> depends jobs status: ", $st.perl;
-
-          unless $st<OK> == @jobs.elems {
-            say "some depends jobs failed or timeouted: {$st.perl}";
-            exit(1)
-          }
-
-        }
-
         my $params = $task<hub> ?? ($t<config> || {}) !! ($stash<config> || {});
 
-        # pass depends tasks output data to a parent task
-        # as config()<tasks>
+        # pass depends tasks output data 
+        # to parent task as config()<tasks>
 
         $params<tasks> = $tasks-out-data if $tasks-out-data;
 
@@ -582,60 +586,56 @@ class Pipeline does Sparky::JobApi::Role {
 
         my $state = self!task-run: :$task, :$params, :$in-artifacts, :$out-artifacts;
   
-        my $parent-data = $state;
+        # link job and task data
+        @acc-state.push: $state;
 
-        # execute followup tasks
-        # _after_ hub tasks are finished
-
-        if $task<followup> && $i == @tasks.elems { 
-
-          say ">>> enter followup block: ", $task<followup>.perl;
-
-          my $tasks = $task<followup>;
-
-          my @jobs = self!run-task-dependency: :$tasks, :tasks-data($tasks-out-data), :$parent-data;
-
-          say ">>> waiting for followup tasks have finsihed ...";
-
-          my $st = self.wait-jobs(@jobs,{ timeout => $timeout });
-
-          for @jobs -> $fj {
-            %child-jobs<right>.push: $fj.info();
-          }
-
-          # link job and task data
-          @acc-state.push: $state;
-          $j.put-stash(%( 
-            state => $task<hub> ?? @acc-state !! $state, 
-            task => $task<name>, 
-            child-jobs => %child-jobs 
-          ));
-
-          say ">>> followup jobs status: ", $st.perl;
-
-          # handle followup jobs errors
-
-          unless $st<OK> == @jobs.elems {
-            say "some followup jobs failed or timeouted: {$st.perl}";
-            exit(1);
-          }
-
-        } else {
-          # link job and task data
-          @acc-state.push: $state;
-          $j.put-stash(%( 
-            state => $task<hub> ?? @acc-state !! $state,
-            task => $task<name>, 
-            child-jobs => %child-jobs 
-          ));
-
-        }
+        $j.put-stash(%( 
+          state => $task<hub> ?? @acc-state !! $state,
+          task => $task<name>, 
+          child-jobs => %child-jobs 
+        ));
 
       } # next task in @tasks
 
+      # execute followup tasks
+      # _after_ hub tasks are finished
+
+      if $task<followup> { 
+
+        say ">>> enter followup block: ", $task<followup>.perl;
+
+        my $tasks = $task<followup>;
+
+        my $parent-data = $task<hub> ?? @acc-state !! (@acc-state.elems ?? @acc-state[0] !! %());
+
+        my @jobs = self!run-task-dependency: :$tasks, :tasks-data($tasks-out-data), :$parent-data;
+
+        say ">>> waiting for followup tasks have finsihed ...";
+
+        my $st = self.wait-jobs(@jobs,{ timeout => $timeout });
+
+        for @jobs -> $fj {
+          %child-jobs<right>.push: $fj.info();
+        }
+
+        $j.put-stash(%( 
+          state => $task<hub> ?? @acc-state !! (@acc-state.elems ?? @acc-state[0] !! %()),
+          task => $task<name>, 
+          child-jobs => %child-jobs 
+        ));
+
+        say ">>> followup jobs status: ", $st.perl;
+
+        # handle followup jobs errors
+
+        unless $st<OK> == @jobs.elems {
+          say "some followup jobs failed or timeouted: {$st.perl}";
+          exit(1);
+        }
+      }  
     }
 
-    method !run-task-dependency (:$tasks,:$tasks-data = {},:$parent-data = {}) {
+    method !run-task-dependency (:$tasks,:$tasks-data = {},:$parent-data) {
 
       my @jobs;
 
