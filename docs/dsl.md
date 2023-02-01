@@ -448,7 +448,7 @@ tasks:
         update_state %( status => "skip" );
 ```
 
-`if` block itself is also a regular SparrowCI task that is executed before a task (\*). 
+`if` block itself is also a regular SparrowCI task that is executed before\* a task. 
 
 If conditional task declares status as `skip`, the main task won't be executed.
  
@@ -458,7 +458,7 @@ Conditional task code can access dependency tasks data (`config()<tasks>`, `conf
 
 ---
 
-\* - In case the main task has any `depends` tasks, they will be executed _before_ conditional task.
+\* - In case a task has any `depends` tasks, they will be executed _before_ conditional task.
 
 ## Using Programming Languages 
 
