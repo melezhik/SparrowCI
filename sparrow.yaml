@@ -41,4 +41,5 @@ tasks:
       cd source/
 
       tom --clean
+      fez -v 
       fez upload --unattended
