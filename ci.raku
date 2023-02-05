@@ -147,6 +147,7 @@ class Pipeline does Sparky::JobApi::Role {
               tasks_config => $.tasks_config,
               image => $.image,
               owner => $.owner,
+              scm_branch => tags()<SCM_BRANCH> || 'HEAD',
             ),
       );
 
@@ -162,7 +163,7 @@ class Pipeline does Sparky::JobApi::Role {
       
       git-scm $.scm, %(
         to => "source",
-        branch => "HEAD",
+        branch => tags()<scm_branch>,
       );
 
       task-run "archive source directory", "pack-unpack", %(
