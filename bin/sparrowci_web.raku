@@ -149,7 +149,7 @@ my $application = route {
       my $repo;
       request-body -> (:$repos) {
         $repo = $repos.subst(/\s+/,"",:g);
-        say "add repo: $repo";
+        say "add repo. user: $user, repo: $repo";
       }
 
       my $url;
@@ -305,6 +305,64 @@ my $application = route {
       redirect :see-other, "{http-root()}/repos?message=repo {$repo-id} removed";
     } else {
       redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage repositories";
+    }  
+  }
+
+  get -> 'repo', 'manage', 'branches', :$type, :$repo, :$message, :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
+    if check-user($user, $token) == True {
+      my @projects = projects($user);
+      template 'templates/repo-branches.crotmp', %(
+        page-title => "Manage repository branches", 
+        title => title(),
+        css => css($theme),
+        theme => $theme,
+        repo => $repo,
+        type => $type,
+        navbar => navbar($user, $token, $theme),
+        projects => @projects,
+        message => $message,
+      )
+    } else {
+      redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage branches";
+    }  
+  }
+
+  post -> 'repo', 'branch', :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
+
+    if check-user($user, $token) == True {
+      my $branch-param; 
+      my $branch-memo-param;  
+      my $type-param;
+      my $repo-param;
+      my $process = True;
+
+      request-body -> (:$branch, :$branch_memo, :$repo, :$type) {
+        $branch-param = $branch.subst(/\s+/,"",:g);
+        $branch-memo-param = $branch_memo;
+        $repo-param = $repo;
+        $type-param = $type;
+        say "add branch to repo. user: $user, repo: $repo, type: $type, branch: $branch, memo: $branch_memo";
+      }
+      if $branch-memo-param ~~ /^^ <[ a .. z A .. Z 0 .. 9 _ ]>+ $$/ {
+        my $repo-dir = "{%*ENV<HOME>}/.sparky/projects/branch-{$user}-{$repo-param}-{$branch-memo-param}";
+        say "create repo dir: $repo-dir";
+        mkdir $repo-dir;
+        my $t =  "{%*ENV<HOME>}/.sparky/projects/{$type-param}-{$user}-{$repo-param}/sparky.yaml".IO.slurp(); 
+        $t.=subst(/'branch:' \s+ HEAD/,"branch: $branch-param");
+        "{%*ENV<HOME>}/.sparky/projects/branch-{$user}-{$repo-param}-{$branch-memo-param}/sparky.yaml".IO.spurt($t);
+        if "{$repo-dir}/sparrowfile".IO ~~ :e {
+          say "{$repo-dir}/sparrowfile symlink exists"; 
+        } else {
+          say "create {$repo-dir}/sparrowfile symlink"; 
+          symlink("ci.raku","{$repo-dir}/sparrowfile");
+        }
+        redirect :see-other, "{http-root()}/repo/manage/branches?repo={$repo-param}&type={$type-param}&message=branch {$branch-param} added";
+      }  else {
+        redirect :see-other, "{http-root()}/repo/manage/branches?repo={$repo-param}&type={$type-param}&message=bad memo name";
+        $process = False;
+      }
+    } else {
+      redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage branches";
     }  
   }
 

@@ -97,7 +97,7 @@ sub get-builds ($limit=10, $user?) is export {
 
     my @out; 
     if $user {
-     @out = @rows.grep({.<project> ~~  / ( git || gh ) '-'  $user '-' / });
+     @out = @rows.grep({.<project> ~~  / ( git || gh || branch ) '-'  $user '-' / });
     } else {
      @out = @rows;
     }
@@ -105,9 +105,15 @@ sub get-builds ($limit=10, $user?) is export {
     for @out -> $i {
       my @c = $i<project>.split("-");
       $i<repo-type> = @c.shift;
-      $i<owner> = @c.shift;
       $i<repo> = @c.join("-");
+      if $i<repo-type> eq "branch" {
+        my @foo = $i<repo>.split("-");
+        $i<branch-memo> = @foo.pop;
+        $i<repo-orig> = @foo.join("-");
+      }
+      $i<owner> = @c.shift;
     }
+    
     return @out;
  
 }

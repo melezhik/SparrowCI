@@ -1,0 +1,89 @@
+<html>
+    <&HTML-AND-JAVASCRIPT(.css)>
+    <head>
+      <title><.title></title>
+    </head>
+    <body>
+      <div class="container is-fluid">
+        <div>
+          <&HTML-AND-JAVASCRIPT(.navbar)>
+        </div>
+        <?.message>
+          <span class="control">
+            <pre class="notification"><.message></pre>
+          </span>
+        </?>
+        <div>    
+          <nav class="panel is-success">
+            <p class="panel-heading">
+              <.page-title>
+            </p>
+            <div class="panel-block">
+              <nav class="tabs is-boxed is-fullwidth">
+                    <div class="container">
+                      <ul>
+                        <li class="tab is-active" onclick="openTab(event,'Manage')"><a>Manage Branches</a></li>                        
+                        <li class="tab" onclick="openTab(event,'Add')"><a>Add Branch</a></li>
+                      </ul>
+                    </div>
+              </nav>
+            </div>
+            <div class="panel-block">
+              <div id="Manage" class="panel-block content-tab" >
+                  <p class="control">
+                    <table class="table" border=0>
+                    <@projects: $i>
+                      <?{ $i.<type> eq 'branch' }> 
+                      <tr>
+                        <td>
+                          <$i.repo-orig>/<$i.branch-memo>
+                        </td>
+                        <td>
+                          <form action="/repo-build" method="POST">
+                            <input id="repo" class="input" type="hidden" name="repo" value="<$i.repo>">
+                            <input type="hidden" name="type" value="<$i.type>">  
+                            <button class="button is-small">Rebuild</button>
+                          </form>
+                        </td>                        
+                        <td>
+                          <form action="/repo-rm" method="POST">
+                            <input id="repo" class="input" type="hidden" name="repo" value="<$i.repo>">
+                            <input type="hidden" name="type" value="<$i.type>">  
+                            <button class="button is-small">Delete</button>
+                          </form>
+                        </td>  
+                      </tr>  
+                      </?>
+                    </@>
+                    </table>
+                  </p>
+              </div>
+              <div id="Add" class="panel-block content-tab" style="display:none">
+                <p class="control">
+                  <form action="/repo/branch" method="POST">
+                    <div class="field">
+                      <div>
+                        <label class="label">Add branch</label>
+                        <input id="branch" class="input" type="text" name="branch" placeholder="Git branch name">
+                        <span class="help is-success">may only contain ABC, digits, underscore symbols</span>
+                        <input id="branch_memo" class="input" type="text" name="branch_memo" placeholder="Memo name">
+                        <input id="repo" class="input" type="hidden" name="repo" value="<.repo>">
+                        <input id="type" class="input" type="hidden" name="type" value="<.type>">
+                      </div>
+                    </div>
+                    <div class="field>
+                      <div class="control">
+                        <button class="button is-link">Add Branch</button>
+                      </div>
+                    </div>
+                  </form>
+                </p> 
+              </div>
+            </div>  
+          </nav>
+        </div>      
+      </div>      
+  </body>
+</html>
+
+

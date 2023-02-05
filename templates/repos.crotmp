@@ -41,7 +41,12 @@
                     <@projects: $i>
                       <tr>
                         <td>
-                          <$i.type-human>@<$i.repo>
+                          <?{ $i.<type> ne 'branch' }>
+                            <$i.repo>
+                          </?>
+                          <?{ $i.<type> eq 'branch' }>
+                            <$i.repo-orig>/<$i.branch-memo>
+                          </?>
                         </td>
                         <td>
                           |
@@ -66,7 +71,12 @@
                     <@projects: $i>
                       <tr>
                         <td>
-                            <$i.type-human>@<$i.repo>
+                          <?{ $i.<type> ne 'branch' }>
+                            <$i.repo>
+                          </?>
+                          <?{ $i.<type> eq 'branch' }>
+                            <$i.repo-orig>/<$i.branch-memo>
+                          </?>
                         </td>
                         <td>
                           <form action="/repo-build" method="POST">
@@ -75,6 +85,15 @@
                             <button class="button is-small">Rebuild</button>
                           </form>
                         </td>
+                        <?{ $i.<type> ne 'branch' }>
+                        <td>
+                          <form action="/repo/manage/branches" method="GET">
+                            <input id="repo" class="input" type="hidden" name="repo" value="<$i.repo>">
+                            <input type="hidden" name="type" value="<$i.type>">  
+                            <button class="button is-small">Manage branches</button>
+                          </form>
+                        </td>
+                        </?>
                         <td>
                           <form action="/repo-rm" method="POST">
                             <input id="repo" class="input" type="hidden" name="repo" value="<$i.repo>">

@@ -58,6 +58,19 @@ sub projects (Mu $user) is export {
             push @list, { repo => "{$0}", type => 'gh', type-human => "github", project => $i.IO.basename } 
         } elsif $i.IO ~~ :d  and $i ~~ /"git-" $user "-" (\S+)/ {
             push @list, {  repo => "{$0}" , type => 'git', type-human => "git", project => $i.IO.basename  }
+        } elsif $i.IO ~~ :d  and $i ~~ /"branch-" $user "-" (\S+)/ {
+            my $repo = "{$0}";
+            my @foo = $repo.split("-");
+            my $branch-memo = @foo.pop;
+            my $repo-orig = @foo.join("-");
+            push @list, { 
+                repo => $repo,
+                repo-orig => $repo-orig, 
+                type => 'branch', 
+                type-human => "branch",
+                branch-memo =>  $branch-memo,
+                project => $i.IO.basename,
+            }
         }
     }
     return @list.sort({ .<repo> || .<type> });
