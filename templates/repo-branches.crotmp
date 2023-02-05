@@ -65,8 +65,8 @@
                       <div>
                         <label class="label">Add branch</label>
                         <input id="branch" class="input" type="text" name="branch" placeholder="Git branch name">
-                        <span class="help is-success">may only contain ABC, digits, underscore symbols</span>
                         <input id="branch_memo" class="input" type="text" name="branch_memo" placeholder="Memo name">
+                        <span class="help is-success">may only contain ABC, digits, underscore symbols</span>
                         <input id="repo" class="input" type="hidden" name="repo" value="<.repo>">
                         <input id="type" class="input" type="hidden" name="type" value="<.type>">
                       </div>

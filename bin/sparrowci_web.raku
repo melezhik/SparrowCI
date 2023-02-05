@@ -343,7 +343,9 @@ my $application = route {
         $type-param = $type;
         say "add branch to repo. user: $user, repo: $repo, type: $type, branch: $branch, memo: $branch_memo";
       }
-      if $branch-memo-param ~~ /^^ <[ a .. z A .. Z 0 .. 9 _ ]>+ $$/ {
+      if $branch-param !~~ /\S+/ {
+        redirect :see-other, "{http-root()}/repo/manage/branches?repo={$repo-param}&type={$type-param}&message=bad branch";
+      } elsif $branch-memo-param ~~ /^^ <[ a .. z A .. Z 0 .. 9 _ ]>+ $$/ {
         my $repo-dir = "{%*ENV<HOME>}/.sparky/projects/branch-{$user}-{$repo-param}-{$branch-memo-param}";
         say "create repo dir: $repo-dir";
         mkdir $repo-dir;
