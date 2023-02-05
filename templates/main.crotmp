@@ -38,7 +38,14 @@
                 <@results>
                   <tr>
                     <td><a href="/report/<.id>" title="report"><.id></a></td>
-                    <td><.owner>@<.repo></td>
+                    <td>
+                    <?{ .<repo-type> ne 'branch' }>
+                      <.owner>@<.repo>
+                    </?>
+                    <?{ .<repo-type> eq 'branch' }>
+                      <.owner>@<.repo-orig>/<.branch-memo>
+                    </?>
+                    </td>                    
                     <td>
                       <?.image>
                         <.image>
