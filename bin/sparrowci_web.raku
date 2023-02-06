@@ -139,7 +139,7 @@ my $application = route {
         message => $message,
       )
     } else {
-      redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage repositories";
+      redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage repositories";
     }  
   }
 
@@ -208,7 +208,7 @@ my $application = route {
           }
         } 
     } else {
-      redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage repositories"; 
+      redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage repositories"; 
     }
   }
 
@@ -219,7 +219,7 @@ my $application = route {
       sync-repos($user);  
       redirect :see-other, "{http-root()}/repos?message=repositories synced from GH account";
     } else {
-      redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage repositories";
+      redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage repositories";
     }  
   }
 
@@ -249,7 +249,7 @@ my $application = route {
       redirect :see-other, "{http-root()}/repos?message=repo {$repo-id} queued to build";
 
     } else {
-      redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage repositories";
+      redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage repositories";
     }  
   }
 
@@ -304,7 +304,7 @@ my $application = route {
       }
       redirect :see-other, "{http-root()}/repos?message=repo {$repo-id} removed";
     } else {
-      redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage repositories";
+      redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage repositories";
     }  
   }
 
@@ -323,7 +323,7 @@ my $application = route {
         message => $message,
       )
     } else {
-      redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage branches";
+      redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage branches";
     }  
   }
 
@@ -364,7 +364,7 @@ my $application = route {
         $process = False;
       }
     } else {
-      redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage branches";
+      redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage branches";
     }  
   }
 
@@ -381,7 +381,7 @@ my $application = route {
         message => $message,
       )
     } else {
-      redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage repositories";
+      redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage repositories";
     }  
   }
 
@@ -449,7 +449,7 @@ my $application = route {
         redirect :see-other, "{http-root()}/?message=secrets are not enabled on this instance";         
       }
     } else {
-      redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage secrets";
+      redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage secrets";
     }  
   }
 
@@ -469,7 +469,7 @@ my $application = route {
       redirect :see-other, "{http-root()}/secrets?message=bad secret name";
     }
     } else {
-        redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage secrets"; 
+        redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage secrets"; 
     }
   }
 
@@ -483,7 +483,7 @@ my $application = route {
       secret-delete($user,$secret_param);
       redirect :see-other, "{http-root()}/secrets?message=secret {$secret_param} deleted";
     } else {
-        redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage secrets"; 
+        redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage secrets"; 
     }
   }
 
@@ -501,9 +501,9 @@ my $application = route {
       )
     } else {
       if conf-login-type() eq "GH" {
-        redirect :see-other, "{http-root()}/login-page?message=you need to sign in to manage account";
+        redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage account";
       } else {
-        redirect :see-other, "{http-root()}/login-page2?message=you need to sign in to manage account";
+        redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to manage account";
       }
     }  
   }
@@ -580,7 +580,7 @@ my $application = route {
       }
       redirect :see-other, "{http-root()}/account?message=password changed";
     } else {
-        redirect :see-other, "{http-root()}/login-page?message=you need to sign in to change password"; 
+        redirect :see-other, "{http-root()}/{login-page()}?message=you need to sign in to change password"; 
     }
   }
 
@@ -713,7 +713,7 @@ my $application = route {
     } elsif $user-acc and $user-acc<password> ne $password_param {
 
         say "(3) login user: $user - FAIL";
-        redirect :see-other, "{http-root()}/login-page2?message=bad credentials"; 
+        redirect :see-other, "{http-root()}/{login-page()}?message=bad credentials"; 
 
     } elsif !$user-acc and $create_param and $password_param {
 
@@ -734,14 +734,14 @@ my $application = route {
         redirect :see-other, "{http-root()}/?message=user successfully created and logged in";
 
       } else {
-        redirect :see-other, "{http-root()}/login-page2?message=bad login";
+        redirect :see-other, "{http-root()}/{login-page()}?message=bad login";
       }  
 
     }  else {
 
         say "(5) login user: $user - FAIL";
 
-        redirect :see-other, "{http-root()}/login-page2?message=bad credentials"; 
+        redirect :see-other, "{http-root()}/{login-page()}?message=bad credentials"; 
     }
   }
 

@@ -30,6 +30,10 @@ sub conf-login-type is export {
   return get-sparrowci-conf()<login_type> || "GH";
 }
 
+sub login-page is export {
+  conf-login-type() eq "GH" ?? 'login-page' !! 'login-page2';
+}
+
 sub conf-workers-url is export {
   return get-sparrowci-conf()<workers_url> || "http://sparky.sparrowhub.io";
 }
