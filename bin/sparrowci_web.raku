@@ -355,6 +355,7 @@ my $application = route {
         mkdir $repo-dir;
         my $t =  "{%*ENV<HOME>}/.sparky/projects/{$type-param}-{$user}-{$repo-param}/sparky.yaml".IO.slurp(); 
         $t.=subst(/'branch:' \s+ HEAD/,"branch: $branch-param");
+        $t.=subst(/'tags:' \s+/,"tags: SCM_BRANCH={$branch-param},");
         "{%*ENV<HOME>}/.sparky/projects/branch-{$user}-{$repo-param}-{$branch-memo-param}/sparky.yaml".IO.spurt($t);
         if "{$repo-dir}/sparrowfile".IO ~~ :e {
           say "{$repo-dir}/sparrowfile symlink exists"; 
