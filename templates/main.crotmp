@@ -40,10 +40,10 @@
                     <td><a href="/report/<.id>" title="report"><.id></a></td>
                     <td>
                     <?{ .<repo-type> ne 'branch' }>
-                      <.owner>@<.repo>
+                      <.repo>
                     </?>
                     <?{ .<repo-type> eq 'branch' }>
-                      <.owner>@<.repo-orig>/<.branch-memo>
+                      <.repo-orig>/<.branch-memo>
                     </?>
                     </td>                    
                     <td>
