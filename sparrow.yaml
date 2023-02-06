@@ -35,7 +35,10 @@ tasks:
       zef install --/test https://github.com/tony-o/raku-fez.git
 
       cat << HERE > ~/.fez-config.json
-       {"groups":[],"un":"melezhik","key":"$FEZ_TOKEN"}
+       {
+          "groups":[],"un":"melezhik","key":"$FEZ_TOKEN",
+          "bundlers": ["Fez::Util::Pax"]
+       }
       HERE
 
       cd source/
