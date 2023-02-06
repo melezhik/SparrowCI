@@ -33,7 +33,7 @@
                   <p class="control">
                     <table class="table" border=0>
                     <@projects: $i>
-                      <?{ $i.<type> eq 'branch' }> 
+                      <?{ $i.type eq 'branch' and $i.repo-orig eq .repo }> 
                       <tr>
                         <td>
                           <$i.repo-orig>/<$i.branch-memo>
