@@ -73,6 +73,10 @@ my $application = route {
         %report<runner> = "$0";
         %report<repo> = "$1"; 
         %report<repo-type> = "git";
+    } elsif %report<project> ~~ /"branch-" (\S+?) "-" (\S+)/ {
+        %report<runner> = "$0";
+        %report<repo> = "$1";
+        %report<repo-type> = "branch";
     }
 
     %report<user> = $user || "";
