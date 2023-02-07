@@ -1,0 +1,22 @@
+image:
+  - melezhik/sparrow:debian
+tasks:
+  -
+    name: test
+    default: true
+    language: Bash
+    code: |
+      set -e
+      cd source/
+      zef install . --deps-only --test-depends --build-depends --/test -to=home
+      zef install --verbose .
+    depends:
+      -
+        name: deps
+  -
+    name: deps
+    language: Bash
+    code: |
+      set -e
+      sudo apt-get update
+      sudo apt-get install -y cmake
