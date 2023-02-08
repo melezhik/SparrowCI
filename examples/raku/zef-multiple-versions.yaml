@@ -4,9 +4,17 @@ tasks:
     default: true
     language: Raku
     code: |
+      use Text::Table::Simple;
+      my @columns = ("Rakudo Version", "Status", "Time", "Linux Dist");
+      my @rows;
+      my $fail = False;
       for config()<tasks><multi-versions><state><list><> -> $i {
-        say "[{$i<version>}] - {$i<status>} | {$i<time>}";
+        @rows.push: [ $i<version>, $i<status>,  $i<time>, os() ];
+        $fail = True unless $i<status> eq "OK";
       }
+      my @table = lol2table(@columns,@rows);
+      .say for @table;
+      die "some tests failed" if $fail == True;
     depends:
       -
         name: multi-versions
@@ -15,10 +23,10 @@ tasks:
     language: Raku
     config:
       list:
-        - 2022.04
-        - 2022.06
+        #- 2022.04
+        #- 2022.06
         - 2022.07
-        - master
+        - 2022.12
     code: |
       my @state;
       for config()<list><> -> $v {
@@ -53,7 +61,7 @@ tasks:
           cd source/
           zef install --/test File::Temp
           zef install --/test --deps-only .
-          time -o "${cache_root_dir}/${version}_time" \
+          /usr/bin/time -o "${cache_root_dir}/${version}_time" \
           zef test . && touch "${cache_root_dir}/${version}_ok"
     depends:
       -
@@ -67,4 +75,5 @@ tasks:
       sudo mv rakubrew /usr/local/bin
       sudo chmod a+x /usr/local/bin/rakubrew
       rakubrew mode shim
-
+      zef install --/test Text::Table::Simple
+      sudo apk add time  --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/
