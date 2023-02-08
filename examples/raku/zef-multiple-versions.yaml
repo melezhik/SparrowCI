@@ -59,8 +59,7 @@ tasks:
           rakubrew download moar-$version
           rakubrew switch moar-$version
           cd source/
-          zef install --/test File::Temp
-          zef install --/test --deps-only .
+          zef install --/test --deps-only --to=home .
           /usr/bin/time -o "${cache_root_dir}/${version}_time" \
           zef test . && touch "${cache_root_dir}/${version}_ok"
     depends:
