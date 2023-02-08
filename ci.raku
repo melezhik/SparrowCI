@@ -642,6 +642,8 @@ class Pipeline does Sparky::JobApi::Role {
 
       for $tasks<>.sort({ .<queue> ?? (.<queue>,.<priority>) !! True }).reverse -> $t {
   
+        say ">>> run-task-dependency: handle task: {$t.perl}";
+
         my $project = $t<queue> || $t<name>;
 
         my $job = self.new-job: :$project;
