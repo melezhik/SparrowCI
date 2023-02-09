@@ -1,78 +1,28 @@
 tasks:
   -
-    name: main
+    name: zef-build-many
+    language: Raku
     default: true
-    language: Raku
-    code: |
-      use Text::Table::Simple;
-      my @columns = ("Rakudo Version", "Status", "Time", "Linux Dist");
-      my @rows;
-      my $fail = False;
-      for config()<tasks><multi-versions><state><list><> -> $i {
-        @rows.push: [ $i<version>, $i<status>,  $i<time>, os() ];
-        $fail = True unless $i<status> eq "OK";
-      }
-      my @table = lol2table(@columns,@rows);
-      .say for @table;
-      die "some tests failed" if $fail == True;
-    depends:
-      -
-        name: multi-versions
-  -
-    name: multi-versions
-    language: Raku
-    config:
-      list:
-        #- 2022.04
-        #- 2022.06
-        - 2022.07
-        - 2022.12
-    code: |
-      my @state;
-      for config()<list><> -> $v {
-        my $s = %( version => $v );
-        if "{cache_root_dir()}/{$v}_ok".IO ~~ :e {
-          $s<status> = "OK";
-        } else {
-          $s<status> = "FAIL";
-        }
-        if "{cache_root_dir()}/{$v}_time".IO ~~ :e {
-          $s<time> = "{cache_root_dir()}/{$v}_time".IO.slurp();
-        } else {
-          $s<time> = "NA";
-        }
-        @state.push: $s;
-      }
-      update_state %( list => @state );
     init: |
-      for config()<list><> -> $v {
-        run_task("test", %( version => $v ));
+      for config()<list><> -> $url {
+        run_task "zef-build", %(
+          url => $url
+        );
       }
+    config:
+      list: 
+        - https://github.com/lizmat/App-Rak.git
+        - https://github.com/tbrowder/LocalTime.git
+        - https://github.com/jnthn/test-mock.git
     subtasks:
       -
-        name: test
+        name: zef-build
         language: Bash
-        init: |
-          ignore_error
         code: |
           set -e
-          rakubrew download moar-$version
-          rakubrew switch moar-$version
+          echo "build for $url ..."
+          rm -rf source/
+          git clone $url source
           cd source/
-          zef install --/test --deps-only --to=home .
-          /usr/bin/time -o "${cache_root_dir}/${version}_time" \
-          zef test . && touch "${cache_root_dir}/${version}_ok"
-    depends:
-      -
-        name: rakubrew-install
-  -
-    name: rakubrew-install
-    language: Bash
-    code: |
-      set -e
-      curl -sf https://rakubrew.org/perl/rakubrew -o rakubrew
-      sudo mv rakubrew /usr/local/bin
-      sudo chmod a+x /usr/local/bin/rakubrew
-      rakubrew mode shim
-      zef install --/test Text::Table::Simple
-      sudo apk add time  --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/
+          zef install --deps-only --/test .
+          zef test .
