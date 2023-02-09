@@ -309,9 +309,9 @@ class Pipeline does Sparky::JobApi::Role {
             $docker-opts ~= " -v {%*ENV<HOME>}/.sparrowci/irc/bot/messages/:/tmp/irc/bot/messages/";
           }
 
-          $docker-opts ~= " -v /var/run/docker.sock:/var/run/docker.sock";
+          #$docker-opts ~= " -v /var/run/docker.sock:/var/run/docker.sock";
 
-          $docker-opts ~= ' --group-add $(stat -c %g /var/run/docker.sock)';
+          #$docker-opts ~= ' --group-add $(stat -c %g /var/run/docker.sock)';
 
           $docker-run-params<options> = $docker-opts;
 
