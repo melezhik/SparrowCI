@@ -6,6 +6,10 @@ Following environment variables are available in all pipelines:
 
 Url of SCM repository a build has been triggered for
 
+* **SCM_BRANCH**
+
+SCM branch
+
 * **SCM_SHA**
 
 SCM commit sha
