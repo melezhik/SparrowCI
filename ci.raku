@@ -311,6 +311,8 @@ class Pipeline does Sparky::JobApi::Role {
 
           $docker-opts ~= " -v /var/run/docker.sock:/var/run/docker.sock";
 
+          $docker-opts ~= ' --group-add $(stat -c %g /var/run/docker.sock)';
+
           $docker-run-params<options> = $docker-opts;
 
           task-run "docker run", "docker-cli", $docker-run-params;
