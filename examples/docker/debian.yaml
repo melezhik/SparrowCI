@@ -1,0 +1,20 @@
+image:
+  - melezhik/sparrow:debian
+  
+tasks:
+  -
+    name: run-docker
+    default: true
+    language: Bash
+    code: |
+      set -e
+      cd source/
+      docker build .
+    depends:
+      -
+        name: install-docker-cli     
+  -
+    name: install-docker-cli
+    plugin: docker-engine
+    config:
+      cli_only: true
