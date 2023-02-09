@@ -1,0 +1,9 @@
+tasks:
+  -
+    name: run-docker
+    language: Bash
+    default: true
+    code: |
+      sudo apk add docker-cli
+      cd source/
+      docker build .
