@@ -11,7 +11,8 @@ tasks:
       language: Raku
       code: |
         if %*ENV<SCM_COMMIT_MESSAGE> ~~ /'skip_ci'/ {
-          update_state %( status => 'skip' )
+          update_state %( status => 'skip' );
+          say "CI skipped";
         }
     followup:
       -
