@@ -7,6 +7,12 @@ tasks:
   - 
     name: test
     default: true
+    if:
+      language: Raku
+      code: |
+        if %*ENV<SCM_COMMIT_MESSAGE> ~~ /'skip_ci'/ {
+          update_state %( status => 'skip' )
+        }
     followup:
       -
         name: release
