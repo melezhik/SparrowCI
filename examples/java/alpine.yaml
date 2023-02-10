@@ -5,7 +5,14 @@ tasks:
     language: Bash
     code: |
       set -e
-      apk add openjdk9 \
-      --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
       cd source/
       # test your java app here 
+    depends:
+      -
+        name: install-java
+
+  -
+    name: install-java
+    code: |
+      sudo apk add openjdk9 \
+      --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
