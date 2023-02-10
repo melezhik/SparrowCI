@@ -13,6 +13,7 @@ tasks:
 
   -
     name: install-java
+    language: Bash
     code: |
       sudo apk add openjdk9 \
       --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
