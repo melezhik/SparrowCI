@@ -2,6 +2,8 @@ Revision history for SparrowCI
 
 {{$NEXT}}
 
+    Minor fix in sparman help messages
+
 0.0.11 2023-02-08T13:50:00Z
 
     Branches support! Hurrah!

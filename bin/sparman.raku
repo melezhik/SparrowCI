@@ -16,7 +16,7 @@ sub MAIN(
     if $comp eq "worker_ui" {
       if ! $c<worker><base> and $action eq "start" {
         say "worker ui base dir not found, tell me where to look it up:";
-        say "sparman --base /path/to/basedir worker conf";
+        say "sparman.raku --base /path/to/basedir worker_ui conf";
         exit(1)
       }
       if $action eq "start" {
@@ -120,7 +120,7 @@ sub MAIN(
     if $comp eq "ui" {
       if ! $c<sparrowci><base> and $action eq "start"  {
         say "sparrowci ui base dir not found, tell me where to look it up:";
-        say "sparman --base /path/to/basedir ui conf";
+        say "sparman.raku --base /path/to/basedir ui conf";
         exit(1)
       }
       if $action eq "start" {

@@ -4,9 +4,16 @@ image:
 secrets:
   - FEZ_TOKEN
 tasks:
-  - 
+  -
     name: test
     default: true
+    if:
+      language: Raku
+      code: |
+        if %*ENV<SCM_COMMIT_MESSAGE> ~~ /'skip_ci'/ {
+          update_state %( status => 'skip' );
+          say "CI skipped";
+        }
     followup:
       -
         name: release
@@ -14,11 +21,12 @@ tasks:
     code: |
       set -e
       env|grep SCM
+      sudo apt-get update
       sudo apt-get install -y libarchive13 libcurl4-openssl-dev > /dev/null
       cd source
       zef install --/test \
         https://github.com/bduggan/p6-digest-sha1-native/archive/refs/tags/0.05.tar.gz
-      zef install "Pakku:ver<ava-1>" --/test  
+      zef install Pakku --/test
       pakku add noprecomp notest to home .
       #zef install --/test .
   -
@@ -32,7 +40,7 @@ tasks:
     language: Bash
     code: |
       set -e
-      zef install --/test https://github.com/tony-o/raku-fez.git
+      zef install --/test fez
 
       cat << HERE > ~/.fez-config.json
        {
@@ -44,5 +52,5 @@ tasks:
       cd source/
 
       tom --clean
-      fez -v 
+      fez -v
       fez upload --unattended

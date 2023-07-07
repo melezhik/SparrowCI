@@ -1,0 +1,19 @@
+tasks:
+  -
+    name: java-app
+    default: True
+    language: Bash
+    code: |
+      set -e
+      cd source/
+      # test your java app here 
+    depends:
+      -
+        name: install-java
+
+  -
+    name: install-java
+    language: Bash
+    code: |
+      sudo apk add openjdk9 \
+      --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
