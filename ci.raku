@@ -134,7 +134,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $j = self.new-job: :project<SparrowCIQueue>;
 
-      my $timeout = 1100;
+      my $timeout = 1400;
 
       $j.queue: %(
             description => "{$.scm} queue",
@@ -466,7 +466,7 @@ class Pipeline does Sparky::JobApi::Role {
 
       my $task = $data[0];
 
-      my $timeout = 600;
+      my $timeout = 1200;
 
       say ">>> handle task: ", $task.perl;
 
