@@ -1,0 +1,37 @@
+FROM alpine:latest
+ENV SP6_DUMP_TASK_CODE=1
+ENV SP6_FORMAT_COLOR=1
+
+RUN apk update && apk add openssl bash curl wget perl openssl-dev sudo git make gcc musl-dev
+
+RUN apk add --no-cache bash
+
+COPY install-rakudo.sh . 
+
+RUN sh ./install-rakudo.sh 
+RUN find /root/rakudo-2023.08/install/ -type d | grep /bin
+
+ENV PATH="/root/rakudo-2023.08/install/bin:/root/rakudo-2023.08/install/share/perl6/vendor/bin:/root/rakudo-2023.08/install/share/perl6/core/bin:/root/rakudo-2023.08/install/share/perl6/site/bin:/home/worker/.raku/bin:${PATH}"
+
+#0 0.068 /root/rakudo-2023.08/install/share/perl6/vendor/bin
+#0 0.070 /root/rakudo-2023.08/install/share/perl6/core/bin
+#0 0.070 /root/rakudo-2023.08/install/share/perl6/site/bin
+#0 0.070 /root/rakudo-2023.08/install/bin
+
+RUN git clone https://github.com/ugexe/zef.git /tmp/zef && \
+cd /tmp/zef && \
+raku -I. bin/zef install . --/test
+
+#RUN adduser -D -h /home/worker -s /bin/bash -G wheel worker
+#RUN echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+#RUN addgroup worker wheel
+RUN sudo echo
+#USER worker
+RUN zef update
+RUN zef install --/test JSON::Fast
+RUN sudo apk add build-base
+RUN zef install --/test https://github.com/melezhik/Sparrow6.git
+RUN zef install --/test https://github.com/melezhik/Tomtit.git
+RUN zef install --/test https://github.com/melezhik/Tomty.git
+RUN zef install --/test --force-install https://github.com/melezhik/sparky-job-api.git
+RUN sudo apk add go --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
