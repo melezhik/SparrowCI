@@ -112,12 +112,15 @@ image:
 
 Use following table to find proper docker image
 
-| OS          | Image                        |
-| ------------| ---------------------------- |
-| Alpine      | melezhik/sparrow:alpine      |
-| Debian      | melezhik/sparrow:debian      |
-| Ubuntu      | melezhik/sparrow:ubuntu      |
-| Arch Linux  | melezhik/sparrow:archlinux   |
+| OS          | Image                        | Architecture 
+| ------------| ---------------------------- | ------------
+| Alpine      | melezhik/sparrow:alpine      | x86
+| Debian      | melezhik/sparrow:debian      | x86
+| Ubuntu      | melezhik/sparrow:ubuntu      | x86
+| Arch Linux  | melezhik/sparrow:archlinux   | x86 
+| Alpine      | melezhik/sparrow:alpine_arm      | ARM64
+| Debian      | melezhik/sparrow:debian_arm      | ARM64
+| Ubuntu      | melezhik/sparrow:ubuntu_arm      | ARM64
 
 To run on many images:
 
