@@ -259,7 +259,7 @@ class Pipeline does Sparky::JobApi::Role {
       }
 
       my @images = $.image ?? [ $.image ] !!
-      ( $tasks-config<image> ?? $tasks-config<image><> !! ['melezhik/sparrow:alpine'] );
+      ( $tasks-config<image> ?? $tasks-config<image><> !! ['melezhik/sparrow:alpine_arm'] );
 
       my $jobs-status = "OK";
       my $warn-cnt = 0; # number of warnings found in jobs
