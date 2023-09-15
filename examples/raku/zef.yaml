@@ -8,4 +8,3 @@ tasks:
       cd source/
       zef install --deps-only --/test .
       zef test .
-
