@@ -22,7 +22,7 @@ RUN usermod worker -G wheel
 
 USER worker
 
-ENV PATH="/home/worker/rakudo-2023.08/install/bin:/home/worker/rakudo-2023.08/install/share/perl6/vendor/bin:/home/worker/rakudo-2023.08/install/share/perl6/core/bin:/home/worker/rakudo-2023.08/install/share/perl6/site/bin:/home/worker/.raku/bin:${PATH}"
+ENV PATH="/home/worker/rakudo-2023.10/install/bin:/home/worker/rakudo-2023.10/install/share/perl6/vendor/bin:/home/worker/rakudo-2023.10/install/share/perl6/core/bin:/home/worker/rakudo-2023.10/install/share/perl6/site/bin:/home/worker/.raku/bin:${PATH}"
 
 COPY install-rakudo.sh . 
 
@@ -44,5 +44,5 @@ RUN zef install --/test https://github.com/melezhik/Tomty.git
 
 RUN zef install --/test --force-install https://github.com/melezhik/sparky-job-api.git
 
-RUN echo 'export PATH=/home/worker/rakudo-2023.08/install/bin:/home/worker/rakudo-2023.08/install/share/perl6/vendor/bin:/home/worker/rakudo-2023.08/install/share/perl6/core/bin:/home/worker/rakudo-2023.08/install/share/perl6/site/bin:/home/worker/.raku/bin:$PATH' >> $HOME/.profile
+RUN echo 'export PATH=/home/worker/rakudo-2023.10/install/bin:/home/worker/rakudo-2023.10/install/share/perl6/vendor/bin:/home/worker/rakudo-2023.10/install/share/perl6/core/bin:/home/worker/rakudo-2023.10/install/share/perl6/site/bin:/home/worker/.raku/bin:$PATH' >> $HOME/.profile
 
