@@ -531,6 +531,14 @@ my $application = route {
 
   }
 
+  get -> 'logos', *@path {
+
+    cache-control :public, :max-age(3000);
+
+    static 'logos', @path;
+
+  }
+
   get -> 'set-theme', :$message, :$theme, :$user is cookie, :$token is cookie {
 
     my $date = DateTime.now.later(years => 100);

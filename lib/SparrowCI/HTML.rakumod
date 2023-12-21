@@ -22,12 +22,12 @@ sub css (Mu $theme) is export {
     if %conf<ui> && %conf<ui><theme><light> {
       $bulma-theme = %conf<ui><theme><light>
     } else {
-      $bulma-theme = "cyborg";
+      $bulma-theme = "spacelab";
     }
 
   } else {
 
-    $bulma-theme = "cyborg";
+    $bulma-theme = "spacelab";
 
   }
 
@@ -115,7 +115,12 @@ sub navbar (Mu $user, Mu $token, Mu $theme) is export {
           </a>
           <div id="navbarBasicExample" class="navbar-menu"> 
             <div class="navbar-start">
-              <a class="navbar-item" href="{http-root()}/">Home</a>
+              <a class="navbar-item" href="#">
+                <figure class="image is-32x32">
+                  <img class="is-rounded" border=1 src="/logos/logo.png">
+                </figure>
+              </a>
+              <a class="navbar-item"href="{http-root()}/">Home</a>
               <a class="navbar-item"href="{http-root()}/quickstart">Quick start</a>
               <a class="navbar-item" href="{http-root()}/all">All builds</a>
               {mybuilds($user,$token)}
