@@ -2,6 +2,8 @@
 
 # SparrowCI
 
+![logo](https://raw.githubusercontent.com/melezhik/SparrowCI/main/logos/logo.svg)
+
 SparrowCI - super fun and flexible CI system with many programming languages support.
 
 ## Why yet another pipeline DSL?
