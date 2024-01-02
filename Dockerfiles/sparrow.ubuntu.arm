@@ -46,5 +46,5 @@ RUN zef install --/test https://github.com/melezhik/Tomty.git
 
 RUN zef install --/test --force-install https://github.com/melezhik/sparky-job-api.git
 
-RUN echo 'export PATH=/home/worker/rakudo-$rakudo_version/install/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/vendor/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/core/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/site/bin:/home/worker/.raku/bin:$PATH' >> $HOME/.profile
+RUN echo "export PATH=/home/worker/rakudo-$rakudo_version/install/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/vendor/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/core/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/site/bin:/home/worker/.raku/bin:"'$PATH' >> $HOME/.profile
 

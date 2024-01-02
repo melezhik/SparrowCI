@@ -44,5 +44,5 @@ RUN zef install --/test --force-install https://github.com/melezhik/sparky-job-a
 
 RUN sudo apk add go --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
 
-RUN echo 'export PATH=/home/worker/rakudo-$rakudo_version/install/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/vendor/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/core/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/site/bin:/home/worker/.raku/bin:$PATH' >> $HOME/.profile
+RUN echo "export PATH=/home/worker/rakudo-$rakudo_version/install/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/vendor/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/core/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/site/bin:/home/worker/.raku/bin:"'$PATH' >> $HOME/.profile
 
