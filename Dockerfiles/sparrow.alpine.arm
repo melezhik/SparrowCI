@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-ARG rakudo_version=$rakudo_version
+ARG rakudo_version=2023.12
 
 ENV SP6_DUMP_TASK_CODE=1
 

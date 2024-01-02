@@ -1,5 +1,7 @@
 FROM ubuntu:latest
 
+ARG rakudo_version=2023.12
+
 ENV SP6_DUMP_TASK_CODE=1
 
 ENV SP6_FORMAT_COLOR=1
@@ -22,11 +24,11 @@ RUN usermod worker -G wheel
 
 USER worker
 
-ENV PATH="/home/worker/rakudo-2023.08/install/bin:/home/worker/rakudo-2023.08/install/share/perl6/vendor/bin:/home/worker/rakudo-2023.08/install/share/perl6/core/bin:/home/worker/rakudo-2023.08/install/share/perl6/site/bin:/home/worker/.raku/bin:${PATH}"
+ENV PATH="/home/worker/rakudo-$rakudo_version/install/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/vendor/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/core/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/site/bin:/home/worker/.raku/bin:${PATH}"
 
 COPY install-rakudo.sh . 
 
-RUN sh ./install-rakudo.sh 
+RUN sh ./install-rakudo.sh $rakudo_version
 
 RUN git clone https://github.com/ugexe/zef.git /tmp/zef && cd /tmp/zef && raku -I. bin/zef install . --/test -to=home
 
@@ -44,5 +46,5 @@ RUN zef install --/test https://github.com/melezhik/Tomty.git
 
 RUN zef install --/test --force-install https://github.com/melezhik/sparky-job-api.git
 
-RUN echo 'export PATH=/home/worker/rakudo-2023.08/install/bin:/home/worker/rakudo-2023.08/install/share/perl6/vendor/bin:/home/worker/rakudo-2023.08/install/share/perl6/core/bin:/home/worker/rakudo-2023.08/install/share/perl6/site/bin:/home/worker/.raku/bin:$PATH' >> $HOME/.profile
+RUN echo 'export PATH=/home/worker/rakudo-$rakudo_version/install/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/vendor/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/core/bin:/home/worker/rakudo-$rakudo_version/install/share/perl6/site/bin:/home/worker/.raku/bin:$PATH' >> $HOME/.profile
 
