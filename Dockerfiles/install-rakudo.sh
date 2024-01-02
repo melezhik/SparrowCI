@@ -1,5 +1,5 @@
 mkdir ~/rakudo && cd $_
-curl -LJO https://rakudo.org/latest/rakudo/src
+curl -LJO https://rakudo.org/dl/rakudo/rakudo-$1.tar.gz
 tar -xvzf rakudo-*.tar.gz
 cd rakudo-*
 
