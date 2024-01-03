@@ -110,16 +110,10 @@ image:
   - melezhik/sparrow:debian
 ```
 
-Use following table to find proper docker image
+Use the the following tables to find proper docker image.
 
-| OS          | Image                        | Architecture 
-| ------------| ---------------------------- | ------------
-| Alpine      | melezhik/sparrow:alpine      | x86
-| Debian      | melezhik/sparrow:debian      | x86
-| Ubuntu      | melezhik/sparrow:ubuntu      | x86
-| Arch Linux  | melezhik/sparrow:archlinux   | x86 
+Images, applicable for https://ci.sparrowhub.io:
 
-ARM64 Images Currently available on ci.sparrowhub.io
 
 | OS              | Image                               | Rakudo Version 
 | --------------- | ----------------------------------- | ---------------
@@ -137,6 +131,16 @@ ARM64 Images Currently available on ci.sparrowhub.io
 | Alpine          | melezhik/sparrow:alpine_arm_2023.04 | 2023.04
 | Alpine          | melezhik/sparrow:alpine_arm_2023.02 | 2023.03
 | Alpine          | melezhik/sparrow:alpine_arm_2022.12 | 2022.12
+
+Images, not applicable for https://ci.sparrowhub.io, but availble for self-hosted
+SparrowCI versions:
+
+| OS          | Image                        | Architecture 
+| ------------| ---------------------------- | ------------
+| Alpine      | melezhik/sparrow:alpine      | x86
+| Debian      | melezhik/sparrow:debian      | x86
+| Ubuntu      | melezhik/sparrow:ubuntu      | x86
+| Arch Linux  | melezhik/sparrow:archlinux   | x86 
 
 To run on many images:
 
