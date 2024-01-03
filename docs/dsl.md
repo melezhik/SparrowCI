@@ -132,8 +132,8 @@ Images, applicable for https://ci.sparrowhub.io:
 | Alpine          | melezhik/sparrow:alpine_arm_2023.02 | 2023.03
 | Alpine          | melezhik/sparrow:alpine_arm_2022.12 | 2022.12
 
-Images, not applicable for https://ci.sparrowhub.io, but availble for self-hosted
-SparrowCI versions:
+Images, not applicable for https://ci.sparrowhub.io, but applicable for self-hosted
+SparrowCI instances with suppor of x86 architecture:
 
 | OS          | Image                        | Architecture 
 | ------------| ---------------------------- | ------------
