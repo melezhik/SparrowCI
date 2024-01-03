@@ -129,7 +129,7 @@ Images, applicable for https://ci.sparrowhub.io:
 | Alpine          | melezhik/sparrow:alpine_arm_2023.06 | 2023.06
 | Alpine          | melezhik/sparrow:alpine_arm_2023.05 | 2023.05
 | Alpine          | melezhik/sparrow:alpine_arm_2023.04 | 2023.04
-| Alpine          | melezhik/sparrow:alpine_arm_2023.02 | 2023.03
+| Alpine          | melezhik/sparrow:alpine_arm_2023.02 | 2023.02
 | Alpine          | melezhik/sparrow:alpine_arm_2022.12 | 2022.12
 
 Images, not applicable for https://ci.sparrowhub.io, but applicable for self-hosted 
