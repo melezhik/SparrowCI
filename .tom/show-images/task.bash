@@ -6,4 +6,4 @@ raku -e '
    $i++ or next;
    my @f = $l.split(/\s+/);
    say "@f[0]:@f[1]"
-}'
+}' | sort -r
