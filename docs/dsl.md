@@ -133,14 +133,14 @@ Images, applicable for https://ci.sparrowhub.io:
 | Alpine          | melezhik/sparrow:alpine_arm_2022.12 | 2022.12
 
 Images, not applicable for https://ci.sparrowhub.io, but applicable for self-hosted
-SparrowCI instances with suppor of x86 architecture:
+SparrowCI instances with suppor of x86_64 architecture:
 
 | OS          | Image                        | Architecture 
 | ------------| ---------------------------- | ------------
-| Alpine      | melezhik/sparrow:alpine      | x86
-| Debian      | melezhik/sparrow:debian      | x86
-| Ubuntu      | melezhik/sparrow:ubuntu      | x86
-| Arch Linux  | melezhik/sparrow:archlinux   | x86 
+| Alpine      | melezhik/sparrow:alpine      | x86_64
+| Debian      | melezhik/sparrow:debian      | x86_64
+| Ubuntu      | melezhik/sparrow:ubuntu      | x86_64
+| Arch Linux  | melezhik/sparrow:archlinux   | x86_64
 
 To run on many images:
 
