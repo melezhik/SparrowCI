@@ -118,9 +118,25 @@ Use following table to find proper docker image
 | Debian      | melezhik/sparrow:debian      | x86
 | Ubuntu      | melezhik/sparrow:ubuntu      | x86
 | Arch Linux  | melezhik/sparrow:archlinux   | x86 
-| Alpine      | melezhik/sparrow:alpine_arm      | ARM64
-| Debian      | melezhik/sparrow:debian_arm      | ARM64
-| Ubuntu      | melezhik/sparrow:ubuntu_arm      | ARM64
+
+ARM64 Images Currently available on ci.sparrowhub.io
+
+| OS              | Image                               | Rakudo Version 
+| --------------- | ----------------------------------- | ---------------
+| Alpine          | melezhik/sparrow:alpine_arm         | 2023.12
+| Debian          | melezhik/sparrow:debian_arm         | 2023.12
+| Ubuntu          | melezhik/sparrow:ubuntu_arm         | 2023.12
+| Ubuntu          | melezhik/sparrow:ubuntu_arm_2023.12 | 2023.12
+| Debian          | melezhik/sparrow:debian_arm_2023.12 | 2023.12
+| Alpine          | melezhik/sparrow:alpine_arm_2023.12 | 2023.12
+| Alpine          | melezhik/sparrow:alpine_arm_2023.11 | 2023.11
+| Alpine          | melezhik/sparrow:alpine_arm_2023.10 | 2023.10
+| Alpine          | melezhik/sparrow:alpine_arm_2023.08 | 2023.08
+| Alpine          | melezhik/sparrow:alpine_arm_2023.06 | 2023.06
+| Alpine          | melezhik/sparrow:alpine_arm_2023.05 | 2023.05
+| Alpine          | melezhik/sparrow:alpine_arm_2023.04 | 2023.04
+| Alpine          | melezhik/sparrow:alpine_arm_2023.02 | 2023.03
+| Alpine          | melezhik/sparrow:alpine_arm_2022.12 | 2022.12
 
 To run on many images:
 
