@@ -107,7 +107,7 @@ For example, Debian:
 
 ```yaml
 image:
-  - melezhik/sparrow:debian
+  - melezhik/sparrow:alpine_arm_2023.11
 ```
 
 Use the the following tables to find proper docker image.
