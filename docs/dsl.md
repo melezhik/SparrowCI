@@ -146,9 +146,9 @@ To run on many images:
 
 ```yaml
 image:
-  - melezhik/sparrow:alpine
-  - melezhik/sparrow:debian
-  - melezhik/sparrow:archlinux
+  - melezhik/sparrow:alpine_arm
+  - melezhik/sparrow:debian_arm
+  - melezhik/sparrow:ubuntu_arm
 ```
 
 More Linux distributions will be supported in a future.
